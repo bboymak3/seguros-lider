@@ -140,3 +140,82 @@ Task: QA assessment + bug fixes + new features + styling improvements.
 7. **Pagination**: For lists exceeding 100 items.
 8. **Document replace**: One-click replace (delete+upload) in admin.
 
+
+---
+
+## Task ID: 3 (cron review — wizard form + pagination + filters)
+Agent: main (Z.ai Code) — webDevReview cron round 2
+Task: QA assessment + multi-step wizard form + pagination + date filters + print styles.
+
+### Work Log
+**QA Assessment (agent-browser + VLM)**
+- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+- VLM analysis of dashboard: professional design confirmed; identified needs for pagination, date filters, wizard form, print support.
+- VLM analysis of form: long-form fatigue identified → recommended wizard/stepper approach.
+
+**Major Feature: Multi-step Wizard Form (solicitud-form.tsx full rewrite)**
+- Converted single-page long form into 4-step wizard: Cliente → Vehículo → Cobertura → Documentos.
+- Visual stepper with icons (User/Car/ShieldCheck/IdCard), done/current/inactive states, connector lines with animated progress fill.
+- Progress bar (gradient emerald→teal) + "Paso X de 4" heading + percentage indicator.
+- Per-step validation: required fields validated before advancing (trigger from react-hook-form).
+- Auto-save draft to sessionStorage (debounced 800ms) with "Guardar" button + "Borrador recuperado" toast on reload.
+- Draft cleared on successful submission.
+- Siguiente/Anterior navigation with smooth scroll-to-top.
+- Summary confirmation card on final step before submit.
+- Improved success screen with ring accent on check icon.
+
+**Major Feature: Pagination (API + UI)**
+- Enhanced `GET /api/policies` to support `page` + `pageSize` params (default 20, max 100).
+- Returns `{ policies, pagination: { page, pageSize, total, totalPages, hasNext, hasPrev } }`.
+- Admin list views now paginate at 10 per page.
+- Pagination footer with: "Página X de Y (Z total)", prev/next chevrons, numbered page buttons (smart window of 5).
+- Active page highlighted in emerald.
+
+**Major Feature: Date-range Filter (API + UI)**
+- Enhanced `GET /api/policies` to support `from` + `to` date params (ISO date strings).
+- Admin list views show a date-range filter row: two date inputs (Desde/Hasta) + "Filtrar" + "Limpiar" buttons.
+- Total result count displayed inline.
+- Filter persists across page navigation.
+
+**Feature: Print-friendly Verification Page**
+- Added `@media print` styles to globals.css (white bg, black text, hide `.no-print` elements).
+- Added "Imprimir" button to verify-page (calls `window.print()`).
+- Header, footer, and action buttons marked `.no-print` so they don't appear in printed output.
+- Certificate data sections use `.print-break-inside-avoid` for clean page breaks.
+
+**Styling Improvements**
+- Custom scrollbar styles (`.scrollbar-thin`) for dark theme.
+- Wizard stepper with ring-4 accent on current step.
+- Gradient progress bar (emerald→teal).
+- Pagination buttons with hover states.
+- Date filter row in a bordered container with labeled inputs.
+
+### Stage Summary / Verification (agent-browser + curl)
+- ✅ All pages compile (HTTP 200), no console errors.
+- ✅ Wizard form: Step 1 (Cliente) → fill required → "Siguiente" → Step 2 (Vehículo) with "Anterior" button. Stepper shows progress.
+- ✅ VLM confirms wizard stepper is clear and professional.
+- ✅ VLM confirms dashboard KPIs + charts render well.
+- ✅ Pagination API: `?page=1&pageSize=5` returns correct `{ policies, pagination }` shape.
+- ✅ Date filter UI present (Desde/Hasta inputs + Filtrar button).
+- ✅ Status filter dropdown present (Todos los estados / Pendientes / Aprobadas / etc).
+- ✅ CSV export button present in header.
+- ✅ Print button on verification page.
+- ✅ `bun run lint` passes clean (0 errors).
+- ✅ All API endpoints return 200 (stats, policies, export, lookup).
+
+### Files Modified
+- `src/components/seguros/solicitud-form.tsx` — full rewrite as 4-step wizard
+- `src/app/api/policies/route.ts` — added pagination + date-range filter
+- `src/components/seguros/admin-dashboard.tsx` — added pagination UI, date filter UI, new state (pagination, page, dateFrom, dateTo), goToPage/applyDateFilter/clearDateFilter functions
+- `src/components/seguros/verify-page.tsx` — added Print button + no-print classes
+- `src/app/globals.css` — print styles + custom scrollbar
+
+### Unresolved / Next-phase recommendations (updated)
+1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+3. **PDF template**: Integrate user's `pdfclean` template.
+4. **Dashboard drill-down**: Click a chart segment to filter the list.
+5. **Document preview lightbox**: Click to enlarge images in admin.
+6. **Notifications**: Email/SMS on approval.
+7. **Contrast improvements**: Some secondary text (dates, sub-labels) could be brighter for accessibility.
+8. **Form autosave indicator**: Show "Guardado hace Xs" toast.

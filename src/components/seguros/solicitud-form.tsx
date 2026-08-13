@@ -1,16 +1,20 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2, Upload, X, FileText, ShieldCheck, ArrowLeft, CheckCircle2, Car, User, IdCard } from 'lucide-react'
+import {
+  Loader2, Upload, X, FileText, ShieldCheck, ArrowLeft, ArrowRight,
+  CheckCircle2, Car, User, IdCard, Check, Save,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { ACCEPTED_DOC_EXT } from '@/lib/policy-utils'
@@ -66,6 +70,21 @@ const ESTADOS_VENEZUELA = [
   'Sucre', 'Táchira', 'Trujillo', 'Vargas', 'Yaracuy', 'Zulia',
 ]
 
+const STEPS = [
+  { id: 0, label: 'Cliente', icon: User, description: 'Datos personales del tomador' },
+  { id: 1, label: 'Vehículo', icon: Car, description: 'Información del vehículo a asegurar' },
+  { id: 2, label: 'Cobertura', icon: ShieldCheck, description: 'Condiciones de la póliza' },
+  { id: 3, label: 'Documentos', icon: IdCard, description: 'Adjuntar cédula y título (opcional)' },
+]
+
+// fields required per step (for validation before advancing)
+const STEP_REQUIRED_FIELDS: Record<number, string[]> = {
+  0: ['nombre', 'cedula', 'telefono'],
+  1: [],
+  2: [],
+  3: [],
+}
+
 export default function SolicitudForm({
   onDone,
   onBack,
@@ -73,19 +92,55 @@ export default function SolicitudForm({
   onDone: (code: string) => void
   onBack: () => void
 }) {
-  const router = useRouter()
+  const [step, setStep] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [cedulaFile, setCedulaFile] = useState<File | null>(null)
   const [tituloFile, setTituloFile] = useState<File | null>(null)
   const [success, setSuccess] = useState<{ code: string; id: string } | null>(null)
+  // draft auto-save indicator
+  const [draftSaved, setDraftSaved] = useState(false)
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    trigger,
+    getValues,
     formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(schema) })
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    mode: 'onBlur',
+  })
+
+  // Load draft on mount
+  useEffect(() => {
+    const draft = sessionStorage.getItem('seguros_draft')
+    if (draft) {
+      try {
+        const data = JSON.parse(draft)
+        Object.keys(data).forEach((k) => {
+          if (data[k]) setValue(k as keyof FormData, data[k])
+        })
+        toast.info('Borrador recuperado')
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [])
+
+  // Auto-save draft (debounced via watch)
+  const watched = watch()
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const hasData = watched.nombre || watched.cedula
+      if (hasData) {
+        sessionStorage.setItem('seguros_draft', JSON.stringify(watched))
+        setDraftSaved(true)
+      }
+    }, 800)
+    return () => clearTimeout(t)
+  }, [watched])
 
   async function uploadDoc(id: string, file: File, tipo: string) {
     const fd = new FormData()
@@ -104,7 +159,7 @@ export default function SolicitudForm({
   const onSubmit = async (data: FormData) => {
     setSubmitting(true)
     try {
-      const payload = { ...data, email: data.email || undefined }
+      const payload = { ...data, email: data.email || undefined, actor: 'public' }
       const res = await fetch('/api/policies', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -113,7 +168,6 @@ export default function SolicitudForm({
       if (!res.ok) throw new Error('No se pudo crear la solicitud')
       const { policy } = await res.json()
 
-      // Upload optional docs
       if (cedulaFile) {
         try {
           await uploadDoc(policy.id, cedulaFile, 'CEDULA')
@@ -129,6 +183,7 @@ export default function SolicitudForm({
         }
       }
 
+      sessionStorage.removeItem('seguros_draft')
       setSuccess({ code: policy.verifyCode, id: policy.id })
       toast.success('Solicitud creada correctamente')
     } catch (e) {
@@ -138,6 +193,28 @@ export default function SolicitudForm({
     }
   }
 
+  async function nextStep() {
+    const fields = STEP_REQUIRED_FIELDS[step] || []
+    const valid = await trigger(fields as (keyof FormData)[])
+    if (valid) {
+      setStep((s) => Math.min(s + 1, STEPS.length - 1))
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      toast.error('Completa los campos requeridos para continuar')
+    }
+  }
+
+  function prevStep() {
+    setStep((s) => Math.max(s - 1, 0))
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function saveDraft() {
+    sessionStorage.setItem('seguros_draft', JSON.stringify(getValues()))
+    toast.success('Borrador guardado')
+  }
+
+  // Success screen
   if (success) {
     return (
       <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
@@ -152,7 +229,7 @@ export default function SolicitudForm({
         <main className="flex flex-1 items-center justify-center px-4 py-12">
           <Card className="w-full max-w-lg border-white/10 bg-slate-900/80">
             <CardContent className="p-8 text-center">
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/15">
+              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/15 ring-4 ring-emerald-500/10">
                 <CheckCircle2 className="h-9 w-9 text-emerald-400" />
               </div>
               <h1 className="text-2xl font-bold">¡Solicitud enviada!</h1>
@@ -194,10 +271,13 @@ export default function SolicitudForm({
     )
   }
 
+  const currentStep = STEPS[step]
+  const progress = ((step + 1) / STEPS.length) * 100
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
       <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/90 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4">
+        <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4 sm:px-6">
           <button
             onClick={onBack}
             className="flex items-center gap-1.5 text-sm text-slate-300 hover:text-white"
@@ -208,271 +288,369 @@ export default function SolicitudForm({
             <ShieldCheck className="h-5 w-5 text-emerald-400" />
             <span className="font-bold">Solicitud de Póliza</span>
           </div>
-          <div className="w-16" />
+          <button
+            onClick={saveDraft}
+            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-emerald-300"
+            title="Guardar borrador"
+          >
+            <Save className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">{draftSaved ? 'Guardado' : 'Guardar'}</span>
+          </button>
         </div>
       </header>
 
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8">
+        {/* Stepper */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">
-            Solicitud de Póliza de Seguro Vehicular
-          </h1>
-          <p className="mt-2 text-slate-400">
-            Completa los datos del tomador y del vehículo. Los campos marcados
-            con <span className="text-emerald-400">*</span> son obligatorios.
-          </p>
+          <div className="flex items-center justify-between">
+            {STEPS.map((s, i) => {
+              const isDone = i < step
+              const isCurrent = i === step
+              return (
+                <div key={s.id} className="flex flex-1 items-center">
+                  <div className="flex flex-col items-center gap-2">
+                    <div
+                      className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all ${
+                        isDone
+                          ? 'border-emerald-500 bg-emerald-500 text-slate-950'
+                          : isCurrent
+                            ? 'border-emerald-400 bg-emerald-500/15 text-emerald-300 ring-4 ring-emerald-500/10'
+                            : 'border-white/15 bg-slate-900 text-slate-500'
+                      }`}
+                    >
+                      {isDone ? (
+                        <Check className="h-5 w-5" />
+                      ) : (
+                        <s.icon className="h-5 w-5" />
+                      )}
+                    </div>
+                    <span
+                      className={`text-xs font-medium ${
+                        isCurrent ? 'text-emerald-300' : isDone ? 'text-slate-200' : 'text-slate-500'
+                      }`}
+                    >
+                      {s.label}
+                    </span>
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <div className="mx-2 h-0.5 flex-1 rounded-full bg-white/10">
+                      <div
+                        className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+                        style={{ width: isDone ? '100%' : '0%' }}
+                      />
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+          <div className="mt-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">
+                Paso {step + 1} de {STEPS.length}: {currentStep.label}
+              </h2>
+              <p className="mt-1 text-sm text-slate-400">{currentStep.description}</p>
+            </div>
+            <div className="hidden text-right sm:block">
+              <p className="text-xs text-slate-500">Progreso</p>
+              <p className="text-lg font-bold text-emerald-300">{Math.round(progress)}%</p>
+            </div>
+          </div>
+          {/* Progress bar */}
+          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* PERSONAL */}
-          <Card className="border-white/10 bg-slate-900/60">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <User className="h-5 w-5 text-emerald-400" />
-                Datos del Cliente (Tomador)
-              </CardTitle>
-              <CardDescription className="text-slate-400">
-                Información personal del solicitante de la póliza.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 sm:grid-cols-2">
-              <Field label="Nombre" required error={errors.nombre?.message}>
-                <Input {...register('nombre')} placeholder="Juan" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Apellido">
-                <Input {...register('apellido')} placeholder="Pérez" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Tipo de Cédula / RIF">
-                <SelectField
-                  value={watch('tipoCedula') || ''}
-                  placeholder="Seleccionar"
-                  onCng={(v) => setValue('tipoCedula', v)}
-                  options={['V', 'E', 'J', 'G']}
-                />
-              </Field>
-              <Field label="Cédula / RIF" required error={errors.cedula?.message}>
-                <Input {...register('cedula')} placeholder="12345678" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Fecha de Nacimiento">
-                <Input type="date" {...register('fechaNacimiento')} className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Nacionalidad">
-                <SelectField
-                  value={watch('nacionalidad') || ''}
-                  placeholder="Seleccionar"
-                  onCng={(v) => setValue('nacionalidad', v)}
-                  options={['Venezolana', 'Extranjera']}
-                />
-              </Field>
-              <Field label="Estado Civil">
-                <SelectField
-                  value={watch('estadoCivil') || ''}
-                  placeholder="Seleccionar"
-                  onCng={(v) => setValue('estadoCivil', v)}
-                  options={['Soltero(a)', 'Casado(a)', 'Divorciado(a)', 'Viudo(a)']}
-                />
-              </Field>
-              <Field label="Sexo">
-                <SelectField
-                  value={watch('sexo') || ''}
-                  placeholder="Seleccionar"
-                  onCng={(v) => setValue('sexo', v)}
-                  options={['Masculino', 'Femenino']}
-                />
-              </Field>
-              <Field label="Teléfono" required error={errors.telefono?.message}>
-                <Input {...register('telefono')} placeholder="0412-XXXXXXX" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Teléfono Alternativo">
-                <Input {...register('telefonoAlt')} placeholder="0212-XXXXXXX" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Correo Electrónico" error={errors.email?.message}>
-                <Input type="email" {...register('email')} placeholder="correo@ejemplo.com" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Ocupación">
-                <Input {...register('ocupacion')} placeholder="Comerciante" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Dirección">
-                <Input {...register('direccion')} placeholder="Av. Principal, Edif..." className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Ciudad">
-                <Input {...register('ciudad')} placeholder="Caracas" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Estado">
-                <SelectField
-                  value={watch('estado') || ''}
-                  placeholder="Seleccionar"
-                  onCng={(v) => setValue('estado', v)}
-                  options={ESTADOS_VENEZUELA}
-                />
-              </Field>
-            </CardContent>
-          </Card>
+          {/* STEP 0: CLIENTE */}
+          {step === 0 && (
+            <Card className="border-white/10 bg-slate-900/60">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <User className="h-5 w-5 text-emerald-400" />
+                  Datos del Cliente (Tomador)
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Información personal del solicitante de la póliza.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4 sm:grid-cols-2">
+                <Field label="Nombre" required error={errors.nombre?.message}>
+                  <Input {...register('nombre')} placeholder="Juan" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Apellido">
+                  <Input {...register('apellido')} placeholder="Pérez" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Tipo de Cédula / RIF">
+                  <SelectField
+                    value={watch('tipoCedula') || ''}
+                    placeholder="Seleccionar"
+                    onCng={(v) => setValue('tipoCedula', v)}
+                    options={['V', 'E', 'J', 'G']}
+                  />
+                </Field>
+                <Field label="Cédula / RIF" required error={errors.cedula?.message}>
+                  <Input {...register('cedula')} placeholder="12345678" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Fecha de Nacimiento">
+                  <Input type="date" {...register('fechaNacimiento')} className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Nacionalidad">
+                  <SelectField
+                    value={watch('nacionalidad') || ''}
+                    placeholder="Seleccionar"
+                    onCng={(v) => setValue('nacionalidad', v)}
+                    options={['Venezolana', 'Extranjera']}
+                  />
+                </Field>
+                <Field label="Estado Civil">
+                  <SelectField
+                    value={watch('estadoCivil') || ''}
+                    placeholder="Seleccionar"
+                    onCng={(v) => setValue('estadoCivil', v)}
+                    options={['Soltero(a)', 'Casado(a)', 'Divorciado(a)', 'Viudo(a)']}
+                  />
+                </Field>
+                <Field label="Sexo">
+                  <SelectField
+                    value={watch('sexo') || ''}
+                    placeholder="Seleccionar"
+                    onCng={(v) => setValue('sexo', v)}
+                    options={['Masculino', 'Femenino']}
+                  />
+                </Field>
+                <Field label="Teléfono" required error={errors.telefono?.message}>
+                  <Input {...register('telefono')} placeholder="0412-XXXXXXX" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Teléfono Alternativo">
+                  <Input {...register('telefonoAlt')} placeholder="0212-XXXXXXX" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Correo Electrónico" error={errors.email?.message}>
+                  <Input type="email" {...register('email')} placeholder="correo@ejemplo.com" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Ocupación">
+                  <Input {...register('ocupacion')} placeholder="Comerciante" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Dirección">
+                  <Input {...register('direccion')} placeholder="Av. Principal, Edif..." className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Ciudad">
+                  <Input {...register('ciudad')} placeholder="Caracas" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Estado">
+                  <SelectField
+                    value={watch('estado') || ''}
+                    placeholder="Seleccionar"
+                    onCng={(v) => setValue('estado', v)}
+                    options={ESTADOS_VENEZUELA}
+                  />
+                </Field>
+              </CardContent>
+            </Card>
+          )}
 
-          {/* VEHICLE */}
-          <Card className="border-white/10 bg-slate-900/60">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Car className="h-5 w-5 text-emerald-400" />
-                Datos del Vehículo
-              </CardTitle>
-              <CardDescription className="text-slate-400">
-                Información técnica del vehículo a asegurar.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 sm:grid-cols-2">
-              <Field label="Tipo de Vehículo">
-                <SelectField
-                  value={watch('tipoVehiculo') || ''}
-                  placeholder="Seleccionar"
-                  onCng={(v) => setValue('tipoVehiculo', v)}
-                  options={['Automóvil', 'Moto', 'Camión', 'Camioneta', 'Pickup', 'Autobús']}
-                />
-              </Field>
-              <Field label="Marca">
-                <Input {...register('marca')} placeholder="Toyota" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Modelo">
-                <Input {...register('modelo')} placeholder="Corolla" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Año">
-                <Input {...register('ano')} placeholder="2022" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Placa">
-                <Input {...register('placa')} placeholder="ABC-123" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Color">
-                <Input {...register('color')} placeholder="Blanco" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Serial de Carrocería (VIN)">
-                <Input {...register('serialCarroceria')} placeholder="8XJKL..." className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Serial de Motor">
-                <Input {...register('serialMotor')} placeholder="MR20..." className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Clase">
-                <Input {...register('clase')} placeholder="Sedan" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Uso">
-                <SelectField
-                  value={watch('uso') || ''}
-                  placeholder="Seleccionar"
-                  onCng={(v) => setValue('uso', v)}
-                  options={['Particular', 'Carga', 'Público', 'Diplomático']}
-                />
-              </Field>
-              <Field label="Capacidad (pasajeros)">
-                <Input {...register('capacidad')} placeholder="5" className="bg-slate-950/50 border-white/10" />
-              </Field>
-            </CardContent>
-          </Card>
+          {/* STEP 1: VEHÍCULO */}
+          {step === 1 && (
+            <Card className="border-white/10 bg-slate-900/60">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Car className="h-5 w-5 text-emerald-400" />
+                  Datos del Vehículo
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Información técnica del vehículo a asegurar.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4 sm:grid-cols-2">
+                <Field label="Tipo de Vehículo">
+                  <SelectField
+                    value={watch('tipoVehiculo') || ''}
+                    placeholder="Seleccionar"
+                    onCng={(v) => setValue('tipoVehiculo', v)}
+                    options={['Automóvil', 'Moto', 'Camión', 'Camioneta', 'Pickup', 'Autobús']}
+                  />
+                </Field>
+                <Field label="Marca">
+                  <Input {...register('marca')} placeholder="Toyota" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Modelo">
+                  <Input {...register('modelo')} placeholder="Corolla" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Año">
+                  <Input {...register('ano')} placeholder="2022" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Placa">
+                  <Input {...register('placa')} placeholder="ABC-123" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Color">
+                  <Input {...register('color')} placeholder="Blanco" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Serial de Carrocería (VIN)">
+                  <Input {...register('serialCarroceria')} placeholder="8XJKL..." className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Serial de Motor">
+                  <Input {...register('serialMotor')} placeholder="MR20..." className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Clase">
+                  <Input {...register('clase')} placeholder="Sedan" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Uso">
+                  <SelectField
+                    value={watch('uso') || ''}
+                    placeholder="Seleccionar"
+                    onCng={(v) => setValue('uso', v)}
+                    options={['Particular', 'Carga', 'Público', 'Diplomático']}
+                  />
+                </Field>
+                <Field label="Capacidad (pasajeros)">
+                  <Input {...register('capacidad')} placeholder="5" className="bg-slate-950/50 border-white/10" />
+                </Field>
+              </CardContent>
+            </Card>
+          )}
 
-          {/* COVERAGE */}
-          <Card className="border-white/10 bg-slate-900/60">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <ShieldCheck className="h-5 w-5 text-emerald-400" />
-                Cobertura y Condiciones
-              </CardTitle>
-              <CardDescription className="text-slate-400">
-                Datos de la póliza solicitada (pueden completarse luego por el
-                equipo).
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 sm:grid-cols-2">
-              <Field label="Aseguradora">
-                <Input {...register('compania')} placeholder="Seguros..." className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Plan">
-                <Input {...register('plan')} placeholder="Plan Total" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Tipo de Cobertura">
-                <SelectField
-                  value={watch('tipoCobertura') || ''}
-                  placeholder="Seleccionar"
-                  onCng={(v) => setValue('tipoCobertura', v)}
-                  options={['Responsabilidad Civil', 'Cobertura Total', 'Cobertura Amplia', 'Pérdida Total']}
-                />
-              </Field>
-              <Field label="Suma Asegurada">
-                <Input {...register('sumaAsegurada')} placeholder="$ 25.000" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Prima">
-                <Input {...register('prima')} placeholder="$ 1.200" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Deducible">
-                <Input {...register('deducible')} placeholder="5%" className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Vigencia Desde">
-                <Input type="date" {...register('vigenciaDesde')} className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Vigencia Hasta">
-                <Input type="date" {...register('vigenciaHasta')} className="bg-slate-950/50 border-white/10" />
-              </Field>
-              <Field label="Frecuencia de Pago">
-                <SelectField
-                  value={watch('frecuenciaPago') || ''}
-                  placeholder="Seleccionar"
-                  onCng={(v) => setValue('frecuenciaPago', v)}
-                  options={['Mensual', 'Trimestral', 'Semestral', 'Anual']}
-                />
-              </Field>
-              <Field label="Observaciones">
-                <Textarea {...register('notes')} placeholder="Comentarios adicionales..." className="bg-slate-950/50 border-white/10 min-h-[80px]" />
-              </Field>
-            </CardContent>
-          </Card>
+          {/* STEP 2: COBERTURA */}
+          {step === 2 && (
+            <Card className="border-white/10 bg-slate-900/60">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <ShieldCheck className="h-5 w-5 text-emerald-400" />
+                  Cobertura y Condiciones
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Datos de la póliza solicitada (pueden completarse luego por el equipo).
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4 sm:grid-cols-2">
+                <Field label="Aseguradora">
+                  <Input {...register('compania')} placeholder="Seguros..." className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Plan">
+                  <Input {...register('plan')} placeholder="Plan Total" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Tipo de Cobertura">
+                  <SelectField
+                    value={watch('tipoCobertura') || ''}
+                    placeholder="Seleccionar"
+                    onCng={(v) => setValue('tipoCobertura', v)}
+                    options={['Responsabilidad Civil', 'Cobertura Total', 'Cobertura Amplia', 'Pérdida Total']}
+                  />
+                </Field>
+                <Field label="Suma Asegurada">
+                  <Input {...register('sumaAsegurada')} placeholder="$ 25.000" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Prima">
+                  <Input {...register('prima')} placeholder="$ 1.200" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Deducible">
+                  <Input {...register('deducible')} placeholder="5%" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Vigencia Desde">
+                  <Input type="date" {...register('vigenciaDesde')} className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Vigencia Hasta">
+                  <Input type="date" {...register('vigenciaHasta')} className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Frecuencia de Pago">
+                  <SelectField
+                    value={watch('frecuenciaPago') || ''}
+                    placeholder="Seleccionar"
+                    onCng={(v) => setValue('frecuenciaPago', v)}
+                    options={['Mensual', 'Trimestral', 'Semestral', 'Anual']}
+                  />
+                </Field>
+                <Field label="Observaciones">
+                  <Textarea {...register('notes')} placeholder="Comentarios adicionales..." className="bg-slate-950/50 border-white/10 min-h-[80px]" />
+                </Field>
+              </CardContent>
+            </Card>
+          )}
 
-          {/* DOCUMENTS */}
-          <Card className="border-white/10 bg-slate-900/60">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <IdCard className="h-5 w-5 text-emerald-400" />
-                Documentos (Opcionales)
-              </CardTitle>
-              <CardDescription className="text-slate-400">
-                Adjunta tu cédula y título de propiedad. Formatos: JPG, PNG, WEBP,
-                PDF. Máx 10 MB cada uno.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 sm:grid-cols-2">
-              <FileDrop
-                label="Cédula de Identidad"
-                file={cedulaFile}
-                onPick={setCedulaFile}
-              />
-              <FileDrop
-                label="Título de Propiedad"
-                file={tituloFile}
-                onPick={setTituloFile}
-              />
-            </CardContent>
-          </Card>
+          {/* STEP 3: DOCUMENTOS */}
+          {step === 3 && (
+            <>
+              <Card className="border-white/10 bg-slate-900/60">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <IdCard className="h-5 w-5 text-emerald-400" />
+                    Documentos (Opcionales)
+                  </CardTitle>
+                  <CardDescription className="text-slate-400">
+                    Adjunta tu cédula y título de propiedad. Formatos: JPG, PNG, WEBP, PDF. Máx 10 MB cada uno.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4 sm:grid-cols-2">
+                  <FileDrop
+                    label="Cédula de Identidad"
+                    file={cedulaFile}
+                    onPick={setCedulaFile}
+                  />
+                  <FileDrop
+                    label="Título de Propiedad"
+                    file={tituloFile}
+                    onPick={setTituloFile}
+                  />
+                </CardContent>
+              </Card>
 
-          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              {/* Summary */}
+              <Card className="border-emerald-500/20 bg-emerald-500/5">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-400" />
+                    <div className="text-sm">
+                      <p className="font-medium text-emerald-200">Listo para enviar</p>
+                      <p className="mt-1 text-slate-300">
+                        Revisa que los datos sean correctos. Una vez enviada, recibirás un código de verificación para consultar el estado de tu solicitud.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
+
+          {/* Navigation */}
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
             <Button
               type="button"
               variant="outline"
-              onClick={onBack}
+              onClick={step === 0 ? onBack : prevStep}
               className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
             >
-              Cancelar
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              {step === 0 ? 'Cancelar' : 'Anterior'}
             </Button>
-            <Button
-              type="submit"
-              disabled={submitting}
-              className="bg-emerald-500 text-slate-950 hover:bg-emerald-400"
-            >
-              {submitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Enviando...
-                </>
-              ) : (
-                <>
-                  <ShieldCheck className="mr-2 h-4 w-4" /> Enviar Solicitud
-                </>
-              )}
-            </Button>
+            {step < STEPS.length - 1 ? (
+              <Button
+                type="button"
+                onClick={nextStep}
+                className="bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+              >
+                Siguiente
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                disabled={submitting}
+                className="bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Enviando...
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="mr-2 h-4 w-4" /> Enviar Solicitud
+                  </>
+                )}
+              </Button>
+            )}
           </div>
         </form>
       </main>
@@ -568,8 +746,7 @@ function FileDrop({
         <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-white/15 bg-slate-950/30 p-6 text-center transition-colors hover:border-emerald-500/40 hover:bg-emerald-500/5">
           <Upload className="h-6 w-6 text-slate-400" />
           <span className="text-sm text-slate-300">
-            <span className="font-medium text-emerald-400">Haz clic</span> para
-            subir
+            <span className="font-medium text-emerald-400">Haz clic</span> para subir
           </span>
           <span className="text-[10px] text-slate-500">
             {ACCEPTED_DOC_EXT.join(', ')}

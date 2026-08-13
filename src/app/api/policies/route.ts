@@ -5,14 +5,21 @@ import { logActivity } from '@/lib/activity'
 
 export const dynamic = 'force-dynamic'
 
-/** GET /api/policies — list all (optionally filter by ?status=) */
+/** GET /api/policies — list with pagination + filters (?status=&q=&from=&to=&page=&pageSize=) */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const status = searchParams.get('status')
   const q = searchParams.get('q')
+  const from = searchParams.get('from')
+  const to = searchParams.get('to')
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10))
+  const pageSize = Math.min(
+    100,
+    Math.max(1, parseInt(searchParams.get('pageSize') || '20', 10))
+  )
 
   const where: Record<string, unknown> = {}
-  if (status) where.status = status
+  if (status && status !== 'ALL') where.status = status
 
   if (q) {
     where.OR = [
@@ -25,12 +32,39 @@ export async function GET(req: NextRequest) {
     ]
   }
 
-  const policies = await db.policy.findMany({
-    where,
-    orderBy: { createdAt: 'desc' },
-    include: { documents: true },
+  if (from || to) {
+    const range: Record<string, Date> = {}
+    if (from) range.gte = new Date(from)
+    if (to) {
+      const toDate = new Date(to)
+      toDate.setHours(23, 59, 59, 999)
+      range.lte = toDate
+    }
+    where.createdAt = range
+  }
+
+  const [policies, total] = await Promise.all([
+    db.policy.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      include: { documents: true },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    db.policy.count({ where }),
+  ])
+
+  return NextResponse.json({
+    policies,
+    pagination: {
+      page,
+      pageSize,
+      total,
+      totalPages: Math.ceil(total / pageSize),
+      hasNext: page * pageSize < total,
+      hasPrev: page > 1,
+    },
   })
-  return NextResponse.json({ policies })
 }
 
 /** POST /api/policies — create a new solicitud */

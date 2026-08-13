@@ -8,6 +8,7 @@ import {
   Download,
   ArrowLeft,
   QrCode,
+  Printer,
   Car,
   User,
   FileText,
@@ -335,13 +336,21 @@ export default function VerifyPage({
         </Card>
 
         {/* Actions */}
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="no-print mt-6 flex flex-wrap gap-3">
           <a href={`/api/policies/${policy.id}/pdf`} target="_blank" rel="noreferrer">
             <Button className="bg-emerald-500 text-slate-950 hover:bg-emerald-400">
               <Download className="mr-2 h-4 w-4" />
               Descargar Certificado (PDF)
             </Button>
           </a>
+          <Button
+            variant="outline"
+            onClick={() => window.print()}
+            className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+          >
+            <Printer className="mr-2 h-4 w-4" />
+            Imprimir
+          </Button>
           <Button
             variant="outline"
             onClick={onBack}
@@ -370,7 +379,7 @@ function Shell({
 }) {
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/90 backdrop-blur">
+      <header className="no-print sticky top-0 z-40 border-b border-white/10 bg-slate-950/90 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
           <button
             onClick={onBack}
@@ -386,7 +395,7 @@ function Shell({
         </div>
       </header>
       <main className="flex-1">{children}</main>
-      <footer className="mt-auto border-t border-white/10 py-4 text-center text-xs text-slate-500">
+      <footer className="no-print mt-auto border-t border-white/10 py-4 text-center text-xs text-slate-500">
         © {new Date().getFullYear()} Seguros Líder — Verificación de Pólizas
       </footer>
     </div>

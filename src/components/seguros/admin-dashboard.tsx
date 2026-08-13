@@ -30,6 +30,9 @@ import {
   Percent,
   FilePlus2,
   Paperclip,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -176,6 +179,17 @@ function AdminShell({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkBusy, setBulkBusy] = useState(false)
+  const [pagination, setPagination] = useState<{
+    page: number
+    pageSize: number
+    total: number
+    totalPages: number
+    hasNext: boolean
+    hasPrev: boolean
+  } | null>(null)
+  const [page, setPage] = useState(1)
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
 
   const loadStats = useCallback(async () => {
     try {
@@ -187,16 +201,25 @@ function AdminShell({
   }, [])
 
   const loadPolicies = useCallback(
-    async (status?: string) => {
+    async (opts?: { status?: string; page?: number; from?: string; to?: string }) => {
       setLoading(true)
       try {
+        const status = opts?.status
+        const p = opts?.page ?? page
+        const from = opts?.from ?? dateFrom
+        const to = opts?.to ?? dateTo
         const params = new URLSearchParams()
         if (status && status !== 'ALL') params.set('status', status)
         if (search) params.set('q', search)
+        if (from) params.set('from', from)
+        if (to) params.set('to', to)
+        params.set('page', String(p))
+        params.set('pageSize', '10')
         const r = await fetch(`/api/policies?${params}`)
         if (r.ok) {
-          const { policies } = await r.json()
+          const { policies, pagination: pg } = await r.json()
           setPolicies(policies)
+          setPagination(pg)
         }
       } catch {
         toast.error('Error al cargar')
@@ -204,7 +227,7 @@ function AdminShell({
         setLoading(false)
       }
     },
-    [search]
+    [search, page, dateFrom, dateTo]
   )
 
   useEffect(() => {
@@ -212,16 +235,38 @@ function AdminShell({
   }, [loadStats])
 
   useEffect(() => {
-    if (view === 'dashboard') loadPolicies()
-    else if (view === 'pendientes') loadPolicies('PENDIENTE')
-    else if (view === 'todas') loadPolicies(statusFilter)
+    setPage(1)
+    if (view === 'dashboard') loadPolicies({ page: 1 })
+    else if (view === 'pendientes') loadPolicies({ status: 'PENDIENTE', page: 1 })
+    else if (view === 'todas') loadPolicies({ status: statusFilter, page: 1 })
   }, [view])
 
   function refreshAll() {
     loadStats()
-    if (view === 'pendientes') loadPolicies('PENDIENTE')
-    else if (view === 'todas') loadPolicies(statusFilter)
-    else loadPolicies()
+    if (view === 'pendientes') loadPolicies({ status: 'PENDIENTE', page: 1 })
+    else if (view === 'todas') loadPolicies({ status: statusFilter, page: 1 })
+    else loadPolicies({ page: 1 })
+  }
+
+  function goToPage(p: number) {
+    setPage(p)
+    if (view === 'pendientes') loadPolicies({ status: 'PENDIENTE', page: p })
+    else if (view === 'todas') loadPolicies({ status: statusFilter, page: p })
+    else loadPolicies({ page: p })
+  }
+
+  function applyDateFilter() {
+    setPage(1)
+    if (view === 'pendientes') loadPolicies({ status: 'PENDIENTE', page: 1, from: dateFrom, to: dateTo })
+    else loadPolicies({ status: statusFilter, page: 1, from: dateFrom, to: dateTo })
+  }
+
+  function clearDateFilter() {
+    setDateFrom('')
+    setDateTo('')
+    setPage(1)
+    if (view === 'pendientes') loadPolicies({ status: 'PENDIENTE', page: 1, from: '', to: '' })
+    else loadPolicies({ status: statusFilter, page: 1, from: '', to: '' })
   }
 
   function toggleSelect(id: string) {
@@ -526,14 +571,23 @@ function AdminShell({
               loading={loading}
               search={search}
               setSearch={setSearch}
-              onSearch={() => loadPolicies('PENDIENTE')}
+              onSearch={() => loadPolicies({ status: 'PENDIENTE', page: 1 })}
               onSelect={setSelectedId}
-              onRefresh={() => loadPolicies('PENDIENTE')}
+              onRefresh={() => loadPolicies({ status: 'PENDIENTE', page })}
               emptyHint="No hay solicitudes pendientes."
               selectedIds={selectedIds}
               onToggleSelect={toggleSelect}
               onToggleSelectAll={toggleSelectAll}
               showBulkSelect
+              pagination={pagination}
+              page={page}
+              goToPage={goToPage}
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              setDateFrom={setDateFrom}
+              setDateTo={setDateTo}
+              applyDateFilter={applyDateFilter}
+              clearDateFilter={clearDateFilter}
             />
           )}
           {view === 'todas' && (
@@ -544,9 +598,9 @@ function AdminShell({
               loading={loading}
               search={search}
               setSearch={setSearch}
-              onSearch={() => loadPolicies(statusFilter)}
+              onSearch={() => loadPolicies({ status: statusFilter, page: 1 })}
               onSelect={setSelectedId}
-              onRefresh={() => loadPolicies(statusFilter)}
+              onRefresh={() => loadPolicies({ status: statusFilter, page })}
               emptyHint="No hay pólizas registradas."
               selectedIds={selectedIds}
               onToggleSelect={toggleSelect}
@@ -555,8 +609,18 @@ function AdminShell({
               statusFilter={statusFilter}
               setStatusFilter={(v) => {
                 setStatusFilter(v)
-                loadPolicies(v)
+                setPage(1)
+                loadPolicies({ status: v, page: 1 })
               }}
+              pagination={pagination}
+              page={page}
+              goToPage={goToPage}
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              setDateFrom={setDateFrom}
+              setDateTo={setDateTo}
+              applyDateFilter={applyDateFilter}
+              clearDateFilter={clearDateFilter}
             />
           )}
         </main>
@@ -733,6 +797,15 @@ function ListView({
   showBulkSelect,
   statusFilter,
   setStatusFilter,
+  pagination,
+  page,
+  goToPage,
+  dateFrom,
+  dateTo,
+  setDateFrom,
+  setDateTo,
+  applyDateFilter,
+  clearDateFilter,
 }: {
   title: string
   description: string
@@ -750,8 +823,25 @@ function ListView({
   showBulkSelect?: boolean
   statusFilter?: string
   setStatusFilter?: (v: string) => void
+  pagination?: {
+    page: number
+    pageSize: number
+    total: number
+    totalPages: number
+    hasNext: boolean
+    hasPrev: boolean
+  } | null
+  page?: number
+  goToPage?: (p: number) => void
+  dateFrom?: string
+  dateTo?: string
+  setDateFrom?: (v: string) => void
+  setDateTo?: (v: string) => void
+  applyDateFilter?: () => void
+  clearDateFilter?: () => void
 }) {
   const allSelected = policies.length > 0 && selectedIds.size === policies.length
+  const hasDateFilter = dateFrom || dateTo
 
   return (
     <div className="space-y-4">
@@ -759,6 +849,8 @@ function ListView({
         <h2 className="text-xl font-semibold">{title}</h2>
         <p className="mt-1 text-sm text-slate-400">{description}</p>
       </div>
+
+      {/* Search + status row */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
@@ -792,6 +884,43 @@ function ListView({
         </Button>
       </div>
 
+      {/* Date range filter row */}
+      {setDateFrom && setDateTo && applyDateFilter && (
+        <div className="flex flex-wrap items-end gap-2 rounded-lg border border-white/10 bg-slate-900/40 p-3">
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase tracking-wider text-slate-500">Desde</label>
+            <Input
+              type="date"
+              value={dateFrom || ''}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="h-9 w-[150px] bg-slate-950/50 border-white/10"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] uppercase tracking-wider text-slate-500">Hasta</label>
+            <Input
+              type="date"
+              value={dateTo || ''}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="h-9 w-[150px] bg-slate-950/50 border-white/10"
+            />
+          </div>
+          <Button size="sm" onClick={applyDateFilter} className="bg-emerald-500 text-slate-950 hover:bg-emerald-400">
+            <Calendar className="mr-1 h-3.5 w-3.5" /> Filtrar
+          </Button>
+          {hasDateFilter && (
+            <Button size="sm" variant="ghost" onClick={clearDateFilter} className="text-slate-400 hover:text-white">
+              <X className="mr-1 h-3.5 w-3.5" /> Limpiar
+            </Button>
+          )}
+          {pagination && (
+            <span className="ml-auto text-xs text-slate-400">
+              {pagination.total} resultado(s) total
+            </span>
+          )}
+        </div>
+      )}
+
       <Card className="border-white/10 bg-slate-900/60">
         {showBulkSelect && policies.length > 0 && (
           <div className="flex items-center gap-3 border-b border-white/10 px-4 py-2">
@@ -807,7 +936,7 @@ function ListView({
               {allSelected ? 'Deseleccionar todo' : 'Seleccionar todo'}
             </button>
             <span className="text-xs text-slate-500">
-              {policies.length} resultado(s)
+              {policies.length} en esta página
             </span>
           </div>
         )}
@@ -845,6 +974,57 @@ function ListView({
             </div>
           )}
         </div>
+
+        {/* Pagination footer */}
+        {pagination && pagination.totalPages > 1 && goToPage && (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 px-4 py-3">
+            <p className="text-xs text-slate-400">
+              Página <span className="font-semibold text-slate-200">{pagination.page}</span> de{' '}
+              <span className="font-semibold text-slate-200">{pagination.totalPages}</span>
+              <span className="ml-2 text-slate-500">({pagination.total} total)</span>
+            </p>
+            <div className="flex items-center gap-1">
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={!pagination.hasPrev}
+                onClick={() => goToPage((page || 1) - 1)}
+                className="h-8 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white disabled:opacity-30"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              {Array.from({ length: Math.min(5, pagination.totalPages) }).map((_, idx) => {
+                const start = Math.max(1, Math.min(pagination.totalPages - 4, pagination.page - 2))
+                const p = start + idx
+                if (p > pagination.totalPages) return null
+                return (
+                  <Button
+                    key={p}
+                    size="sm"
+                    variant={p === pagination.page ? 'default' : 'outline'}
+                    onClick={() => goToPage(p)}
+                    className={`h-8 w-8 p-0 ${
+                      p === pagination.page
+                        ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400'
+                        : 'border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    {p}
+                  </Button>
+                )
+              })}
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={!pagination.hasNext}
+                onClick={() => goToPage((page || 1) + 1)}
+                className="h-8 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white disabled:opacity-30"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   )
