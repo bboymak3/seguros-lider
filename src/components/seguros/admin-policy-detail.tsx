@@ -28,6 +28,13 @@ import {
   Ban,
   Paperclip,
   FileMinus,
+  Eye,
+  X,
+  Calendar,
+  Phone,
+  Mail,
+  Hash,
+  Clock,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -340,6 +347,34 @@ export function AdminPolicyDetail({
           </CardContent>
         </Card>
 
+        {/* Summary card */}
+        <Card className="mb-6 overflow-hidden border-white/10 bg-slate-900/60">
+          <div className={`h-1 w-full ${
+            status === 'APROBADA' ? 'bg-emerald-500' :
+            status === 'RECHAZADA' ? 'bg-red-500' :
+            status === 'ANULADA' ? 'bg-slate-500' :
+            'bg-amber-500'
+          }`} />
+          <CardContent className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4">
+            <SummaryItem icon={User} label="Tomador" value={`${policy.nombre} ${policy.apellido || ''}`} />
+            <SummaryItem icon={Hash} label="Cédula" value={`${policy.tipoCedula ? policy.tipoCedula + '-' : ''}${policy.cedula}`} />
+            <SummaryItem icon={Car} label="Vehículo" value={`${policy.marca || '—'} ${policy.modelo || ''} ${policy.ano || ''}`.trim() || '—'} />
+            <SummaryItem icon={FileText} label="Placa" value={(policy.placa as string) || '—'} />
+            <SummaryItem icon={ShieldCheck} label="Cobertura" value={(policy.tipoCobertura as string) || '—'} />
+            <SummaryItem icon={Calendar} label="Vigencia" value={
+              policy.vigenciaDesde || policy.vigenciaHasta
+                ? `${policy.vigenciaDesde || '—'} → ${policy.vigenciaHasta || '—'}`
+                : '—'
+            } />
+            <SummaryItem icon={Clock} label="Creada" value={new Date(policy.createdAt as string).toLocaleDateString('es-VE')} />
+            <SummaryItem icon={CheckCircle2} label="Aprobada" value={
+              policy.aprobadoAt
+                ? new Date(policy.aprobadoAt as string).toLocaleDateString('es-VE')
+                : '—'
+            } />
+          </CardContent>
+        </Card>
+
         <Tabs defaultValue="datos">
           <TabsList className="bg-slate-900/60 border border-white/10">
             <TabsTrigger value="datos" className="data-[state=active]:bg-emerald-500/15 data-[state=active]:text-emerald-300">
@@ -600,6 +635,28 @@ function ActivityTimeline({ policyId }: { policyId: string }) {
   )
 }
 
+function SummaryItem({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  value: string
+}) {
+  return (
+    <div className="flex items-start gap-2.5">
+      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
+        <Icon className="h-4 w-4 text-emerald-300" />
+      </div>
+      <div className="min-w-0">
+        <p className="text-[10px] uppercase tracking-wider text-slate-400">{label}</p>
+        <p className="truncate text-sm font-medium text-slate-100">{value}</p>
+      </div>
+    </div>
+  )
+}
+
 function GroupCard({
   title,
   icon: Icon,
@@ -644,47 +701,157 @@ function DocCard({
   doc: { id: string; tipo: string; fileName: string; mimeType: string; size?: number; filePath: string }
   onRemove: () => void
 }) {
+  const [lightbox, setLightbox] = useState(false)
   const isImg = doc.mimeType.startsWith('image/')
   const url = `/api/files/${doc.filePath.replace(/^my-emdash-media\/seguros\//, '')}`
+
   return (
-    <div className="overflow-hidden rounded-lg border border-white/10 bg-slate-950/40">
-      <div className="flex items-center justify-between border-b border-white/10 px-3 py-2">
-        <Badge
-          variant="outline"
-          className={
-            doc.tipo === 'CEDULA'
-              ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
-              : doc.tipo === 'TITULO'
-                ? 'border-sky-500/30 bg-sky-500/10 text-sky-300'
-                : 'border-white/20 bg-white/5 text-slate-300'
-          }
-        >
-          {doc.tipo}
-        </Badge>
-        <button
-          onClick={onRemove}
-          className="rounded p-1 text-slate-400 hover:bg-red-500/10 hover:text-red-300"
-          title="Eliminar"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
-      </div>
-      <a href={url} target="_blank" rel="noreferrer" className="block">
-        {isImg ? (
-          <img src={url} alt={doc.fileName} className="h-32 w-full object-cover" />
-        ) : (
-          <div className="flex h-32 flex-col items-center justify-center gap-2 bg-slate-900">
-            <FileText className="h-10 w-10 text-slate-500" />
-            <span className="text-xs text-slate-400">Ver PDF</span>
+    <>
+      <div className="group overflow-hidden rounded-lg border border-white/10 bg-slate-950/40 transition-colors hover:border-emerald-500/30">
+        <div className="flex items-center justify-between border-b border-white/10 px-3 py-2">
+          <Badge
+            variant="outline"
+            className={
+              doc.tipo === 'CEDULA'
+                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+                : doc.tipo === 'TITULO'
+                  ? 'border-sky-500/30 bg-sky-500/10 text-sky-300'
+                  : 'border-white/20 bg-white/5 text-slate-300'
+            }
+          >
+            {doc.tipo}
+          </Badge>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setLightbox(true)}
+              className="rounded p-1 text-slate-400 hover:bg-white/10 hover:text-white"
+              title="Vista previa"
+            >
+              <Eye className="h-4 w-4" />
+            </button>
+            <a
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded p-1 text-slate-400 hover:bg-white/10 hover:text-white"
+              title="Abrir en pestaña"
+            >
+              <ExternalLink className="h-4 w-4" />
+            </a>
+            <button
+              onClick={onRemove}
+              className="rounded p-1 text-slate-400 hover:bg-red-500/10 hover:text-red-300"
+              title="Eliminar"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
           </div>
-        )}
-      </a>
-      <div className="px-3 py-2">
-        <p className="truncate text-xs font-medium">{doc.fileName}</p>
-        <p className="text-[10px] text-slate-500">
-          {doc.size ? `${(doc.size / 1024).toFixed(0)} KB · ` : ''}
-          {doc.mimeType}
-        </p>
+        </div>
+        <button
+          onClick={() => setLightbox(true)}
+          className="block w-full cursor-zoom-in"
+        >
+          {isImg ? (
+            <img src={url} alt={doc.fileName} className="h-32 w-full object-cover transition-transform group-hover:scale-105" />
+          ) : (
+            <div className="flex h-32 flex-col items-center justify-center gap-2 bg-slate-900">
+              <FileText className="h-10 w-10 text-slate-500" />
+              <span className="text-xs text-slate-400">Ver PDF</span>
+            </div>
+          )}
+        </button>
+        <div className="px-3 py-2">
+          <p className="truncate text-xs font-medium">{doc.fileName}</p>
+          <p className="text-[10px] text-slate-400">
+            {doc.size ? `${(doc.size / 1024).toFixed(0)} KB · ` : ''}
+            {doc.mimeType}
+          </p>
+        </div>
+      </div>
+
+      {lightbox && (
+        <Lightbox
+          url={url}
+          fileName={doc.fileName}
+          isImg={isImg}
+          onClose={() => setLightbox(false)}
+        />
+      )}
+    </>
+  )
+}
+
+function Lightbox({
+  url,
+  fileName,
+  isImg,
+  onClose,
+}: {
+  url: string
+  fileName: string
+  isImg: boolean
+  onClose: () => void
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [onClose])
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="relative flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-white/10 bg-slate-900 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <FileText className="h-4 w-4 shrink-0 text-emerald-400" />
+            <span className="truncate text-sm font-medium">{fileName}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <a
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-slate-300 hover:bg-white/10 hover:text-white"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Abrir</span>
+            </a>
+            <button
+              onClick={onClose}
+              className="rounded-md p-1.5 text-slate-400 hover:bg-white/10 hover:text-white"
+              title="Cerrar (Esc)"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+        <div className="flex items-center justify-center overflow-auto bg-slate-950 p-4">
+          {isImg ? (
+            <img
+              src={url}
+              alt={fileName}
+              className="max-h-[75vh] max-w-full object-contain"
+            />
+          ) : (
+            <iframe
+              src={url}
+              title={fileName}
+              className="h-[75vh] w-full"
+            />
+          )}
+        </div>
       </div>
     </div>
   )

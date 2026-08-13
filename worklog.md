@@ -219,3 +219,69 @@ Task: QA assessment + multi-step wizard form + pagination + date filters + print
 6. **Notifications**: Email/SMS on approval.
 7. **Contrast improvements**: Some secondary text (dates, sub-labels) could be brighter for accessibility.
 8. **Form autosave indicator**: Show "Guardado hace Xs" toast.
+
+---
+
+## Task ID: 4 (cron review — drill-down + lightbox + summary card + contrast)
+Agent: main (Z.ai Code) — webDevReview cron round 3
+Task: QA assessment + dashboard drill-down + document lightbox + summary card + contrast improvements.
+
+### Work Log
+**QA Assessment (agent-browser)**
+- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+- VLM analysis of dashboard confirmed professional design; identified remaining next-phase items.
+
+**Major Feature: Dashboard Drill-down (click chart to filter list)**
+- Updated `dashboard-charts.tsx` to accept `onDrillDown?: (type, value) => void` callback.
+- Pie chart (status distribution): clicking a slice maps "Aprobadas"→APROBADA etc. and triggers drill-down.
+- Bar chart (top brands): clicking a bar triggers `onDrillDown('brand', name)`.
+- Bar chart (top estados): clicking a bar triggers `onDrillDown('estado', name)`.
+- All clickable charts show "Clic para filtrar" hint + cursor-pointer + hover opacity.
+- Admin dashboard wires `onDrillDown` to: set status filter or search query → switch to "Todas las Pólizas" view → reload policies → show toast "Filtrando por...".
+
+**Major Feature: Document Preview Lightbox (admin-policy-detail.tsx)**
+- Rewrote `DocCard` component with 3 action buttons: Vista previa (Eye), Abrir en pestaña (ExternalLink), Eliminar (Trash2).
+- Clicking the document thumbnail or "Vista previa" opens a full-screen Lightbox modal.
+- New `Lightbox` component:
+  - Full-screen overlay with backdrop blur, click-outside-to-close.
+  - Header with filename + "Abrir" link + "Cerrar" button (with Esc hint).
+  - Body: image (object-contain, max 75vh) or PDF (iframe, 75vh).
+  - Esc key closes, body scroll locked while open.
+- Hover effect on thumbnail (scale-105).
+
+**Feature: Policy Summary Card (admin-policy-detail.tsx)**
+- Added summary card between action bar and tabs.
+- Status-colored top accent bar (emerald/red/slate/amber based on status).
+- 8-field grid (4 cols on lg): Tomador, Cédula, Vehículo, Placa, Cobertura, Vigencia, Creada, Aprobada.
+- Each field has an icon badge (emerald bg) + label + value.
+- New `SummaryItem` helper component.
+
+**Accessibility: Contrast Improvements**
+- KPI card sub-text: `text-slate-500` → `text-slate-400` (brighter, better WCAG ratio).
+- Date filter labels (Desde/Hasta): `text-slate-500` → `text-slate-400`.
+- All `text-[10px] uppercase tracking-wider` labels: `text-slate-500` → `text-slate-400`.
+
+### Stage Summary / Verification (agent-browser + curl)
+- ✅ All pages compile (HTTP 200), no console errors.
+- ✅ Summary card renders with 8 fields (Tomador, Cédula, Vehículo, Placa, Cobertura, Vigencia, Creada, Aprobada).
+- ✅ VLM confirms summary card is "bien estructurada" with "jerarquía visual efectiva".
+- ✅ Document lightbox: "Vista previa" button present → click opens modal with image + filename header + Abrir/Cerrar buttons.
+- ✅ Dashboard drill-down: clicked pie sector → navigated to "Todas las Pólizas" with status filter set to "Aprobadas" + toast "Filtrando por estado: APROBADA".
+- ✅ "Clic para filtrar" hints visible on all 3 clickable charts.
+- ✅ `bun run lint` passes clean (0 errors).
+- ✅ All API endpoints return 200.
+
+### Files Modified
+- `src/components/seguros/dashboard-charts.tsx` — added `onDrillDown` prop + click handlers on Pie/Bar/Bar
+- `src/components/seguros/admin-dashboard.tsx` — wired `onDrillDown` in DashboardView, contrast improvements (slate-500→slate-400)
+- `src/components/seguros/admin-policy-detail.tsx` — new Lightbox + SummaryItem components, rewrote DocCard, added summary card, new icon imports (Eye, X, Calendar, Phone, Mail, Hash, Clock)
+
+### Unresolved / Next-phase recommendations (updated)
+1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+3. **PDF template**: Integrate user's `pdfclean` template.
+4. **Notifications**: Email/SMS on approval.
+5. **Keyboard shortcuts**: Add "/" to focus search, "g d" to go to dashboard, etc.
+6. **Document replace**: One-click replace (delete+upload) in admin.
+7. **Policy expiry alerts**: Highlight policies nearing vigencia end.
+8. **Admin settings page**: Configure aseguradoras, coverage types, etc.

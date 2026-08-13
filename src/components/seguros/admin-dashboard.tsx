@@ -416,7 +416,7 @@ function AdminShell({
         {/* Mini stats in sidebar */}
         {stats && (
           <div className="mx-3 mt-4 rounded-lg border border-white/10 bg-slate-950/50 p-3">
-            <p className="mb-2 text-[10px] uppercase tracking-wider text-slate-500">
+            <p className="mb-2 text-[10px] uppercase tracking-wider text-slate-400">
               Resumen
             </p>
             <div className="space-y-1.5 text-xs">
@@ -561,6 +561,27 @@ function AdminShell({
               policies={policies}
               loading={loading}
               onSelect={setSelectedId}
+              onDrillDown={(type, value) => {
+                if (type === 'status') {
+                  setStatusFilter(value)
+                  setSearch('')
+                  setView('todas')
+                  loadPolicies({ status: value, page: 1 })
+                  toast.info(`Filtrando por estado: ${value}`)
+                } else if (type === 'brand') {
+                  setSearch(value)
+                  setStatusFilter('ALL')
+                  setView('todas')
+                  loadPolicies({ status: 'ALL', page: 1 })
+                  toast.info(`Filtrando por marca: ${value}`)
+                } else if (type === 'estado') {
+                  setSearch(value)
+                  setStatusFilter('ALL')
+                  setView('todas')
+                  loadPolicies({ status: 'ALL', page: 1 })
+                  toast.info(`Filtrando por estado: ${value}`)
+                }
+              }}
             />
           )}
           {view === 'pendientes' && (
@@ -634,11 +655,13 @@ function DashboardView({
   policies,
   loading,
   onSelect,
+  onDrillDown,
 }: {
   stats: ChartStats | null
   policies: Policy[]
   loading: boolean
   onSelect: (id: string) => void
+  onDrillDown?: (type: 'status' | 'brand' | 'estado', value: string) => void
 }) {
   const recent = policies.slice(0, 6)
   const approvalRate =
@@ -726,7 +749,7 @@ function DashboardView({
                 {c.value}
               </p>
               {c.sub && (
-                <p className={`mt-0.5 text-[11px] ${c.subColor || 'text-slate-500'}`}>
+                <p className={`mt-0.5 text-[11px] ${c.subColor || 'text-slate-400'}`}>
                   {c.sub}
                 </p>
               )}
@@ -736,7 +759,7 @@ function DashboardView({
       </div>
 
       {/* Charts */}
-      <DashboardCharts stats={stats} />
+      <DashboardCharts stats={stats} onDrillDown={onDrillDown} />
 
       {/* Recent */}
       <Card className="border-white/10 bg-slate-900/60">
@@ -888,7 +911,7 @@ function ListView({
       {setDateFrom && setDateTo && applyDateFilter && (
         <div className="flex flex-wrap items-end gap-2 rounded-lg border border-white/10 bg-slate-900/40 p-3">
           <div className="space-y-1">
-            <label className="text-[10px] uppercase tracking-wider text-slate-500">Desde</label>
+            <label className="text-[10px] uppercase tracking-wider text-slate-400">Desde</label>
             <Input
               type="date"
               value={dateFrom || ''}
@@ -897,7 +920,7 @@ function ListView({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] uppercase tracking-wider text-slate-500">Hasta</label>
+            <label className="text-[10px] uppercase tracking-wider text-slate-400">Hasta</label>
             <Input
               type="date"
               value={dateTo || ''}

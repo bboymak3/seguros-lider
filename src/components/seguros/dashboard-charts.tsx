@@ -69,7 +69,13 @@ function ChartTooltip({ active, payload, label }: {
   )
 }
 
-export function DashboardCharts({ stats }: { stats: Stats | null }) {
+export function DashboardCharts({
+  stats,
+  onDrillDown,
+}: {
+  stats: Stats | null
+  onDrillDown?: (type: 'status' | 'brand' | 'estado', value: string) => void
+}) {
   if (!stats) {
     return (
       <div className="grid gap-4 lg:grid-cols-3">
@@ -176,10 +182,13 @@ export function DashboardCharts({ stats }: { stats: Stats | null }) {
       {/* Row: status pie + top brands + top estados */}
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Status distribution */}
-        <Card className="border-white/10 bg-slate-900/60">
+        <Card className={`border-white/10 bg-slate-900/60 ${onDrillDown ? 'transition-colors hover:border-emerald-500/30' : ''}`}>
           <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
             <PieIcon className="h-4 w-4 text-emerald-400" />
             <h3 className="text-sm font-semibold">Distribución por estado</h3>
+            {onDrillDown && (
+              <span className="ml-auto text-[10px] text-slate-500">Clic para filtrar</span>
+            )}
           </div>
           <CardContent className="p-4">
             {stats.statusDistribution.length > 0 ? (
@@ -194,9 +203,22 @@ export function DashboardCharts({ stats }: { stats: Stats | null }) {
                     innerRadius={50}
                     outerRadius={80}
                     paddingAngle={3}
+                    onClick={(_, index) => {
+                      if (onDrillDown) {
+                        const item = stats.statusDistribution[index]
+                        const statusMap: Record<string, string> = {
+                          'Aprobadas': 'APROBADA',
+                          'Pendientes': 'PENDIENTE',
+                          'Rechazadas': 'RECHAZADA',
+                          'Anuladas': 'ANULADA',
+                        }
+                        onDrillDown('status', statusMap[item.name] || item.name.toUpperCase())
+                      }
+                    }}
+                    className={onDrillDown ? 'cursor-pointer' : ''}
                   >
                     {stats.statusDistribution.map((entry, i) => (
-                      <Cell key={i} fill={entry.color} stroke="none" />
+                      <Cell key={i} fill={entry.color} stroke="none" className="transition-opacity hover:opacity-80" />
                     ))}
                   </Pie>
                   <Tooltip content={<ChartTooltip />} />
@@ -214,10 +236,13 @@ export function DashboardCharts({ stats }: { stats: Stats | null }) {
         </Card>
 
         {/* Top brands */}
-        <Card className="border-white/10 bg-slate-900/60">
+        <Card className={`border-white/10 bg-slate-900/60 ${onDrillDown ? 'transition-colors hover:border-emerald-500/30' : ''}`}>
           <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
             <Car className="h-4 w-4 text-emerald-400" />
             <h3 className="text-sm font-semibold">Marcas más aseguradas</h3>
+            {onDrillDown && (
+              <span className="ml-auto text-[10px] text-slate-500">Clic para filtrar</span>
+            )}
           </div>
           <CardContent className="p-4">
             {stats.topBrands.length > 0 ? (
@@ -242,9 +267,17 @@ export function DashboardCharts({ stats }: { stats: Stats | null }) {
                     width={70}
                   />
                   <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
-                  <Bar dataKey="value" name="Pólizas" radius={[0, 4, 4, 0]}>
+                  <Bar
+                    dataKey="value"
+                    name="Pólizas"
+                    radius={[0, 4, 4, 0]}
+                    onClick={(data: { name?: string }) => {
+                      if (onDrillDown && data?.name) onDrillDown('brand', data.name)
+                    }}
+                    className={onDrillDown ? 'cursor-pointer' : ''}
+                  >
                     {stats.topBrands.map((_, i) => (
-                      <Cell key={i} fill={i === 0 ? '#10b981' : i === 1 ? '#14b8a6' : '#06b6d4'} />
+                      <Cell key={i} fill={i === 0 ? '#10b981' : i === 1 ? '#14b8a6' : '#06b6d4'} className="transition-opacity hover:opacity-80" />
                     ))}
                   </Bar>
                 </BarChart>
@@ -256,10 +289,13 @@ export function DashboardCharts({ stats }: { stats: Stats | null }) {
         </Card>
 
         {/* Top estados */}
-        <Card className="border-white/10 bg-slate-900/60">
+        <Card className={`border-white/10 bg-slate-900/60 ${onDrillDown ? 'transition-colors hover:border-emerald-500/30' : ''}`}>
           <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
             <MapPin className="h-4 w-4 text-emerald-400" />
             <h3 className="text-sm font-semibold">Distribución geográfica</h3>
+            {onDrillDown && (
+              <span className="ml-auto text-[10px] text-slate-500">Clic para filtrar</span>
+            )}
           </div>
           <CardContent className="p-4">
             {stats.topEstados.length > 0 ? (
@@ -284,7 +320,16 @@ export function DashboardCharts({ stats }: { stats: Stats | null }) {
                     width={80}
                   />
                   <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
-                  <Bar dataKey="value" name="Pólizas" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
+                  <Bar
+                    dataKey="value"
+                    name="Pólizas"
+                    fill="#8b5cf6"
+                    radius={[0, 4, 4, 0]}
+                    onClick={(data: { name?: string }) => {
+                      if (onDrillDown && data?.name) onDrillDown('estado', data.name)
+                    }}
+                    className={onDrillDown ? 'cursor-pointer' : ''}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
