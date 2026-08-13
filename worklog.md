@@ -732,3 +732,84 @@ Task: QA assessment + Cmd/Ctrl+S keyboard shortcut + testimonials visual redesig
 6. **Dashboard global date-range**: Add a date filter affecting all dashboard stats + charts.
 7. **Policy clone with documents**: Currently clones data only; could also copy document references.
 8. **Admin detail Esc-to-close**: Esc key to go back from detail to list.
+
+---
+
+## Task ID: 12 (user request — vehicle classes + plans + price list + form restructure)
+Agent: main (Z.ai Code)
+Task: Add vehicle classes (18 types), plans with prices (€/$/Bs), editable price list in admin, and restructure the solicitud form with the new fields.
+
+### Work Log
+**Database Schema Updates**
+- Added `VehicleClass` model (id, code, name, sortOrder) — 18 vehicle classes.
+- Added `Plan` model (id, externalId, name, vehicleClassId, priceEur, priceUsd, priceBs, active) — 162 plans.
+- Added new Policy fields: asegurado (asegNombre, asegApellido, asegCedula, asegEmail), tomador (tom* fields, tomadorIgualAseg), vehicle (poseeTrailer, placaExtranjera, cantidadPuestos, capacidadCarga), policy (vehicleClassId, planId, primaEur, primaUsd, primaBs).
+- Added relations: Policy → VehicleClass, Policy → Plan.
+
+**Seed Script (scripts/seed-plans.ts)**
+- Created script with all 18 vehicle classes (AUTO ESCUELA, AUTOBUS PLACA EXTRAJERA, AUTOBUSES, CARGA, etc.).
+- Created script with all 162 plans from the user-provided data, each with prices in EUR, USD, and Bs.
+- Uses upsert so it's idempotent (can re-run safely).
+- Run with: `bun run scripts/seed-plans.ts`.
+- Result: 18 vehicle classes + 162 plans seeded successfully.
+
+**New API Endpoints**
+- `GET/POST /api/vehicle-classes` — list all classes with their plans (withPlans param).
+- `GET/POST /api/plans` — list all plans (filter by vehicleClassId).
+- `PATCH/DELETE /api/plans/[id]` — update/delete a plan.
+
+**Price List Management Page (admin)**
+- New `PriceListManager` component in admin (view: 'precios').
+- "Lista de Precios" nav item (Tag icon) in sidebar.
+- Features:
+  - Search by name, class, or ID.
+  - Filter by vehicle class dropdown.
+  - Table with 162 plans: ID, Clase (badge), Plan name, EUR, USD, Bs, Estado (Activo/Inactivo), Acciones.
+  - Inline edit: click edit → edit price fields + active toggle → save/cancel.
+  - Delete plan (with confirmation).
+  - Add new plan form (expandable): ID, name, class, EUR, USD, Bs.
+  - Currency icons (Euro, DollarSign, Coins) next to prices.
+  - Sticky header, scrollbar-thin for the table.
+  - Count badge: "18 clases · 162 planes".
+
+**Solicitud Form Restructure**
+- Updated zod schema with all new fields (asegurado, tomador, vehicle extras, plan/prima fields).
+- **Vehicle step** updated with new fields:
+  - Placa o Matrícula, Marca, Modelo, Tipo, Año, Uso del Vehículo.
+  - ¿Posee Trailer? (Sí/No), ¿Posee Placa Extranjera? (Sí/No).
+  - Serial de Carrocería, Serial del Motor.
+  - Cantidad de Puestos, Capacidad de Carga (Kg), Color, Clase.
+- **Coverage step** now has TWO cards:
+  1. "Póliza — Clase de Vehículo y Plan":
+     - Clase de Vehículo dropdown (loads 18 classes from /api/vehicle-classes).
+     - Seleccionar Plan dropdown (loads plans for the selected class, shows name + 3 prices).
+     - Price summary card (emerald) showing EUR, USD, Bs with icons.
+     - "Ver lista de precios completa →" link to admin price list.
+  2. "Cobertura y Condiciones Adicionales" (the existing fields: aseguradora, plan, cobertura, etc.).
+- SelectField component extended with `optionsRaw` prop for custom SelectContent (needed for plan options with prices).
+- Vehicle classes + plans loaded from /api/vehicle-classes on mount.
+- Selecting a plan auto-fills: planId, plan name, primaEur, primaUsd, primaBs.
+
+### Stage Summary / Verification (agent-browser + curl)
+- ✅ All pages compile (HTTP 200), no console errors.
+- ✅ Seed: 18 vehicle classes + 162 plans in database.
+- ✅ Price list admin: 162 plan rows in table, search + filter working, "18 clases · 162 planes" badge.
+- ✅ Solicitud form: vehicle class dropdown loads 18 classes (verified AUTO ESCUELA, CARGA, MOTO, etc.).
+- ✅ Plan selector: selected MOTO → showed 5 MOTO plans with prices (PLAN LIDER MOTO — 15.00€ / 17.31$ / 13,276.20Bs).
+- ✅ Price summary: selected plan → EUR 15.00, USD 17.31, Bs displayed with icons.
+- ✅ "Ver lista de precios completa →" link present on form.
+- ✅ `bun run lint` passes clean (0 errors).
+- ✅ All API endpoints return 200.
+
+### Files Added/Modified
+- Added: `scripts/seed-plans.ts`, `src/app/api/vehicle-classes/route.ts`, `src/app/api/plans/route.ts`, `src/app/api/plans/[id]/route.ts`, `src/components/seguros/price-list-manager.tsx`
+- Modified: `prisma/schema.prisma` (VehicleClass, Plan models + new Policy fields), `src/components/seguros/admin-dashboard.tsx` (precios view + nav item + Tag icon + PriceListManager import), `src/components/seguros/solicitud-form.tsx` (new schema fields + vehicle class/plan selectors + price summary + new vehicle fields)
+
+### Unresolved / Next-phase recommendations (updated)
+1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+3. **PDF template**: Integrate user's `pdfclean` template.
+4. **Asegurado/Tomador sections**: Form currently has the fields in schema but the UI sections need to be added (asegurado fields + "tomador = asegurado" button + tomador fields with estado/municipio/parroquia).
+5. **Document uploads in form**: Título de Propiedad + Cédula/RIF file uploads (already exist in step 3, but should be labeled per the user's spec).
+6. **Admin detail**: Add the new vehicle/asegurado/tomador fields to the admin detail edit form.
+7. **Policy PDF**: Include vehicle class + plan + prices in the generated PDF certificate.

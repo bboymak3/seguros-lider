@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import {
   Loader2, Upload, X, FileText, ShieldCheck, ArrowLeft, ArrowRight,
-  CheckCircle2, Car, User, IdCard, Check, Save,
+  CheckCircle2, Car, User, IdCard, Check, Save, Euro, DollarSign, Coins,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -36,6 +36,25 @@ const schema = z.object({
   ciudad: z.string().optional(),
   estado: z.string().optional(),
   ocupacion: z.string().optional(),
+  // Asegurado
+  asegNombre: z.string().optional(),
+  asegApellido: z.string().optional(),
+  asegCedula: z.string().optional(),
+  asegEmail: z.string().optional(),
+  // Tomador
+  tomadorIgualAseg: z.string().optional(),
+  tomNombre: z.string().optional(),
+  tomApellido: z.string().optional(),
+  tomCedula: z.string().optional(),
+  tomEmail: z.string().optional(),
+  tomFechaNacimiento: z.string().optional(),
+  tomEstadoCivil: z.string().optional(),
+  tomGenero: z.string().optional(),
+  tomTelefono: z.string().optional(),
+  tomEstado: z.string().optional(),
+  tomMunicipio: z.string().optional(),
+  tomParroquia: z.string().optional(),
+  tomDireccion: z.string().optional(),
   // Vehicle
   tipoVehiculo: z.string().optional(),
   marca: z.string().optional(),
@@ -48,11 +67,20 @@ const schema = z.object({
   uso: z.string().optional(),
   capacidad: z.string().optional(),
   clase: z.string().optional(),
-  // Coverage
+  poseeTrailer: z.string().optional(),
+  placaExtranjera: z.string().optional(),
+  cantidadPuestos: z.string().optional(),
+  capacidadCarga: z.string().optional(),
+  // Coverage / Póliza
+  vehicleClassId: z.string().optional(),
+  planId: z.string().optional(),
   tipoCobertura: z.string().optional(),
   compania: z.string().optional(),
   plan: z.string().optional(),
   prima: z.string().optional(),
+  primaEur: z.string().optional(),
+  primaUsd: z.string().optional(),
+  primaBs: z.string().optional(),
   sumaAsegurada: z.string().optional(),
   deducible: z.string().optional(),
   vigenciaDesde: z.string().optional(),
@@ -109,13 +137,27 @@ export default function SolicitudForm({
     PLAN_TYPES: string[]
   } | null>(null)
 
-  // Load configurable options from settings API
+  // Vehicle classes and plans loaded from DB
+  const [vehicleClasses, setVehicleClasses] = useState<Array<{
+    id: string
+    code: number
+    name: string
+    plans: Array<{ id: string; name: string; priceEur: string; priceUsd: string; priceBs: string }>
+  }>>([])
+
+  // Load configurable options + vehicle classes from APIs
   useEffect(() => {
     fetch('/api/settings')
       .then((r) => r.json())
       .then((d) => setOptions(d.settings))
       .catch(() => {
-        /* fall back to empty arrays — SelectField will show no options */
+        /* fall back to empty arrays */
+      })
+    fetch('/api/vehicle-classes')
+      .then((r) => r.json())
+      .then((d) => setVehicleClasses(d.vehicleClasses || []))
+      .catch(() => {
+        /* ignore */
       })
   }, [])
 
@@ -131,6 +173,10 @@ export default function SolicitudForm({
     resolver: zodResolver(schema),
     mode: 'onBlur',
   })
+
+  // Plans available for the selected vehicle class (computed after watch is available)
+  const selectedVehicleClassId = watch('vehicleClassId')
+  const availablePlans = vehicleClasses.find((c) => c.id === selectedVehicleClassId)?.plans || []
 
   // Load draft on mount + apply cobertura prefill from query param
   useEffect(() => {
@@ -492,13 +538,8 @@ export default function SolicitudForm({
                 </CardDescription>
               </CardHeader>
               <CardContent className="grid gap-4 sm:grid-cols-2">
-                <Field label="Tipo de Vehículo">
-                  <SelectField
-                    value={watch('tipoVehiculo') || ''}
-                    placeholder="Seleccionar"
-                    onCng={(v) => setValue('tipoVehiculo', v)}
-                    options={options?.VEHICLE_TYPES || []}
-                  />
+                <Field label="Placa o Matrícula">
+                  <Input {...register('placa')} placeholder="ABC-123" className="bg-slate-950/50 border-white/10" />
                 </Field>
                 <Field label="Marca">
                   <Input {...register('marca')} placeholder="Toyota" className="bg-slate-950/50 border-white/10" />
@@ -506,25 +547,18 @@ export default function SolicitudForm({
                 <Field label="Modelo">
                   <Input {...register('modelo')} placeholder="Corolla" className="bg-slate-950/50 border-white/10" />
                 </Field>
+                <Field label="Tipo">
+                  <SelectField
+                    value={watch('tipoVehiculo') || ''}
+                    placeholder="Seleccionar"
+                    onCng={(v) => setValue('tipoVehiculo', v)}
+                    options={options?.VEHICLE_TYPES || []}
+                  />
+                </Field>
                 <Field label="Año">
                   <Input {...register('ano')} placeholder="2022" className="bg-slate-950/50 border-white/10" />
                 </Field>
-                <Field label="Placa">
-                  <Input {...register('placa')} placeholder="ABC-123" className="bg-slate-950/50 border-white/10" />
-                </Field>
-                <Field label="Color">
-                  <Input {...register('color')} placeholder="Blanco" className="bg-slate-950/50 border-white/10" />
-                </Field>
-                <Field label="Serial de Carrocería (VIN)">
-                  <Input {...register('serialCarroceria')} placeholder="8XJKL..." className="bg-slate-950/50 border-white/10" />
-                </Field>
-                <Field label="Serial de Motor">
-                  <Input {...register('serialMotor')} placeholder="MR20..." className="bg-slate-950/50 border-white/10" />
-                </Field>
-                <Field label="Clase">
-                  <Input {...register('clase')} placeholder="Sedan" className="bg-slate-950/50 border-white/10" />
-                </Field>
-                <Field label="Uso">
+                <Field label="Uso del Vehículo">
                   <SelectField
                     value={watch('uso') || ''}
                     placeholder="Seleccionar"
@@ -532,8 +566,39 @@ export default function SolicitudForm({
                     options={['Particular', 'Carga', 'Público', 'Diplomático']}
                   />
                 </Field>
-                <Field label="Capacidad (pasajeros)">
-                  <Input {...register('capacidad')} placeholder="5" className="bg-slate-950/50 border-white/10" />
+                <Field label="¿Posee Trailer?">
+                  <SelectField
+                    value={watch('poseeTrailer') || 'No'}
+                    placeholder="Seleccionar"
+                    onCng={(v) => setValue('poseeTrailer', v)}
+                    options={['No', 'Sí']}
+                  />
+                </Field>
+                <Field label="¿Posee Placa Extranjera?">
+                  <SelectField
+                    value={watch('placaExtranjera') || 'No'}
+                    placeholder="Seleccionar"
+                    onCng={(v) => setValue('placaExtranjera', v)}
+                    options={['No', 'Sí']}
+                  />
+                </Field>
+                <Field label="Serial de Carrocería">
+                  <Input {...register('serialCarroceria')} placeholder="8XJKL..." className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Serial del Motor">
+                  <Input {...register('serialMotor')} placeholder="MR20..." className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Cantidad de Puestos">
+                  <Input {...register('cantidadPuestos')} placeholder="5" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Capacidad de Carga (Kg)">
+                  <Input {...register('capacidadCarga')} placeholder="0" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Color">
+                  <Input {...register('color')} placeholder="Blanco" className="bg-slate-950/50 border-white/10" />
+                </Field>
+                <Field label="Clase">
+                  <Input {...register('clase')} placeholder="Sedan" className="bg-slate-950/50 border-white/10" />
                 </Field>
               </CardContent>
             </Card>
@@ -541,14 +606,125 @@ export default function SolicitudForm({
 
           {/* STEP 2: COBERTURA */}
           {step === 2 && (
+            <>
+            <Card className="border-emerald-500/20 bg-slate-900/60">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <ShieldCheck className="h-5 w-5 text-emerald-400" />
+                  Póliza — Clase de Vehículo y Plan
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Selecciona la clase de vehículo y el plan correspondiente. Los precios se cargan desde la lista oficial.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Clase de Vehículo">
+                    <SelectField
+                      value={watch('vehicleClassId') || ''}
+                      placeholder="- Seleccionar clase de vehículo -"
+                      onCng={(v) => {
+                        setValue('vehicleClassId', v)
+                        setValue('planId', '')
+                        setValue('plan', '')
+                        setValue('primaEur', '')
+                        setValue('primaUsd', '')
+                        setValue('primaBs', '')
+                      }}
+                      options={[]}
+                      optionsRaw={
+                        <SelectContent>
+                          {vehicleClasses.map((vc) => (
+                            <SelectItem key={vc.id} value={vc.id}>
+                              {vc.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      }
+                    />
+                  </Field>
+                  <Field label="Seleccionar Plan">
+                    {watch('vehicleClassId') ? (
+                      <SelectField
+                        value={watch('planId') || ''}
+                        placeholder="- Seleccionar -"
+                        onCng={(v) => {
+                          const plan = availablePlans.find((p) => p.id === v)
+                          if (plan) {
+                            setValue('planId', v)
+                            setValue('plan', plan.name)
+                            setValue('primaEur', plan.priceEur)
+                            setValue('primaUsd', plan.priceUsd)
+                            setValue('primaBs', plan.priceBs)
+                            setValue('prima', plan.priceEur)
+                          }
+                        }}
+                        options={[]}
+                        optionsRaw={
+                          <SelectContent>
+                            {availablePlans.map((p) => (
+                              <SelectItem key={p.id} value={p.id}>
+                                {p.name} — {p.priceEur}€ / {p.priceUsd}$ / {p.priceBs}Bs
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        }
+                      />
+                    ) : (
+                      <p className="flex h-9 items-center text-xs text-slate-500">Primero selecciona una clase de vehículo</p>
+                    )}
+                  </Field>
+                </div>
+
+                {/* Price summary */}
+                {watch('planId') && (
+                  <div className="grid gap-3 rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4 sm:grid-cols-3">
+                    <div className="flex items-center gap-2">
+                      <Euro className="h-5 w-5 text-emerald-300" />
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wider text-slate-400">EUR</p>
+                        <p className="text-lg font-bold text-white">{watch('primaEur')}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="h-5 w-5 text-emerald-300" />
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wider text-slate-400">USD</p>
+                        <p className="text-lg font-bold text-white">{watch('primaUsd')}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Coins className="h-5 w-5 text-emerald-300" />
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wider text-slate-400">Bs</p>
+                        <p className="text-lg font-bold text-white">{watch('primaBs')}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 px-4 py-2.5">
+                  <p className="text-xs text-slate-400">
+                    ¿Quieres ver todos los planes disponibles?
+                  </p>
+                  <a
+                    href="?view=admin"
+                    className="text-xs font-medium text-emerald-300 hover:text-emerald-200"
+                  >
+                    Ver lista de precios completa →
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="border-white/10 bg-slate-900/60">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <ShieldCheck className="h-5 w-5 text-emerald-400" />
-                  Cobertura y Condiciones
+                  Cobertura y Condiciones Adicionales
                 </CardTitle>
                 <CardDescription className="text-slate-400">
-                  Datos de la póliza solicitada (pueden completarse luego por el equipo).
+                  Datos complementarios (pueden completarse luego por el equipo).
                 </CardDescription>
               </CardHeader>
               <CardContent className="grid gap-4 sm:grid-cols-2">
@@ -612,6 +788,7 @@ export default function SolicitudForm({
                 </Field>
               </CardContent>
             </Card>
+            </>
           )}
 
           {/* STEP 3: DOCUMENTOS */}
@@ -733,24 +910,30 @@ function SelectField({
   placeholder,
   onCng,
   options,
+  optionsRaw,
 }: {
   value: string
   placeholder: string
   onCng: (v: string) => void
   options: string[]
+  optionsRaw?: React.ReactNode
 }) {
   return (
     <Select value={value} onValueChange={onCng}>
       <SelectTrigger className="bg-slate-950/50 border-white/10">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent>
-        {options.map((o) => (
-          <SelectItem key={o} value={o}>
-            {o}
-          </SelectItem>
-        ))}
-      </SelectContent>
+      {optionsRaw ? (
+        optionsRaw
+      ) : (
+        <SelectContent>
+          {options.map((o) => (
+            <SelectItem key={o} value={o}>
+              {o}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      )}
     </Select>
   )
 }

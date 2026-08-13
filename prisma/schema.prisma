@@ -21,11 +21,32 @@ model Policy {
   status        String   @default("PENDIENTE")
   notes         String?  // internal admin notes
 
-  // --- Personal / Cliente data ---
+  // --- Asegurado (insured person) ---
+  asegNombre      String?
+  asegApellido    String?
+  asegCedula      String?
+  asegEmail       String?
+
+  // --- Tomador (policyholder) ---
+  tomadorIgualAseg  String? @default("Si") // "Si" or "No"
+  tomNombre       String?
+  tomApellido     String?
+  tomCedula       String?
+  tomEmail        String?
+  tomFechaNacimiento String?
+  tomEstadoCivil  String?
+  tomGenero       String?
+  tomTelefono     String?
+  tomEstado       String?
+  tomMunicipio    String?
+  tomParroquia    String?
+  tomDireccion    String?
+
+  // --- Legacy personal fields (kept for backward compat) ---
   nombre        String
   apellido      String?
   cedula        String
-  tipoCedula    String?  // V (Venezolana), E (Extranjera), J (Juridica), etc.
+  tipoCedula    String?
   fechaNacimiento String?
   nacionalidad  String?
   estadoCivil   String?
@@ -39,7 +60,7 @@ model Policy {
   ocupacion     String?
 
   // --- Vehicle data ---
-  tipoVehiculo  String?  // Automovil, Moto, Camion, etc.
+  tipoVehiculo  String?
   marca         String?
   modelo        String?
   ano           String?
@@ -47,34 +68,42 @@ model Policy {
   color         String?
   serialCarroceria String?
   serialMotor   String?
-  uso           String?  // Particular, Commercial, etc.
+  uso           String?
   capacidad     String?
   clase         String?
   tipo          String?
+  poseeTrailer    String? @default("No")
+  placaExtranjera String? @default("No")
+  cantidadPuestos String?
+  capacidadCarga  String?  // in Kg
 
   // --- Policy / coverage data ---
-  tipoCobertura String?  // Responsabilidad Civil, Total, etc.
-  compania      String?  // Aseguradora
+  vehicleClassId String?  // FK to VehicleClass
+  planId         String?  // FK to Plan
+  tipoCobertura String?
+  compania      String?
   plan          String?
   prima         String?
+  primaEur      String?
+  primaUsd      String?
+  primaBs       String?
   sumaAsegurada String?
   deducible     String?
   vigenciaDesde String?
   vigenciaHasta String?
-  frecuenciaPago String? // Mensual, Trimestral, Anual
+  frecuenciaPago String?
 
-  // --- Document references (stored in R2 / local uploads) ---
-  // Path conventions under bucket my-emdash-media/seguros/{verifyCode}/...
+  // --- Document references ---
   cedulaDocPath     String?
   cedulaDocName     String?
-  cedulaDocType     String? // mime
+  cedulaDocType     String?
   tituloDocPath     String?
   tituloDocName     String?
   tituloDocType     String?
 
   // --- Generated artifacts ---
-  pdfPath        String?  // generated filled PDF path
-  qrPath         String?  // generated QR image path
+  pdfPath        String?
+  qrPath         String?
 
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -83,6 +112,34 @@ model Policy {
 
   documents      Document[]
   activities     ActivityLog[]
+  vehicleClass   VehicleClass? @relation(fields: [vehicleClassId], references: [id])
+  planRef        Plan?         @relation(fields: [planId], references: [id])
+}
+
+model VehicleClass {
+  id            String   @id @default(cuid())
+  code          Int      @unique  // numeric code from the original system (39, 33, 25, ...)
+  name          String   @unique  // "AUTO ESCUELA", "AUTOBUSES", "CARGA", etc.
+  sortOrder     Int      @default(0)
+  plans         Plan[]
+  policies      Policy[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Plan {
+  id            String   @id @default(cuid())
+  externalId    Int      @unique  // original numeric ID (2, 3, 4, ...)
+  name          String   // "PLAN LIDER MOTO", etc.
+  vehicleClassId String
+  vehicleClass  VehicleClass @relation(fields: [vehicleClassId], references: [id], onDelete: Cascade)
+  priceEur      String   // "15.00"
+  priceUsd      String   // "17.31"
+  priceBs       String   // "13,276.20"
+  active        Boolean  @default(true)
+  policies      Policy[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Document {

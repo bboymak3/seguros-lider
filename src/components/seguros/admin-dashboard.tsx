@@ -31,6 +31,7 @@ import {
   FilePlus2,
   Paperclip,
   Calendar,
+  Tag,
   ChevronLeft,
   ChevronRight,
   Settings as SettingsIcon,
@@ -63,6 +64,7 @@ import { AdminSettings } from './admin-settings'
 import { ExpiryAlerts } from './expiry-alerts'
 import { NotificationsBell } from './notifications-bell'
 import { ActivityFeed } from './activity-feed'
+import { PriceListManager } from './price-list-manager'
 import { toast } from 'sonner'
 
 type Policy = Record<string, unknown> & {
@@ -82,7 +84,7 @@ type Policy = Record<string, unknown> & {
   tituloDocName?: string | null
 }
 
-type View = 'dashboard' | 'pendientes' | 'todas' | 'nueva' | 'settings' | 'actividad'
+type View = 'dashboard' | 'pendientes' | 'todas' | 'nueva' | 'settings' | 'actividad' | 'precios'
 
 const ADMIN_PASSWORD = 'admin123'
 
@@ -424,6 +426,7 @@ function AdminShell({
     { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { key: 'pendientes', label: 'Solicitud de Pólizas', icon: Clock, badge: stats?.pendientes },
     { key: 'todas', label: 'Todas las Pólizas', icon: FileText },
+    { key: 'precios', label: 'Lista de Precios', icon: Tag },
     { key: 'actividad', label: 'Actividad', icon: Activity },
     { key: 'nueva', label: 'Nueva Solicitud', icon: Plus },
     { key: 'settings', label: 'Configuración', icon: SettingsIcon },
@@ -754,6 +757,7 @@ function AdminShell({
             />
           )}
           {view === 'settings' && <AdminSettings />}
+          {view === 'precios' && <PriceListManager />}
           {view === 'actividad' && (
             <ActivityFeed onSelectPolicy={(pid) => setSelectedId(pid)} />
           )}
