@@ -107,3 +107,10 @@ model ActivityLog {
   metadata      String?  // JSON string with changed fields, etc.
   createdAt     DateTime @default(now())
 }
+
+model Setting {
+  id            String   @id @default(cuid())
+  key           String   @unique  // ASEGURADORAS | COVERAGE_TYPES | VEHICLE_TYPES | PLAN_TYPES | APP_CONFIG
+  value         String   // JSON string
+  updatedAt     DateTime @updatedAt
+}

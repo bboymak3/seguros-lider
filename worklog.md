@@ -285,3 +285,90 @@ Task: QA assessment + dashboard drill-down + document lightbox + summary card + 
 6. **Document replace**: One-click replace (delete+upload) in admin.
 7. **Policy expiry alerts**: Highlight policies nearing vigencia end.
 8. **Admin settings page**: Configure aseguradoras, coverage types, etc.
+
+---
+
+## Task ID: 5 (cron review — settings page + expiry alerts + notifications + shortcuts)
+Agent: main (Z.ai Code) — webDevReview cron round 4
+Task: QA assessment + admin settings page + expiry alerts + notifications bell + keyboard shortcuts.
+
+### Work Log
+**QA Assessment (agent-browser)**
+- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+- Confirmed previous round's features (drill-down, lightbox, summary card) all working.
+
+**New Database Model: Setting**
+- Added `Setting` model (id, key @unique, value JSON string, updatedAt).
+- Created `src/lib/settings.ts` with `getSetting`, `setSetting`, `getAllSettings` helpers.
+- Defaults seeded: 8 aseguradoras, 4 coverage types, 6 vehicle types, 4 plan types.
+
+**New API Endpoints**
+- `GET /api/settings` — returns all configurable lists (ASEGURADORAS, COVERAGE_TYPES, VEHICLE_TYPES, PLAN_TYPES).
+- `PUT /api/settings` — update one or more lists (upserts to DB).
+- `GET /api/policies/expiring?days=30` — returns approved policies expiring within N days + already-expired policies.
+- `GET /api/notifications?limit=10` — returns recent global activity (across all policies) with policy info joined.
+
+**Major Feature: Admin Settings Page (admin-settings.tsx)**
+- New `AdminSettings` component rendered when view === 'settings'.
+- 4 config cards in 2x2 grid: Aseguradoras, Tipos de Cobertura, Tipos de Vehículo, Planes.
+- Each card shows: icon badge, label, description, count badge, existing items as removable chips, add-new input + "+" button.
+- Enter key adds item; chip trash button removes item.
+- Save button (header + footer bar) persists all changes via PUT /api/settings.
+- "Restablecer" button reloads from server.
+- Green confirmation bar at bottom explaining scope.
+- Added "Configuración" nav item with Settings icon.
+
+**Major Feature: Expiry Alerts Widget (expiry-alerts.tsx)**
+- New `ExpiryAlerts` component on the dashboard (between charts and recent list).
+- Two tabs: "Por vencer" (next 30 days) and "Vencidas" (already expired).
+- Each policy row: icon badge (amber/red by urgency), name, policy number, vehicle info, expiry date, days-remaining badge.
+- Color coding: red for expired or ≤7 days, amber for 8-30 days.
+- Click navigates to admin view.
+- Auto-hides if no expiring/expired policies.
+- Uses scrollbar-thin for the scrollable list.
+
+**Major Feature: Notifications Bell (notifications-bell.tsx)**
+- New `NotificationsBell` component in admin header (next to CSV export button).
+- Bell icon with unread count badge (red, top-right).
+- Click opens dropdown panel (80-96 width) with recent 15 activities.
+- Each notification: action-specific icon (color-coded), description, policy name + number, time-ago.
+- Auto-polls every 30 seconds for new notifications.
+- Click-outside-to-close, unread count resets on open.
+- Icons mapped per action: CREATED (sky), APPROVED (emerald), REJECTED (red), DOCUMENT_UPLOADED (violet), etc.
+
+**Feature: Keyboard Shortcuts**
+- "/" — focuses the search input (when not already typing).
+- "g d" — go to Dashboard.
+- "g p" — go to Pendientes.
+- "g t" — go to Todas.
+- "g s" — go to Configuración.
+- "g n" — go to Nueva Solicitud.
+- Shortcuts disabled when typing in inputs/textareas.
+- "Atajos de teclado" hint panel added to sidebar with kbd-styled keys.
+
+### Stage Summary / Verification (agent-browser + curl)
+- ✅ All pages compile (HTTP 200), no console errors.
+- ✅ Settings page: renders 4 config cards (Aseguradoras 8, Cobertura 4, Vehículos 6, Planes 4).
+- ✅ VLM confirms settings page is "Excelente estructura" with "jerarquía visual clara".
+- ✅ Notifications bell: click opens panel showing "Póliza aprobada masivamente con N° 000002" + other recent activities.
+- ✅ Keyboard shortcut "/": pressed → focused the search input (verified activeElement).
+- ✅ "Atajos de teclado" hint panel visible in sidebar.
+- ✅ "Configuración" nav item present and clickable.
+- ✅ ExpiryAlerts widget on dashboard (auto-hides when no expiring policies, which is the case with current test data).
+- ✅ `bun run lint` passes clean (0 errors).
+- ✅ All API endpoints return 200 (stats, policies, export, lookup, settings, expiring, notifications).
+
+### Files Added/Modified
+- Added: `src/lib/settings.ts`, `src/components/seguros/admin-settings.tsx`, `src/components/seguros/expiry-alerts.tsx`, `src/components/seguros/notifications-bell.tsx`
+- Added API: `src/app/api/settings/route.ts`, `src/app/api/policies/expiring/route.ts`, `src/app/api/notifications/route.ts`
+- Modified: `prisma/schema.prisma` (Setting model), `src/components/seguros/admin-dashboard.tsx` (settings view, notifications bell, expiry alerts, keyboard shortcuts, shortcuts hint panel, new icon imports)
+
+### Unresolved / Next-phase recommendations (updated)
+1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+3. **PDF template**: Integrate user's `pdfclean` template.
+4. **Notifications (email/SMS)**: External notification delivery on approval.
+5. **Landing page FAQ**: Add FAQ section + animated stat counters.
+6. **Policy expiry email**: Send reminder emails before vigencia ends.
+7. **Settings → form integration**: Make solicitud-form load options dynamically from /api/settings instead of hardcoded arrays.
+8. **Audit log export**: Export activity log as CSV/JSON.

@@ -33,6 +33,8 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
+  Settings as SettingsIcon,
+  Bell,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -57,6 +59,9 @@ import {
 import { AdminPolicyDetail } from './admin-policy-detail'
 import SolicitudForm from './solicitud-form'
 import { DashboardCharts, type Stats as ChartStats } from './dashboard-charts'
+import { AdminSettings } from './admin-settings'
+import { ExpiryAlerts } from './expiry-alerts'
+import { NotificationsBell } from './notifications-bell'
 import { toast } from 'sonner'
 
 type Policy = Record<string, unknown> & {
@@ -76,7 +81,7 @@ type Policy = Record<string, unknown> & {
   tituloDocName?: string | null
 }
 
-type View = 'dashboard' | 'pendientes' | 'todas' | 'nueva'
+type View = 'dashboard' | 'pendientes' | 'todas' | 'nueva' | 'settings'
 
 const ADMIN_PASSWORD = 'admin123'
 
@@ -241,6 +246,64 @@ function AdminShell({
     else if (view === 'todas') loadPolicies({ status: statusFilter, page: 1 })
   }, [view])
 
+  // Keyboard shortcuts: "/" focuses search, "g d/p/t/s" navigates
+  useEffect(() => {
+    let gPressed = false
+    let gTimer: ReturnType<typeof setTimeout> | null = null
+
+    function onKey(e: KeyboardEvent) {
+      const target = e.target as HTMLElement
+      const isTyping =
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.isContentEditable
+
+      // "/" to focus search (only when not typing)
+      if (e.key === '/' && !isTyping) {
+        e.preventDefault()
+        const searchInput = document.querySelector('input[placeholder*="Buscar"]') as HTMLInputElement
+        if (searchInput) {
+          searchInput.focus()
+          searchInput.select()
+        }
+        return
+      }
+
+      // "g" then "d/p/t/s" for navigation
+      if (!isTyping) {
+        if (e.key === 'g' && !gPressed) {
+          gPressed = true
+          if (gTimer) clearTimeout(gTimer)
+          gTimer = setTimeout(() => {
+            gPressed = false
+          }, 800)
+          return
+        }
+        if (gPressed) {
+          if (e.key === 'd') {
+            setView('dashboard')
+          } else if (e.key === 'p') {
+            setView('pendientes')
+          } else if (e.key === 't') {
+            setView('todas')
+          } else if (e.key === 's') {
+            setView('settings')
+          } else if (e.key === 'n') {
+            setView('nueva')
+          }
+          gPressed = false
+          if (gTimer) clearTimeout(gTimer)
+        }
+      }
+    }
+
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      if (gTimer) clearTimeout(gTimer)
+    }
+  }, [])
+
   function refreshAll() {
     loadStats()
     if (view === 'pendientes') loadPolicies({ status: 'PENDIENTE', page: 1 })
@@ -360,6 +423,7 @@ function AdminShell({
     { key: 'pendientes', label: 'Solicitud de Pólizas', icon: Clock, badge: stats?.pendientes },
     { key: 'todas', label: 'Todas las Pólizas', icon: FileText },
     { key: 'nueva', label: 'Nueva Solicitud', icon: Plus },
+    { key: 'settings', label: 'Configuración', icon: SettingsIcon },
   ]
 
   return (
@@ -436,6 +500,35 @@ function AdminShell({
           </div>
         )}
 
+        {/* Keyboard shortcuts hint */}
+        <div className="mx-3 mt-3 rounded-lg border border-white/10 bg-slate-950/50 p-3">
+          <p className="mb-2 text-[10px] uppercase tracking-wider text-slate-400">
+            Atajos de teclado
+          </p>
+          <div className="space-y-1 text-[11px] text-slate-400">
+            <div className="flex items-center justify-between">
+              <span>Buscar</span>
+              <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-300">/</kbd>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Dashboard</span>
+              <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-300">g d</kbd>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Pendientes</span>
+              <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-300">g p</kbd>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Todas</span>
+              <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-300">g t</kbd>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Configuración</span>
+              <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-300">g s</kbd>
+            </div>
+          </div>
+        </div>
+
         <div className="absolute inset-x-0 bottom-0 border-t border-white/10 p-3">
           <Button
             variant="ghost"
@@ -473,7 +566,7 @@ function AdminShell({
             </Badge>
           )}
           <div className="ml-auto flex items-center gap-2">
-            {view !== 'dashboard' && view !== 'nueva' && (
+            {view !== 'dashboard' && view !== 'nueva' && view !== 'settings' && (
               <Button
                 variant="outline"
                 size="sm"
@@ -484,6 +577,7 @@ function AdminShell({
                 <span className="hidden sm:inline">Exportar CSV</span>
               </Button>
             )}
+            <NotificationsBell />
             <Button
               variant="ghost"
               size="sm"
@@ -644,6 +738,7 @@ function AdminShell({
               clearDateFilter={clearDateFilter}
             />
           )}
+          {view === 'settings' && <AdminSettings />}
         </main>
       </div>
     </div>
@@ -760,6 +855,9 @@ function DashboardView({
 
       {/* Charts */}
       <DashboardCharts stats={stats} onDrillDown={onDrillDown} />
+
+      {/* Expiry alerts */}
+      <ExpiryAlerts />
 
       {/* Recent */}
       <Card className="border-white/10 bg-slate-900/60">
