@@ -21,6 +21,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { PublicLookup } from './public-lookup'
 import { AnimatedStats, FaqSection } from './faq-section'
+import { CoverageComparison } from './coverage-comparison'
 
 export default function LandingPage({
   onSolicitud,
@@ -48,6 +49,9 @@ export default function LandingPage({
           <nav className="hidden items-center gap-6 text-sm text-slate-300 md:flex">
             <a href="#servicios" className="hover:text-white transition-colors">
               Servicios
+            </a>
+            <a href="#coberturas" className="hover:text-white transition-colors">
+              Coberturas
             </a>
             <a href="#como" className="hover:text-white transition-colors">
               Cómo funciona
@@ -281,6 +285,9 @@ export default function LandingPage({
           ))}
         </div>
       </section>
+
+      {/* Coverage comparison */}
+      <CoverageComparison />
 
       {/* How it works — vertical timeline */}
       <section id="como" className="border-t border-white/10 bg-slate-900/40">

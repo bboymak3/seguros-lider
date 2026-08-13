@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import {
   Loader2, Activity, FilePlus2, FileEdit, FileCheck2, FileX, Ban,
   Paperclip, FileMinus, FileText, Search, ChevronLeft, ChevronRight,
-  Calendar, X, Filter,
+  Calendar, X, Filter, Download,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -137,16 +137,37 @@ export function ActivityFeed({ onSelectPolicy }: { onSelectPolicy: (id: string) 
 
   const hasFilters = actionFilter !== 'ALL' || dateFrom || dateTo
 
+  function exportCsv() {
+    const params = new URLSearchParams()
+    if (actionFilter !== 'ALL') params.set('action', actionFilter)
+    if (dateFrom) params.set('from', dateFrom)
+    if (dateTo) params.set('to', dateTo)
+    window.open(`/api/activities/export?${params}`, '_blank')
+  }
+
   return (
     <div className="space-y-4">
-      <div>
-        <h2 className="flex items-center gap-2 text-xl font-semibold">
-          <Activity className="h-5 w-5 text-emerald-400" />
-          Actividad Global
-        </h2>
-        <p className="mt-1 text-sm text-slate-400">
-          Historial completo de acciones en todas las pólizas del sistema.
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="flex items-center gap-2 text-xl font-semibold">
+            <Activity className="h-5 w-5 text-emerald-400" />
+            Actividad Global
+          </h2>
+          <p className="mt-1 text-sm text-slate-400">
+            Historial completo de acciones en todas las pólizas del sistema.
+          </p>
+        </div>
+        {pagination && pagination.total > 0 && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={exportCsv}
+            className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+          >
+            <Download className="mr-1 h-4 w-4" />
+            <span className="hidden sm:inline">Exportar CSV</span>
+          </Button>
+        )}
       </div>
 
       {/* Filters */}

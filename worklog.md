@@ -498,3 +498,66 @@ Task: QA assessment + global activity feed page + document replace + landing tim
 6. **Admin detail → settings dropdowns**: Make admin detail edit fields use settings-backed dropdowns (currently plain text inputs).
 7. **Activity feed → CSV export**: Export the global activity feed as CSV.
 8. **Dashboard quick-stats cards clickable**: Make KPI cards navigate to filtered lists.
+
+---
+
+## Task ID: 8 (cron review — clickable KPIs + coverage comparison + activity CSV export)
+Agent: main (Z.ai Code) — webDevReview cron round 7
+Task: QA assessment + clickable dashboard KPI cards + landing coverage comparison + activity feed CSV export.
+
+### Work Log
+**QA Assessment (agent-browser)**
+- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+- Confirmed previous round's features (activity feed, document replace, landing timeline) all working.
+
+**Major Feature: Clickable Dashboard KPI Cards**
+- Added `onCardClick?: (filter: string) => void` prop to DashboardView.
+- Each KPI card now has a `filter` property: Total→ALL, Pendientes→PENDIENTE, Aprobadas→APROBADA, Rechazadas→RECHAZADA, Tasa Aprobación→APROBADA. "Solicitudes Hoy" has filter=null (not status-based, so not clickable).
+- Cards with filter !== null are clickable: cursor-pointer, hover bg + shadow-lg + emerald glow.
+- Clicking a card: sets statusFilter, clears search, resets to page 1, switches to "todas" view, reloads policies with that status, shows toast ("Filtrando por estado: X" or "Mostrando todas las pólizas").
+- Wired `onCardClick` in AdminShell DashboardView usage.
+
+**Major Feature: Landing Page Coverage Comparison Section**
+- New `CoverageComparison` component (`coverage-comparison.tsx`):
+  - 3 plan cards: Responsabilidad Civil ($25/mes), Cobertura Total ($65/mes, "MÁS POPULAR"), Cobertura Amplia ($95/mes).
+  - Each card: icon badge (Shield/ShieldCheck/Crown), name, price, 6 feature rows with check/X icons (included/excluded).
+  - Popular plan: scaled up (lg:scale-105), emerald gradient badge, shadow glow.
+  - Deducible + suma asegurada info box at bottom of each card.
+  - Disclaimer text below grid.
+- Added "Coberturas" nav link in header.
+- Placed between Services and How-it-works sections.
+- VLM confirms: "precios y features con estructura lógica", "jerarquía visual clara", "diseño moderno y profesional".
+
+**Feature: Activity Feed CSV Export**
+- New `GET /api/activities/export?action=&from=&to=` endpoint:
+  - Returns all activities (up to 5000) with joined policy info as CSV.
+  - 9 columns: Fecha, Acción, Descripción, Actor, Código Verificación, N° Póliza, Tomador, Cédula, Estado Póliza.
+  - BOM UTF-8 for Excel, proper CSV escaping.
+  - Respects action + date range filters.
+- Added "Exportar CSV" button (Download icon) to ActivityFeed header.
+  - Only appears when pagination.total > 0.
+  - Opens export URL in new tab with current filters applied.
+
+### Stage Summary / Verification (agent-browser + curl)
+- ✅ All pages compile (HTTP 200), no console errors.
+- ✅ KPI cards clickable: verified cursor:pointer + onclick attributes; "Ver lista →" hint text present.
+- ✅ KPI click navigation: clicked "Aprobadas" card → navigated to "Todas las Pólizas" with status filter set to "Aprobadas".
+- ✅ Coverage comparison: 3 plan cards render (Responsabilidad Civil, Cobertura Total, Cobertura Amplia) with "MÁS POPULAR" badge on Cobertura Total.
+- ✅ VLM confirms coverage section has "estructura lógica" and "jerarquía visual clara".
+- ✅ Activity feed export: "Exportar CSV" button present; CSV endpoint returns 200 with correct headers + data rows.
+- ✅ `bun run lint` passes clean (0 errors).
+- ✅ All API endpoints return 200 (including new /api/activities/export).
+
+### Files Added/Modified
+- Added: `src/components/seguros/coverage-comparison.tsx`, `src/app/api/activities/export/route.ts`
+- Modified: `src/components/seguros/admin-dashboard.tsx` (onCardClick prop + clickable cards + wiring), `src/components/seguros/landing-page.tsx` (CoverageComparison section + Coberturas nav link), `src/components/seguros/activity-feed.tsx` (exportCsv function + Exportar CSV button + Download icon import)
+
+### Unresolved / Next-phase recommendations (updated)
+1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+3. **PDF template**: Integrate user's `pdfclean` template.
+4. **Notifications (email/SMS)**: External notification delivery on approval.
+5. **Policy expiry email**: Send reminder emails before vigencia ends.
+6. **Admin detail → settings dropdowns**: Make admin detail edit fields use settings-backed dropdowns.
+7. **Coverage comparison → solicitud**: Click a plan card to pre-fill the form with that coverage type.
+8. **Dashboard date-range selector**: Add a global date range filter affecting all dashboard stats.

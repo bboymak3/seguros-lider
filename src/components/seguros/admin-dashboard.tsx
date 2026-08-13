@@ -678,6 +678,18 @@ function AdminShell({
                   toast.info(`Filtrando por estado: ${value}`)
                 }
               }}
+              onCardClick={(filter) => {
+                setStatusFilter(filter)
+                setSearch('')
+                setPage(1)
+                setView('todas')
+                loadPolicies({ status: filter, page: 1 })
+                toast.info(
+                  filter === 'ALL'
+                    ? 'Mostrando todas las pólizas'
+                    : `Filtrando por estado: ${filter}`
+                )
+              }}
             />
           )}
           {view === 'pendientes' && (
@@ -756,12 +768,14 @@ function DashboardView({
   loading,
   onSelect,
   onDrillDown,
+  onCardClick,
 }: {
   stats: ChartStats | null
   policies: Policy[]
   loading: boolean
   onSelect: (id: string) => void
   onDrillDown?: (type: 'status' | 'brand' | 'estado', value: string) => void
+  onCardClick?: (filter: string) => void
 }) {
   const recent = policies.slice(0, 6)
   const approvalRate =
@@ -778,6 +792,7 @@ function DashboardView({
       bg: 'bg-sky-500/10',
       ring: 'ring-sky-500/20',
       sub: stats ? `${stats.hoy} hoy` : '',
+      filter: 'ALL',
     },
     {
       label: 'Pendientes',
@@ -787,6 +802,7 @@ function DashboardView({
       bg: 'bg-amber-500/10',
       ring: 'ring-amber-500/20',
       sub: 'Requieren acción',
+      filter: 'PENDIENTE',
     },
     {
       label: 'Aprobadas',
@@ -796,6 +812,7 @@ function DashboardView({
       bg: 'bg-emerald-500/10',
       ring: 'ring-emerald-500/20',
       sub: stats ? `${stats.aprobadasHoy} hoy` : '',
+      filter: 'APROBADA',
     },
     {
       label: 'Rechazadas',
@@ -805,6 +822,7 @@ function DashboardView({
       bg: 'bg-red-500/10',
       ring: 'ring-red-500/20',
       sub: 'Histórico',
+      filter: 'RECHAZADA',
     },
     {
       label: 'Solicitudes Hoy',
@@ -817,6 +835,7 @@ function DashboardView({
         ? `${stats.deltaHoy >= 0 ? '↑' : '↓'} ${Math.abs(stats.deltaPercent)}% vs ayer`
         : '',
       subColor: stats && stats.deltaHoy >= 0 ? 'text-emerald-300' : 'text-red-300',
+      filter: null, // today filter not status-based
     },
     {
       label: 'Tasa Aprobación',
@@ -826,6 +845,7 @@ function DashboardView({
       bg: 'bg-teal-500/10',
       ring: 'ring-teal-500/20',
       sub: stats && stats.total > 0 ? `${stats.aprobadas} de ${stats.total}` : '',
+      filter: 'APROBADA',
     },
   ]
 
@@ -833,29 +853,40 @@ function DashboardView({
     <div className="space-y-6">
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        {cards.map((c) => (
-          <Card
-            key={c.label}
-            className={`border-white/10 bg-slate-900/60 ring-1 ${c.ring} transition-transform hover:scale-[1.02]`}
-          >
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-400">{c.label}</span>
-                <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${c.bg}`}>
-                  <c.icon className={`h-4 w-4 ${c.color}`} />
+        {cards.map((c) => {
+          const clickable = onCardClick && c.filter !== null
+          return (
+            <Card
+              key={c.label}
+              className={`border-white/10 bg-slate-900/60 ring-1 ${c.ring} transition-all hover:scale-[1.02] ${
+                clickable ? 'cursor-pointer hover:bg-slate-900/80 hover:shadow-lg hover:shadow-emerald-500/5' : ''
+              }`}
+              onClick={() => clickable && onCardClick!(c.filter)}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-slate-400">{c.label}</span>
+                  <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${c.bg}`}>
+                    <c.icon className={`h-4 w-4 ${c.color}`} />
+                  </div>
                 </div>
-              </div>
-              <p className="mt-2 text-3xl font-bold tracking-tight text-white">
-                {c.value}
-              </p>
-              {c.sub && (
-                <p className={`mt-0.5 text-[11px] ${c.subColor || 'text-slate-400'}`}>
-                  {c.sub}
+                <p className="mt-2 text-3xl font-bold tracking-tight text-white">
+                  {c.value}
                 </p>
-              )}
-            </CardContent>
-          </Card>
-        ))}
+                {c.sub && (
+                  <p className={`mt-0.5 text-[11px] ${c.subColor || 'text-slate-400'}`}>
+                    {c.sub}
+                  </p>
+                )}
+                {clickable && (
+                  <p className="mt-1.5 text-[10px] font-medium text-emerald-400/70 opacity-0 transition-opacity group-hover:opacity-100">
+                    Ver lista →
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
 
       {/* Charts */}
