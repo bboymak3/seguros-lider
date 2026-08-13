@@ -349,23 +349,48 @@ export default function LandingPage({
 
       {/* Testimonials */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <Badge className="mb-3 border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/10">
+            Testimonios
+          </Badge>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Lo que dicen nuestros clientes
+          </h2>
+          <p className="mt-3 text-slate-400">
+            Miles de personas confían en Seguros Líder para proteger sus vehículos.
+          </p>
+        </div>
         <div className="grid gap-6 md:grid-cols-3">
           {[
-            ['María G.', 'El proceso fue rapidísimo, en un día tenía mi póliza lista.'],
-            ['Carlos R.', 'El QR de verificación es genial, lo presento donde quiera.'],
-            ['Andrea P.', 'Subí mis documentos desde el celular sin complicaciones.'],
-          ].map(([name, quote]) => (
-            <Card key={name} className="border-white/10 bg-slate-900/60">
-              <CardContent className="p-6">
+            { name: 'María González', role: 'Caracas', quote: 'El proceso fue rapidísimo, en un día tenía mi póliza lista. El certificado con QR me pareció una idea brillante.' },
+            { name: 'Carlos Rodríguez', role: 'Maracay', quote: 'El QR de verificación es genial, lo presento donde quiera y todos confirman al instante que mi póliza es válida.' },
+            { name: 'Andrea Pérez', role: 'Valencia', quote: 'Subí mis documentos desde el celular sin complicaciones. La plataforma es intuitiva y muy moderna.' },
+          ].map((t) => (
+            <Card
+              key={t.name}
+              className="group relative overflow-hidden border-white/10 bg-slate-900/60 transition-all hover:border-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/5"
+            >
+              <div className="absolute -right-4 -top-4 text-7xl font-serif text-emerald-500/10 transition-colors group-hover:text-emerald-500/20">
+                &rdquo;
+              </div>
+              <CardContent className="relative p-6">
                 <div className="mb-3 flex gap-0.5">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
                   ))}
                 </div>
                 <p className="text-sm leading-relaxed text-slate-300">
-                  &ldquo;{quote}&rdquo;
+                  &ldquo;{t.quote}&rdquo;
                 </p>
-                <p className="mt-4 text-sm font-medium text-emerald-300">{name}</p>
+                <div className="mt-5 flex items-center gap-3 border-t border-white/5 pt-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/10 text-sm font-bold text-emerald-300 ring-1 ring-emerald-500/20">
+                    {t.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-white">{t.name}</p>
+                    <p className="text-xs text-slate-400">{t.role}</p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           ))}

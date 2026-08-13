@@ -138,6 +138,20 @@ export function AdminPolicyDetail({
     return () => window.removeEventListener('beforeunload', onBeforeUnload)
   }, [hasChanges])
 
+  // Keyboard shortcut: Cmd/Ctrl+S to save
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault()
+        if (hasChanges && !saving) {
+          save()
+        }
+      }
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [hasChanges, saving, form])
+
   // Load configurable options from settings API
   useEffect(() => {
     fetch('/api/settings')
@@ -561,6 +575,7 @@ export function AdminPolicyDetail({
                 <span className="flex items-center gap-1.5 text-xs text-amber-300">
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" />
                   Tienes cambios sin guardar
+                  <kbd className="ml-1 hidden rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-400 sm:inline">Ctrl+S</kbd>
                 </span>
               ) : (
                 <span className="flex items-center gap-1.5 text-xs text-emerald-300">

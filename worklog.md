@@ -681,3 +681,54 @@ Task: QA assessment + inline unsaved-changes indicator + policy clone/duplicate 
 6. **Dashboard global date-range**: Add a date filter affecting all dashboard stats + charts.
 7. **Policy clone with documents**: Currently clones data only; could also copy document references.
 8. **Admin detail keyboard shortcut**: Cmd/Ctrl+S to save from anywhere in the detail.
+
+---
+
+## Task ID: 11 (cron review — Ctrl+S shortcut + testimonials redesign)
+Agent: main (Z.ai Code) — webDevReview cron round 10
+Task: QA assessment + Cmd/Ctrl+S keyboard shortcut + testimonials visual redesign.
+
+### Work Log
+**QA Assessment (agent-browser)**
+- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+- Confirmed previous round's features (unsaved indicator, policy clone) all working.
+
+**Feature: Cmd/Ctrl+S Keyboard Shortcut**
+- Added useEffect in admin-policy-detail that listens for keydown events.
+- When (metaKey || ctrlKey) && key === 's': preventDefault + calls save() if hasChanges && !saving.
+- Added "Ctrl+S" kbd hint next to "Tienes cambios sin guardar" text in the bottom save bar (hidden on mobile, visible on sm+).
+- Dependencies: [hasChanges, saving, form] so the handler always has fresh state.
+- Verificado: edited a field → "Ctrl+S" hint appeared → pressed Ctrl+S → "Cambios guardados" toast + "Todos los cambios guardados" indicator.
+
+**Feature: Testimonials Section Redesign**
+- Replaced simple name-only testimonials with richer card design:
+  - Section header: "Testimonios" badge + "Lo que dicen nuestros clientes" heading + subtitle.
+  - Each card: large decorative quote mark (serif, emerald, absolute positioned top-right).
+  - 5 stars row (amber).
+  - Quote text (longer, more detailed).
+  - Footer with avatar circle (gradient emerald bg, initial letter, ring) + name + city.
+  - Hover effects: border-emerald glow, shadow-xl, quote mark brightens.
+- Full names with cities: María González (Caracas), Carlos Rodríguez (Maracay), Andrea Pérez (Valencia).
+- VLM confirms: "limpio y profesional", "buena jerarquía visual", "avatares distintivos".
+
+### Stage Summary / Verification (agent-browser + curl)
+- ✅ All pages compile (HTTP 200), no console errors.
+- ✅ Ctrl+S shortcut: edited field → hint appeared → pressed Ctrl+S → saved successfully → "Todos los cambios guardados".
+- ✅ Testimonials: "Testimonios" badge + heading + 3 cards with avatars, names, cities, stars.
+- ✅ VLM confirms testimonials have "buena jerarquía visual" and "avatares distintivos".
+- ✅ `bun run lint` passes clean (0 errors).
+- ✅ All API endpoints return 200.
+
+### Files Modified
+- `src/components/seguros/admin-policy-detail.tsx` (Cmd/Ctrl+S useEffect + kbd hint in save bar)
+- `src/components/seguros/landing-page.tsx` (testimonials section redesign with header, quote marks, avatars, cities)
+
+### Unresolved / Next-phase recommendations (updated)
+1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+3. **PDF template**: Integrate user's `pdfclean` template.
+4. **Notifications (email/SMS)**: External notification delivery on approval.
+5. **Policy expiry email**: Send reminder emails before vigencia ends.
+6. **Dashboard global date-range**: Add a date filter affecting all dashboard stats + charts.
+7. **Policy clone with documents**: Currently clones data only; could also copy document references.
+8. **Admin detail Esc-to-close**: Esc key to go back from detail to list.
