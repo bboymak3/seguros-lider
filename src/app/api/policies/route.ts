@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { generateVerifyCode } from '@/lib/policy-utils'
+import { logActivity } from '@/lib/activity'
 
 export const dynamic = 'force-dynamic'
 
@@ -80,6 +81,13 @@ export async function POST(req: NextRequest) {
         notes: body.notes || null,
       },
     })
+
+    await logActivity(
+      policy.id,
+      'CREATED',
+      `Solicitud creada por ${policy.nombre} ${policy.apellido || ''} (cédula ${policy.cedula}) con código ${policy.verifyCode}`,
+      body.actor || 'public'
+    )
 
     return NextResponse.json({ policy }, { status: 201 })
   } catch (e) {

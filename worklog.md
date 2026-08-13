@@ -54,5 +54,89 @@ Task: Build the complete seguros platform from scratch.
 2. **Cloudflare deployment**: Swap `storage.ts` → R2 binding; migrate Prisma SQLite → D1; deploy via `wrangler`. (User has D1 `seguros_db` ID `5f2737c7-...` and R2 path `my-emdash-media/seguros/`.)
 3. **PDF template**: Currently generated from scratch with pdf-lib. To use the user's `pdfclean` template from `github.com/bboymak3/pdf-seguros`, load it via `PDFDocument.load()` + `copyPages` and overlay fields.
 4. **Edit document flow**: Currently supports upload + delete; could add "replace" (delete+upload in one action) and inline image preview/lightbox.
-5. **Search/Filter**: Add date-range and status-multi-select filters to admin list views.
-6. **Notifications**: Email/SMS on approval (resend/twilio).
+5. **Notifications**: Email/SMS on approval (resend/twilio).
+
+---
+
+## Task ID: 2 (cron review — enhancements)
+Agent: main (Z.ai Code) — webDevReview cron round 1
+Task: QA assessment + bug fixes + new features + styling improvements.
+
+### Work Log
+**QA Assessment (agent-browser)**
+- Verified landing page (HTTP 200, no console errors), solicitud form submission (success), admin login + dashboard, policy detail, verification page. All golden paths intact.
+- VLM analysis of dashboard identified gaps: missing charts, no CSV export, no bulk actions, KPI contrast issues, truncated names, duplicate icons.
+
+**Bug Fixes / Styling**
+- Fixed KPI number contrast (now `text-white text-3xl font-bold`).
+- Fixed name truncation in list rows (full name shown, initials badge with gradient).
+- Fixed duplicate icons (Tasa Aprobación now uses `Percent` icon).
+- Added ring accents + hover scale on stat cards.
+- Added skeleton loaders for list rows + recent list.
+- Added empty states with icons for all list views.
+- Added pending-count badge in sidebar nav item.
+- Added mini stats panel in sidebar (aprobadas hoy, con docs, total).
+- Added bulk-action sticky bar with approve/reject/anular/delete.
+
+**New Database Model**
+- Added `ActivityLog` model (id, policyId, action, description, actor, metadata JSON, createdAt).
+- Created `src/lib/activity.ts` helper with `logActivity()` + `ACTION_LABELS`.
+- Wired activity logging into: POST /policies (CREATED), PATCH /policies/[id] (UPDATED/STATUS_CHANGED/APPROVED/REJECTED/ANULADA), POST /approve (APPROVED+PDF_GENERATED), POST /documents (DOCUMENT_UPLOADED), DELETE /documents/[docId] (DOCUMENT_DELETED).
+
+**New API Endpoints**
+- Enhanced `GET /api/stats` — now returns: counts, today/yesterday deltas, aprobadasHoy, withDocs, 14-day timeseries, statusDistribution (pie), topBrands (bar), topEstados (bar), tipoDistribution.
+- `GET /api/policies/export` — CSV export with BOM (UTF-8 for Excel), 30 columns, supports status/q filters.
+- `GET /api/policies/lookup?q=` — public lookup by cédula/placa/policyNumber/verifyCode, returns minimal info (10 results max).
+- `POST /api/policies/bulk` — bulk approve/reject/anular/delete with sequential policy-number assignment + per-policy activity logging.
+- `GET /api/policies/[id]/activities` — audit trail (last 100 events).
+
+**New Frontend Components**
+- `src/components/seguros/dashboard-charts.tsx` — recharts visualizations:
+  - Area chart: 14-day timeseries (total/aprobadas/pendientes with gradient fills)
+  - Pie chart: status distribution (donut with legend)
+  - Horizontal bar: top vehicle brands
+  - Horizontal bar: top geographic estados
+  - Skeleton + empty states for all charts
+- `src/components/seguros/public-lookup.tsx` — public search widget (cedula/placa/code) with result cards linking to verification page.
+
+**Enhanced Existing Components**
+- `admin-dashboard.tsx` — full rewrite:
+  - 6 KPI cards with trend deltas (↑/↓ vs ayer), ring accents, hover scale
+  - Dashboard charts section (4 charts)
+  - Bulk selection: per-row checkboxes + "Seleccionar todo" + sticky bulk-action bar
+  - CSV export button in header
+  - Status filter dropdown on "Todas las Pólizas"
+  - Skeleton loaders + empty states
+- `admin-policy-detail.tsx` — added 4th tab "Historial":
+  - ActivityTimeline component with vertical timeline UI
+  - Color-coded action icons (emerald=approved, red=rejected, sky=created, violet=doc uploaded, amber=doc deleted)
+  - Connector lines between events
+- `landing-page.tsx` — added public lookup section between hero and stats strip.
+
+### Stage Summary / Verification (agent-browser)
+- ✅ All pages compile (HTTP 200), no console errors.
+- ✅ Dashboard renders 4 charts (area/pie/2 bars) + 6 KPI cards with trend deltas.
+- ✅ CSV export returns `text/csv; charset=utf-8` with BOM, 30 columns.
+- ✅ Bulk approve: tested via API → 1 policy approved, activities logged (APPROVED + PDF_GENERATED).
+- ✅ Public lookup: searched "98765432" → found Maria's policy → clicked → navigated to verification page showing APROBADA + N° 000002.
+- ✅ Activity timeline: shows "Póliza aprobada masivamente con N° 000002" + "Certificado PDF generado (aprobación masiva)".
+- ✅ Status filter dropdown + "Seleccionar todo" + bulk-action bar all present.
+- ✅ Sidebar shows pending badge (count) + mini stats panel.
+- ✅ `bun run lint` passes clean (0 errors).
+
+### Files Added/Modified
+- Added: `src/lib/activity.ts`, `src/components/seguros/dashboard-charts.tsx`, `src/components/seguros/public-lookup.tsx`
+- Added API: `src/app/api/policies/export/route.ts`, `src/app/api/policies/lookup/route.ts`, `src/app/api/policies/bulk/route.ts`, `src/app/api/policies/[id]/activities/route.ts`
+- Modified: `prisma/schema.prisma` (ActivityLog model), `src/app/api/stats/route.ts` (charts data), `src/app/api/policies/route.ts`, `src/app/api/policies/[id]/route.ts`, `src/app/api/policies/[id]/approve/route.ts`, `src/app/api/policies/[id]/documents/route.ts`, `src/app/api/policies/[id]/documents/[docId]/route.ts` (activity logging)
+- Modified: `src/components/seguros/admin-dashboard.tsx` (full rewrite), `src/components/seguros/admin-policy-detail.tsx` (historial tab), `src/components/seguros/landing-page.tsx` (public lookup section)
+
+### Unresolved / Next-phase recommendations (updated)
+1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+3. **PDF template**: Integrate user's `pdfclean` template.
+4. **Date-range filter**: Add date picker to list views for historical analysis.
+5. **Notifications**: Email/SMS on approval.
+6. **Dashboard drill-down**: Click a chart segment to filter the list.
+7. **Pagination**: For lists exceeding 100 items.
+8. **Document replace**: One-click replace (delete+upload) in admin.
+

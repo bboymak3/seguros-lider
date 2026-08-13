@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { storage } from '@/lib/storage'
+import { logActivity } from '@/lib/activity'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,11 +41,39 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
   }
 
   try {
+    const before = await db.policy.findUnique({ where: { id } })
     const updated = await db.policy.update({
       where: { id },
       data: allowed,
       include: { documents: true },
     })
+
+    // detect status change vs general update
+    if (allowed.status && before && before.status !== allowed.status) {
+      await logActivity(
+        id,
+        allowed.status === 'APROBADA'
+          ? 'APPROVED'
+          : allowed.status === 'RECHAZADA'
+            ? 'REJECTED'
+            : allowed.status === 'ANULADA'
+              ? 'ANULADA'
+              : 'STATUS_CHANGED',
+        `Estado cambiado de "${before.status}" a "${allowed.status}"`,
+        'admin',
+        { from: before.status, to: allowed.status }
+      )
+    } else {
+      const changedFields = Object.keys(allowed)
+      await logActivity(
+        id,
+        'UPDATED',
+        `Datos actualizados${changedFields.length ? ` (${changedFields.length} campo${changedFields.length > 1 ? 's' : ''})` : ''}`,
+        'admin',
+        { fields: changedFields }
+      )
+    }
+
     return NextResponse.json({ policy: updated })
   } catch (e) {
     console.error('update error', e)

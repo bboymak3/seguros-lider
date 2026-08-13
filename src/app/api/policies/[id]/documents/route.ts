@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { storage } from '@/lib/storage'
 import { validateDocFile, safeFileName } from '@/lib/policy-utils'
+import { logActivity } from '@/lib/activity'
 
 export const dynamic = 'force-dynamic'
 
@@ -61,6 +62,14 @@ export async function POST(req: NextRequest, { params }: Ctx) {
   if (Object.keys(patch).length) {
     await db.policy.update({ where: { id }, data: patch })
   }
+
+  await logActivity(
+    id,
+    'DOCUMENT_UPLOADED',
+    `Documento ${tipo.toUpperCase()} adjuntado: ${fileName}`,
+    'admin',
+    { tipo, fileName, mimeType: file.type, size: file.size }
+  )
 
   return NextResponse.json({ document: doc }, { status: 201 })
 }

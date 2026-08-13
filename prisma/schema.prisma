@@ -82,6 +82,7 @@ model Policy {
   aprobadoPor    String?
 
   documents      Document[]
+  activities     ActivityLog[]
 }
 
 model Document {
@@ -93,5 +94,16 @@ model Document {
   filePath      String   // bucket path
   mimeType      String
   size          Int?
+  createdAt      DateTime @default(now())
+}
+
+model ActivityLog {
+  id            String   @id @default(cuid())
+  policyId      String
+  policy        Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  action        String   // CREATED | UPDATED | APPROVED | REJECTED | DOCUMENT_UPLOADED | DOCUMENT_DELETED | STATUS_CHANGED | PDF_GENERATED
+  description   String
+  actor         String   @default("system")
+  metadata      String?  // JSON string with changed fields, etc.
   createdAt     DateTime @default(now())
 }

@@ -13,10 +13,12 @@ import {
   Mail,
   MapPin,
   Star,
+  Search,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { PublicLookup } from './public-lookup'
 
 export default function LandingPage({
   onSolicitud,
@@ -190,6 +192,26 @@ export default function LandingPage({
               </Card>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Public lookup */}
+      <section className="border-y border-white/10 bg-slate-900/40">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+          <div className="mb-6 text-center">
+            <Badge className="mb-3 border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/10">
+              <Search className="mr-1.5 h-3 w-3" />
+              Verificación pública
+            </Badge>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              Consulta el estado de tu póliza
+            </h2>
+            <p className="mt-2 text-slate-400">
+              Ingresa tu cédula, placa o código de verificación para acceder a tu
+              certificado digital.
+            </p>
+          </div>
+          <PublicLookup />
         </div>
       </section>
 

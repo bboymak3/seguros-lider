@@ -19,6 +19,15 @@ import {
   IdCard,
   Copy,
   RefreshCw,
+  Activity,
+  History,
+  FilePlus2,
+  FileEdit,
+  FileCheck2,
+  FileX,
+  Ban,
+  Paperclip,
+  FileMinus,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -342,6 +351,9 @@ export function AdminPolicyDetail({
             <TabsTrigger value="certificado" className="data-[state=active]:bg-emerald-500/15 data-[state=active]:text-emerald-300">
               <QrCode className="mr-1.5 h-4 w-4" /> Certificado / QR
             </TabsTrigger>
+            <TabsTrigger value="historial" className="data-[state=active]:bg-emerald-500/15 data-[state=active]:text-emerald-300">
+              <History className="mr-1.5 h-4 w-4" /> Historial
+            </TabsTrigger>
           </TabsList>
 
           {/* DATOS */}
@@ -471,9 +483,120 @@ export function AdminPolicyDetail({
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* HISTORIAL */}
+          <TabsContent value="historial" className="mt-4">
+            <ActivityTimeline policyId={id} />
+          </TabsContent>
         </Tabs>
       </main>
     </div>
+  )
+}
+
+function ActivityTimeline({ policyId }: { policyId: string }) {
+  const [activities, setActivities] = useState<Array<{
+    id: string
+    action: string
+    description: string
+    actor: string
+    createdAt: string
+    metadata?: string | null
+  }>>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let alive = true
+    fetch(`/api/policies/${policyId}/activities`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (alive) {
+          setActivities(d.activities || [])
+          setLoading(false)
+        }
+      })
+      .catch(() => alive && setLoading(false))
+    return () => {
+      alive = false
+    }
+  }, [policyId])
+
+  const iconFor = (action: string) => {
+    switch (action) {
+      case 'CREATED': return FilePlus2
+      case 'UPDATED': return FileEdit
+      case 'APPROVED': return FileCheck2
+      case 'REJECTED': return FileX
+      case 'ANULADA': return Ban
+      case 'DOCUMENT_UPLOADED': return Paperclip
+      case 'DOCUMENT_DELETED': return FileMinus
+      case 'PDF_GENERATED': return FileText
+      default: return Activity
+    }
+  }
+
+  const colorFor = (action: string) => {
+    switch (action) {
+      case 'APPROVED': return 'bg-emerald-500/15 text-emerald-300 ring-emerald-500/20'
+      case 'REJECTED':
+      case 'ANULADA': return 'bg-red-500/15 text-red-300 ring-red-500/20'
+      case 'CREATED': return 'bg-sky-500/15 text-sky-300 ring-sky-500/20'
+      case 'DOCUMENT_UPLOADED': return 'bg-violet-500/15 text-violet-300 ring-violet-500/20'
+      case 'DOCUMENT_DELETED': return 'bg-amber-500/15 text-amber-300 ring-amber-500/20'
+      default: return 'bg-slate-500/15 text-slate-300 ring-slate-500/20'
+    }
+  }
+
+  return (
+    <Card className="border-white/10 bg-slate-900/60">
+      <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
+        <History className="h-4 w-4 text-emerald-400" />
+        <h2 className="font-semibold">Historial de actividad</h2>
+        <Badge variant="secondary" className="ml-auto bg-white/5 text-slate-400">
+          {activities.length} evento(s)
+        </Badge>
+      </div>
+      <CardContent className="p-4">
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-6 w-6 animate-spin text-slate-500" />
+          </div>
+        ) : activities.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-2 py-12 text-slate-500">
+            <Activity className="h-8 w-8 opacity-30" />
+            <p className="text-sm">Sin actividad registrada.</p>
+          </div>
+        ) : (
+          <ol className="relative space-y-1">
+            {activities.map((a, i) => {
+              const Icon = iconFor(a.action)
+              const color = colorFor(a.action)
+              const isLast = i === activities.length - 1
+              return (
+                <li key={a.id} className="relative flex gap-3 pb-4">
+                  {!isLast && (
+                    <div className="absolute left-[15px] top-8 h-full w-px bg-white/10" />
+                  )}
+                  <div className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ring-1 ${color}`}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1 pt-0.5">
+                    <p className="text-sm font-medium text-slate-200">{a.description}</p>
+                    <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-slate-500">
+                      <span className="font-mono">{a.action}</span>
+                      <span>·</span>
+                      <span>por {a.actor}</span>
+                      <span>·</span>
+                      <span>{new Date(a.createdAt).toLocaleString('es-VE')}</span>
+                    </div>
+                  </div>
+                </li>
+              )
+            })}
+          </ol>
+        )}
+      </CardContent>
+    </Card>
   )
 }
 

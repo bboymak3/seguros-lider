@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { storage } from '@/lib/storage'
+import { logActivity } from '@/lib/activity'
 
 export const dynamic = 'force-dynamic'
 
@@ -35,6 +36,14 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
       await db.policy.update({ where: { id }, data: patch })
     }
   }
+
+  await logActivity(
+    id,
+    'DOCUMENT_DELETED',
+    `Documento ${doc.tipo} eliminado: ${doc.fileName}`,
+    'admin',
+    { docId, tipo: doc.tipo, fileName: doc.fileName }
+  )
 
   return NextResponse.json({ ok: true })
 }

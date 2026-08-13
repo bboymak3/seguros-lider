@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { generatePolicyPdf } from '@/lib/pdf'
 import { nextPolicyNumber } from '@/lib/policy-utils'
+import { logActivity } from '@/lib/activity'
 
 export const dynamic = 'force-dynamic'
 
@@ -48,9 +49,18 @@ export async function POST(req: NextRequest, { params }: Ctx) {
         qrPath: qrUrl,
       },
     })
+    await logActivity(id, 'PDF_GENERATED', 'Certificado PDF generado tras aprobación', 'admin')
   } catch (e) {
     console.error('pdf gen error', e)
   }
+
+  await logActivity(
+    id,
+    'APPROVED',
+    `Póliza aprobada con N° ${policyNumber}`,
+    'admin',
+    { policyNumber, previousStatus: policy.status }
+  )
 
   return NextResponse.json({ policy: updated })
 }
