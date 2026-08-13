@@ -622,3 +622,62 @@ Task: QA assessment + coverage comparison prefill + admin detail settings-backed
 6. **Dashboard global date-range**: Add a date filter affecting all dashboard stats + charts.
 7. **Inline edit confirmation**: Show "unsaved changes" indicator + discard button in admin detail.
 8. **Policy clone/duplicate**: Button to clone an existing policy's data into a new solicitud.
+
+---
+
+## Task ID: 10 (cron review — unsaved changes indicator + policy clone)
+Agent: main (Z.ai Code) — webDevReview cron round 9
+Task: QA assessment + inline unsaved-changes indicator + policy clone/duplicate feature.
+
+### Work Log
+**QA Assessment (agent-browser)**
+- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+- Confirmed previous round's features (coverage prefill, admin detail dropdowns) all working.
+
+**Major Feature: Inline Unsaved-Changes Indicator**
+- Added `originalForm` state to track the saved version of the form.
+- Added `hasChanges` computed via `useMemo` — compares current form to originalForm field by field.
+- Added `beforeunload` event listener that warns before navigating away with unsaved changes.
+- Header now shows:
+  - "Cambios sin guardar" badge (amber, pulsing dot) when hasChanges=true.
+  - "Descartar cambios" button (RotateCcw icon, red hover) — only when hasChanges.
+  - "Guardar" button disabled when !hasChanges (prevents redundant saves).
+- Bottom of Datos tab (save bar):
+  - Shows "Tienes cambios sin guardar" (amber) when hasChanges, or "Todos los cambios guardados" (emerald check) when !hasChanges.
+  - "Descartar" button + "Guardar cambios" button (disabled when !hasChanges).
+- `discardChanges()` function: confirms then resets form to originalForm.
+- `save()` now updates originalForm after successful save (clears hasChanges).
+
+**Major Feature: Policy Clone/Duplicate**
+- Added "Clonar" button (Copy icon) in the action bar of admin policy detail.
+- `clonePolicy()` function:
+  - Confirms with user ("¿Crear una nueva solicitud con los mismos datos?").
+  - Builds payload from current form, excluding policyNumber, status, and notes.
+  - POSTs to /api/policies (creates new solicitud with PENDIENTE status).
+  - On success: toast "Solicitud clonada con código XXXXXX" + navigates to the new policy.
+- Added `onNavigate?: (newId: string) => void` prop to AdminPolicyDetail.
+- AdminDashboard passes `onNavigate={(newId) => setSelectedId(newId)}` so clone navigates to the new policy detail.
+- Added `cloning` state for button loading spinner.
+- Verificado: cloned Maria's policy → new policy created with code 398239, status PENDIENTE, same name "Maria Editada".
+
+### Stage Summary / Verification (agent-browser + curl)
+- ✅ All pages compile (HTTP 200), no console errors.
+- ✅ Unsaved indicator: "Guardar" button disabled when no changes; editing a field → "Cambios sin guardar" badge appears in header + "Descartar cambios" button + "Guardar" enabled.
+- ✅ Bottom save bar: shows "Tienes cambios sin guardar" (amber) when dirty, "Todos los cambios guardados" (emerald) when clean.
+- ✅ Clone: clicked "Clonar" → new policy created (code 398239, PENDIENTE) → navigated to new policy detail → toast confirmed.
+- ✅ `bun run lint` passes clean (0 errors).
+- ✅ All API endpoints return 200.
+
+### Files Modified
+- `src/components/seguros/admin-policy-detail.tsx` (originalForm state + hasChanges useMemo + beforeunload + discardChanges + clonePolicy + Clonar button + unsaved indicator badges + disabled save logic + RotateCcw/Check icon imports + onNavigate prop)
+- `src/components/seguros/admin-dashboard.tsx` (pass onNavigate to AdminPolicyDetail)
+
+### Unresolved / Next-phase recommendations (updated)
+1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+3. **PDF template**: Integrate user's `pdfclean` template.
+4. **Notifications (email/SMS)**: External notification delivery on approval.
+5. **Policy expiry email**: Send reminder emails before vigencia ends.
+6. **Dashboard global date-range**: Add a date filter affecting all dashboard stats + charts.
+7. **Policy clone with documents**: Currently clones data only; could also copy document references.
+8. **Admin detail keyboard shortcut**: Cmd/Ctrl+S to save from anywhere in the detail.

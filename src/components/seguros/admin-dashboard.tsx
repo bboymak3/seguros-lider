@@ -411,6 +411,7 @@ function AdminShell({
     return (
       <AdminPolicyDetail
         id={selectedId}
+        onNavigate={(newId) => setSelectedId(newId)}
         onBack={() => {
           setSelectedId(null)
           refreshAll()

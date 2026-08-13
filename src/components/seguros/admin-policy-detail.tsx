@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import {
   ArrowLeft,
   Save,
@@ -36,6 +36,8 @@ import {
   Hash,
   Clock,
   FileJson,
+  RotateCcw,
+  Check,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -99,17 +101,42 @@ const TEXT_FIELDS: { key: string; label: string; group: string }[] = [
 export function AdminPolicyDetail({
   id,
   onBack,
+  onNavigate,
 }: {
   id: string
   onBack: () => void
+  onNavigate?: (newId: string) => void
 }) {
   const [policy, setPolicy] = useState<Policy | null>(null)
   const [form, setForm] = useState<Record<string, string>>({})
+  const [originalForm, setOriginalForm] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
   const [approving, setApproving] = useState(false)
+  const [cloning, setCloning] = useState(false)
   const [uploading, setUploading] = useState<string | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
   const [fieldOptions, setFieldOptions] = useState<Record<string, string[]> | null>(null)
+
+  // Track unsaved changes by comparing current form to original (saved) form
+  const hasChanges = useMemo(() => {
+    const keys = new Set([...Object.keys(form), ...Object.keys(originalForm)])
+    for (const k of keys) {
+      if ((form[k] || '') !== (originalForm[k] || '')) return true
+    }
+    return false
+  }, [form, originalForm])
+
+  // Warn before navigating away with unsaved changes
+  useEffect(() => {
+    function onBeforeUnload(e: BeforeUnloadEvent) {
+      if (hasChanges) {
+        e.preventDefault()
+        e.returnValue = ''
+      }
+    }
+    window.addEventListener('beforeunload', onBeforeUnload)
+    return () => window.removeEventListener('beforeunload', onBeforeUnload)
+  }, [hasChanges])
 
   // Load configurable options from settings API
   useEffect(() => {
@@ -139,11 +166,19 @@ export function AdminPolicyDetail({
     }
     flat.notes = (policy.notes as string) ?? ''
     setForm(flat)
+    setOriginalForm(flat)
   }, [id, refreshKey])
 
   useEffect(() => {
     load()
   }, [load])
+
+  function discardChanges() {
+    if (!hasChanges) return
+    if (!confirm('¿Descartar los cambios no guardados?')) return
+    setForm(originalForm)
+    toast.info('Cambios descartados')
+  }
 
   async function save() {
     setSaving(true)
@@ -155,11 +190,42 @@ export function AdminPolicyDetail({
       })
       if (!r.ok) throw new Error('Error al guardar')
       toast.success('Cambios guardados')
+      setOriginalForm(form)
       await load()
     } catch (e) {
       toast.error((e as Error).message)
     } finally {
       setSaving(false)
+    }
+  }
+
+  async function clonePolicy() {
+    if (!policy) return
+    if (!confirm('¿Crear una nueva solicitud con los mismos datos? Se omitirá el número de póliza y el estado.')) return
+    setCloning(true)
+    try {
+      // Build payload from current form, excluding status/policyNumber/notes
+      const cloneData: Record<string, unknown> = {}
+      for (const f of TEXT_FIELDS) {
+        if (!['policyNumber', 'status', 'notes'].includes(f.key)) {
+          cloneData[f.key] = form[f.key] || null
+        }
+      }
+      cloneData.actor = 'admin'
+      const r = await fetch('/api/policies', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cloneData),
+      })
+      if (!r.ok) throw new Error('Error al clonar')
+      const { policy: newPolicy } = await r.json()
+      toast.success(`Solicitud clonada con código ${newPolicy.verifyCode}`)
+      // Navigate to the new policy
+      if (onNavigate) onNavigate(newPolicy.id)
+    } catch (e) {
+      toast.error((e as Error).message)
+    } finally {
+      setCloning(false)
     }
   }
 
@@ -326,16 +392,34 @@ export function AdminPolicyDetail({
             </Badge>
           </div>
           <div className="ml-auto flex items-center gap-2">
+            {hasChanges && (
+              <span className="flex items-center gap-1.5 rounded-full bg-amber-500/15 px-2.5 py-1 text-xs font-medium text-amber-300 ring-1 ring-amber-500/20">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" />
+                Cambios sin guardar
+              </span>
+            )}
             <a href={`/api/policies/${id}/pdf`} target="_blank" rel="noreferrer">
               <Button size="sm" variant="outline" className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white">
                 <Download className="mr-1 h-4 w-4" /> PDF
               </Button>
             </a>
+            {hasChanges && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={discardChanges}
+                disabled={saving}
+                className="text-slate-400 hover:text-red-300 hover:bg-red-500/10"
+                title="Descartar cambios"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </Button>
+            )}
             <Button
               size="sm"
               onClick={save}
-              disabled={saving}
-              className="bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+              disabled={saving || !hasChanges}
+              className="bg-emerald-500 text-slate-950 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}
               Guardar
@@ -376,6 +460,18 @@ export function AdminPolicyDetail({
                   <RefreshCw className="mr-1 h-4 w-4" /> Marcar pendiente
                 </Button>
               )}
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={clonePolicy}
+                disabled={cloning}
+                className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+                title="Crear una nueva solicitud con los mismos datos"
+              >
+                {cloning ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Copy className="mr-1 h-4 w-4" />}
+                Clonar
+              </Button>
             </div>
             <div className="ml-auto flex items-center gap-2 text-xs text-slate-400">
               <span>Verificación pública:</span>
@@ -460,11 +556,30 @@ export function AdminPolicyDetail({
                 />
               </CardContent>
             </Card>
-            <div className="flex justify-end">
-              <Button onClick={save} disabled={saving} className="bg-emerald-500 text-slate-950 hover:bg-emerald-400">
-                {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}
-                Guardar cambios
-              </Button>
+            <div className="flex items-center justify-between gap-3">
+              {hasChanges ? (
+                <span className="flex items-center gap-1.5 text-xs text-amber-300">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" />
+                  Tienes cambios sin guardar
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 text-xs text-emerald-300">
+                  <Check className="h-3.5 w-3.5" />
+                  Todos los cambios guardados
+                </span>
+              )}
+              <div className="flex gap-2">
+                {hasChanges && (
+                  <Button variant="ghost" onClick={discardChanges} disabled={saving} className="text-slate-400 hover:text-red-300 hover:bg-red-500/10">
+                    <RotateCcw className="mr-1 h-4 w-4" />
+                    Descartar
+                  </Button>
+                )}
+                <Button onClick={save} disabled={saving || !hasChanges} className="bg-emerald-500 text-slate-950 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed">
+                  {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}
+                  Guardar cambios
+                </Button>
+              </div>
             </div>
           </TabsContent>
 
