@@ -227,6 +227,40 @@ export function AdminPolicyDetail({
     }
   }
 
+  async function replaceDoc(doc: { id: string; tipo: string; fileName: string }) {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = ACCEPTED_DOC_EXT.join(',')
+    input.onchange = async () => {
+      const f = input.files?.[0]
+      if (!f) return
+      if (!confirm(`¿Reemplazar "${doc.fileName}" por "${f.name}"?`)) return
+      setUploading(doc.tipo)
+      // delete old then upload new
+      try {
+        await fetch(`/api/policies/${id}/documents/${doc.id}`, { method: 'DELETE' })
+        const fd = new FormData()
+        fd.append('file', f)
+        fd.append('tipo', doc.tipo)
+        const r = await fetch(`/api/policies/${id}/documents`, {
+          method: 'POST',
+          body: fd,
+        })
+        if (!r.ok) {
+          const j = await r.json().catch(() => ({}))
+          throw new Error(j.error || 'Error')
+        }
+        toast.success('Documento reemplazado')
+        await load()
+      } catch (e) {
+        toast.error((e as Error).message)
+      } finally {
+        setUploading(null)
+      }
+    }
+    input.click()
+  }
+
   if (!policy) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-100">
@@ -440,6 +474,7 @@ export function AdminPolicyDetail({
                         key={d.id}
                         doc={d}
                         onRemove={() => removeDoc(d.id)}
+                        onReplace={() => replaceDoc(d)}
                       />
                     ))}
                   </div>
@@ -720,9 +755,11 @@ function GroupCard({
 function DocCard({
   doc,
   onRemove,
+  onReplace,
 }: {
   doc: { id: string; tipo: string; fileName: string; mimeType: string; size?: number; filePath: string }
   onRemove: () => void
+  onReplace?: () => void
 }) {
   const [lightbox, setLightbox] = useState(false)
   const isImg = doc.mimeType.startsWith('image/')
@@ -761,6 +798,15 @@ function DocCard({
             >
               <ExternalLink className="h-4 w-4" />
             </a>
+            {onReplace && (
+              <button
+                onClick={onReplace}
+                className="rounded p-1 text-slate-400 hover:bg-emerald-500/10 hover:text-emerald-300"
+                title="Reemplazar"
+              >
+                <RefreshCw className="h-4 w-4" />
+              </button>
+            )}
             <button
               onClick={onRemove}
               className="rounded p-1 text-slate-400 hover:bg-red-500/10 hover:text-red-300"

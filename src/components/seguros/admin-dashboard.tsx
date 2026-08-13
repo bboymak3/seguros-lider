@@ -62,6 +62,7 @@ import { DashboardCharts, type Stats as ChartStats } from './dashboard-charts'
 import { AdminSettings } from './admin-settings'
 import { ExpiryAlerts } from './expiry-alerts'
 import { NotificationsBell } from './notifications-bell'
+import { ActivityFeed } from './activity-feed'
 import { toast } from 'sonner'
 
 type Policy = Record<string, unknown> & {
@@ -81,7 +82,7 @@ type Policy = Record<string, unknown> & {
   tituloDocName?: string | null
 }
 
-type View = 'dashboard' | 'pendientes' | 'todas' | 'nueva' | 'settings'
+type View = 'dashboard' | 'pendientes' | 'todas' | 'nueva' | 'settings' | 'actividad'
 
 const ADMIN_PASSWORD = 'admin123'
 
@@ -422,6 +423,7 @@ function AdminShell({
     { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { key: 'pendientes', label: 'Solicitud de Pólizas', icon: Clock, badge: stats?.pendientes },
     { key: 'todas', label: 'Todas las Pólizas', icon: FileText },
+    { key: 'actividad', label: 'Actividad', icon: Activity },
     { key: 'nueva', label: 'Nueva Solicitud', icon: Plus },
     { key: 'settings', label: 'Configuración', icon: SettingsIcon },
   ]
@@ -739,6 +741,9 @@ function AdminShell({
             />
           )}
           {view === 'settings' && <AdminSettings />}
+          {view === 'actividad' && (
+            <ActivityFeed onSelectPolicy={(pid) => setSelectedId(pid)} />
+          )}
         </main>
       </div>
     </div>

@@ -14,6 +14,7 @@ import {
   MapPin,
   Star,
   Search,
+  Upload,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -281,10 +282,13 @@ export default function LandingPage({
         </div>
       </section>
 
-      {/* How it works */}
+      {/* How it works — vertical timeline */}
       <section id="como" className="border-t border-white/10 bg-slate-900/40">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+        <div className="mx-auto max-w-4xl px-4 py-20 sm:px-6">
           <div className="mx-auto max-w-2xl text-center">
+            <Badge className="mb-3 border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/10">
+              Proceso simple
+            </Badge>
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
               Cómo funciona
             </h2>
@@ -292,26 +296,38 @@ export default function LandingPage({
               Cuatro pasos desde la solicitud hasta la verificación.
             </p>
           </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-4">
-            {[
-              ['01', 'Completa el formulario', 'Datos del tomador y vehículo.'],
-              ['02', 'Adjunta documentos', 'Cédula y título (opcional).'],
-              ['03', 'Revisión y aprobación', 'El equipo valida la solicitud.'],
-              ['04', 'Recibe tu certificado', 'PDF con QR para verificación.'],
-            ].map(([n, t, d], i) => (
-              <div key={n} className="relative">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300">
-                  <span className="text-sm font-bold">{n}</span>
+          <div className="relative mt-14">
+            {/* Vertical line */}
+            <div className="absolute left-5 top-0 h-full w-0.5 bg-gradient-to-b from-emerald-500/50 via-emerald-500/20 to-transparent sm:left-6" />
+            <div className="space-y-10">
+              {[
+                { n: '01', icon: FileText, title: 'Completa el formulario', desc: 'Datos del tomador y vehículo en un asistente paso a paso. Guardado automático de borrador.', time: '~5 min' },
+                { n: '02', icon: Upload, title: 'Adjunta documentos', desc: 'Cédula de identidad y título de propiedad (opcional). Formatos JPG, PNG, WEBP o PDF.', time: '~2 min' },
+                { n: '03', icon: Clock, title: 'Revisión y aprobación', desc: 'Nuestro equipo valida la solicitud y aprueba la póliza. Recibirás notificación del estado.', time: '< 24 h' },
+                { n: '04', icon: QrCode, title: 'Recibe tu certificado', desc: 'PDF con código QR para verificación instantánea. Comparte o imprime tu certificado digital.', time: 'Inmediato' },
+              ].map((step, i) => (
+                <div key={step.n} className="relative flex gap-5 sm:gap-6">
+                  {/* Node */}
+                  <div className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500/40 bg-slate-950 sm:h-12 sm:w-12">
+                    <step.icon className="h-5 w-5 text-emerald-300" />
+                  </div>
+                  {/* Content */}
+                  <div className="flex-1 pt-1">
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-sm text-emerald-400">{step.n}</span>
+                      <h3 className="text-lg font-semibold">{step.title}</h3>
+                      <Badge variant="secondary" className="bg-white/5 text-slate-400">
+                        <Clock className="mr-1 h-2.5 w-2.5" />
+                        {step.time}
+                      </Badge>
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-400">{step.desc}</p>
+                  </div>
                 </div>
-                <h3 className="mt-4 font-semibold">{t}</h3>
-                <p className="mt-1 text-sm text-slate-400">{d}</p>
-                {i < 3 && (
-                  <ArrowRight className="absolute -right-3 top-4 hidden h-5 w-5 text-slate-600 md:block" />
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-          <div className="mt-12 text-center">
+          <div className="mt-14 text-center">
             <Button
               size="lg"
               onClick={onSolicitud}

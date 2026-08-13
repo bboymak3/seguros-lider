@@ -435,3 +435,66 @@ Task: QA assessment + dynamic form options + landing FAQ/animated stats + audit 
 6. **Document replace**: One-click replace (delete+upload) in admin.
 7. **Admin settings → admin detail**: Make admin detail edit fields also use settings-backed dropdowns.
 8. **Global activity feed page**: Dedicated page showing all activity across all policies (not just the bell dropdown).
+
+---
+
+## Task ID: 7 (cron review — activity feed + document replace + landing timeline)
+Agent: main (Z.ai Code) — webDevReview cron round 6
+Task: QA assessment + global activity feed page + document replace + landing timeline redesign.
+
+### Work Log
+**QA Assessment (agent-browser)**
+- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+- Confirmed previous round's features (settings→form integration, FAQ, audit export) all working.
+
+**Major Feature: Global Activity Feed Page**
+- New `GET /api/activities` endpoint with pagination + filters (action, from, to date range).
+- Returns activities with joined policy info (verifyCode, policyNumber, nombre, status).
+- New `ActivityFeed` component (`activity-feed.tsx`):
+  - Filter row: action dropdown (8 options), date-from/to inputs, Filtrar + Limpiar buttons, total count.
+  - Activity list: each item has color-coded icon badge (9 action types), description, policy name + number + status badge + time-ago.
+  - Click any item → opens that policy's detail.
+  - Pagination footer with numbered buttons + prev/next chevrons.
+  - Skeleton loaders + empty state.
+- Added "Actividad" nav item (Activity icon) in admin sidebar.
+- New view 'actividad' in admin dashboard.
+
+**Feature: Document One-Click Replace**
+- Added `replaceDoc` function in admin-policy-detail: opens file picker → confirms replacement → deletes old doc → uploads new doc with same tipo.
+- Added "Reemplazar" button (RefreshCw icon) to DocCard header (between Abrir and Eliminar).
+- Button hover: emerald accent. Tooltip: "Reemplazar".
+- Confirmation dialog shows old and new filenames.
+
+**Feature: Landing Page "How it Works" Timeline Redesign**
+- Replaced simple 4-column horizontal grid with a vertical timeline:
+  - Gradient vertical line (emerald, fading down).
+  - 4 nodes with icons (FileText, Upload, Clock, QrCode) in bordered circles.
+  - Each step: number (01-04), title, time badge (~5 min, ~2 min, <24 h, Inmediato), description.
+  - Responsive: adapts from mobile (narrow) to desktop.
+  - "Proceso simple" badge + CTA button at bottom.
+- Added Upload icon import to landing page.
+
+### Stage Summary / Verification (agent-browser + curl)
+- ✅ All pages compile (HTTP 200), no console errors.
+- ✅ Activity feed: "Actividad Global" heading + 3 activities visible (CREATED carlos, APPROVED Maria, PDF_GENERATED Maria) with policy info, status badges, time-ago.
+- ✅ Activity feed filters: action dropdown + date inputs + Filtrar/Limpiar buttons present.
+- ✅ Activity feed pagination UI present.
+- ✅ VLM confirms activity feed is "limpio, moderno y coherente" with "buena estructura".
+- ✅ Document replace: "Reemplazar" button present on DocCard (verified 3 button titles: Vista previa, Reemplazar, Eliminar).
+- ✅ Landing timeline: 4 steps render with time badges (~5 min, ~2 min, <24 h, Inmediato).
+- ✅ `bun run lint` passes clean (0 errors).
+- ✅ All API endpoints return 200 (including new /api/activities).
+
+### Files Added/Modified
+- Added: `src/app/api/activities/route.ts`, `src/components/seguros/activity-feed.tsx`
+- Modified: `src/components/seguros/admin-dashboard.tsx` (actividad view + nav item + ActivityFeed import), `src/components/seguros/admin-policy-detail.tsx` (replaceDoc function + DocCard onReplace prop + Reemplazar button), `src/components/seguros/landing-page.tsx` (vertical timeline redesign + Upload icon import)
+
+### Unresolved / Next-phase recommendations (updated)
+1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+3. **PDF template**: Integrate user's `pdfclean` template.
+4. **Notifications (email/SMS)**: External notification delivery on approval.
+5. **Policy expiry email**: Send reminder emails before vigencia ends.
+6. **Admin detail → settings dropdowns**: Make admin detail edit fields use settings-backed dropdowns (currently plain text inputs).
+7. **Activity feed → CSV export**: Export the global activity feed as CSV.
+8. **Dashboard quick-stats cards clickable**: Make KPI cards navigate to filtered lists.
