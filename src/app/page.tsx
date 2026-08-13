@@ -25,8 +25,10 @@ function Router() {
 
   // ?view=solicitud -> the request form
   if (view === 'solicitud') {
+    const cobertura = sp.get('cobertura')
     return (
       <SolicitudForm
+        prefillCobertura={cobertura || undefined}
         onDone={(code) => router.push(`?v=${code}`)}
         onBack={() => router.push('/')}
       />

@@ -109,6 +109,24 @@ export function AdminPolicyDetail({
   const [approving, setApproving] = useState(false)
   const [uploading, setUploading] = useState<string | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
+  const [fieldOptions, setFieldOptions] = useState<Record<string, string[]> | null>(null)
+
+  // Load configurable options from settings API
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((r) => r.json())
+      .then((d) => {
+        setFieldOptions({
+          tipoVehiculo: d.settings.VEHICLE_TYPES,
+          tipoCobertura: d.settings.COVERAGE_TYPES,
+          compania: d.settings.ASEGURADORAS,
+          plan: d.settings.PLAN_TYPES,
+        })
+      })
+      .catch(() => {
+        /* ignore — fields remain plain text inputs */
+      })
+  }, [])
 
   const load = useCallback(async () => {
     const r = await fetch(`/api/policies/${id}`)
@@ -428,9 +446,9 @@ export function AdminPolicyDetail({
 
           {/* DATOS */}
           <TabsContent value="datos" className="mt-4 space-y-4">
-            <GroupCard title="Datos del Cliente" icon={User} fields={TEXT_FIELDS.filter((f) => f.group === 'cliente')} form={form} setForm={setForm} />
-            <GroupCard title="Datos del Vehículo" icon={Car} fields={TEXT_FIELDS.filter((f) => f.group === 'vehiculo')} form={form} setForm={setForm} />
-            <GroupCard title="Cobertura y Condiciones" icon={ShieldCheck} fields={TEXT_FIELDS.filter((f) => f.group === 'cobertura')} form={form} setForm={setForm} />
+            <GroupCard title="Datos del Cliente" icon={User} fields={TEXT_FIELDS.filter((f) => f.group === 'cliente')} form={form} setForm={setForm} fieldOptions={fieldOptions || undefined} />
+            <GroupCard title="Datos del Vehículo" icon={Car} fields={TEXT_FIELDS.filter((f) => f.group === 'vehiculo')} form={form} setForm={setForm} fieldOptions={fieldOptions || undefined} />
+            <GroupCard title="Cobertura y Condiciones" icon={ShieldCheck} fields={TEXT_FIELDS.filter((f) => f.group === 'cobertura')} form={form} setForm={setForm} fieldOptions={fieldOptions || undefined} />
             <Card className="border-white/10 bg-slate-900/60">
               <CardContent className="p-4">
                 <Label className="mb-1.5 block text-xs text-slate-300">Notas internas</Label>
@@ -721,12 +739,14 @@ function GroupCard({
   fields,
   form,
   setForm,
+  fieldOptions,
 }: {
   title: string
   icon: React.ComponentType<{ className?: string }>
   fields: { key: string; label: string }[]
   form: Record<string, string>
   setForm: (f: Record<string, string>) => void
+  fieldOptions?: Record<string, string[]>
 }) {
   return (
     <Card className="border-white/10 bg-slate-900/60">
@@ -735,18 +755,45 @@ function GroupCard({
         <h2 className="font-semibold">{title}</h2>
       </div>
       <CardContent className="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3">
-        {fields.map((f) => (
-          <div key={f.key} className="space-y-1">
-            <Label className="text-[11px] uppercase tracking-wide text-slate-500">
-              {f.label}
-            </Label>
-            <Input
-              value={form[f.key] || ''}
-              onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-              className="bg-slate-950/50 border-white/10"
-            />
-          </div>
-        ))}
+        {fields.map((f) => {
+          const opts = fieldOptions?.[f.key]
+          if (opts && opts.length > 0) {
+            return (
+              <div key={f.key} className="space-y-1">
+                <Label className="text-[11px] uppercase tracking-wide text-slate-500">
+                  {f.label}
+                </Label>
+                <Select
+                  value={form[f.key] || ''}
+                  onValueChange={(v) => setForm({ ...form, [f.key]: v })}
+                >
+                  <SelectTrigger className="bg-slate-950/50 border-white/10">
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {opts.map((o) => (
+                      <SelectItem key={o} value={o}>
+                        {o}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )
+          }
+          return (
+            <div key={f.key} className="space-y-1">
+              <Label className="text-[11px] uppercase tracking-wide text-slate-500">
+                {f.label}
+              </Label>
+              <Input
+                value={form[f.key] || ''}
+                onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                className="bg-slate-950/50 border-white/10"
+              />
+            </div>
+          )
+        })}
       </CardContent>
     </Card>
   )

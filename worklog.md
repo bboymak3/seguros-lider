@@ -561,3 +561,64 @@ Task: QA assessment + clickable dashboard KPI cards + landing coverage compariso
 6. **Admin detail → settings dropdowns**: Make admin detail edit fields use settings-backed dropdowns.
 7. **Coverage comparison → solicitud**: Click a plan card to pre-fill the form with that coverage type.
 8. **Dashboard date-range selector**: Add a global date range filter affecting all dashboard stats.
+
+---
+
+## Task ID: 9 (cron review — coverage prefill + admin detail dropdowns)
+Agent: main (Z.ai Code) — webDevReview cron round 8
+Task: QA assessment + coverage comparison prefill + admin detail settings-backed dropdowns.
+
+### Work Log
+**QA Assessment (agent-browser)**
+- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+- Confirmed previous round's features (clickable KPIs, coverage comparison, activity CSV export) all working.
+
+**Major Feature: Coverage Comparison → Solicitud Prefill**
+- Made CoverageComparison cards clickable with "Elegir este plan" CTA buttons.
+- Each card now has a Button that calls `selectPlan(plan)` → navigates to `?view=solicitud&cobertura=<planName>`.
+- Plan cards restructured: flex-col layout, features list flex-1 so CTA sits at bottom consistently.
+- Popular plan uses emerald variant; others use outline variant.
+- ArrowRight icon with group-hover translate animation.
+- Updated `page.tsx` Router to read `cobertura` query param and pass as `prefillCobertura` prop to SolicitudForm.
+- Updated SolicitudForm to accept `prefillCobertura?: string`:
+  - On mount, if prefillCobertura is set: `setValue('tipoCobertura', prefillCobertura)`.
+  - Jumps to step 2 (Cobertura) after 300ms so user sees the pre-selected value.
+  - Shows toast: `Plan "Cobertura Total" preseleccionado`.
+- Cards have hover effects: border-emerald glow, shadow-xl, group-hover translate on arrow.
+
+**Major Feature: Admin Detail Settings-Backed Dropdowns**
+- Updated GroupCard component to accept `fieldOptions?: Record<string, string[]>` prop.
+- When a field has options in fieldOptions, renders a Select dropdown instead of plain Input.
+- AdminPolicyDetail now loads settings from `/api/settings` on mount and builds fieldOptions map:
+  - `tipoVehiculo` → VEHICLE_TYPES
+  - `tipoCobertura` → COVERAGE_TYPES
+  - `compania` → ASEGURADORAS
+  - `plan` → PLAN_TYPES
+- All 3 GroupCards (Cliente, Vehículo, Cobertura) receive fieldOptions.
+- Fields without configured options remain plain text inputs (graceful fallback).
+- Editing a dropdown field updates form state same as text inputs.
+
+### Stage Summary / Verification (agent-browser + curl)
+- ✅ All pages compile (HTTP 200), no console errors.
+- ✅ Coverage comparison: 3 "Elegir este plan" buttons present on plan cards.
+- ✅ Plan prefill: clicked "Elegir este plan" (Cobertura Total) → navigated to solicitud → step jumped to "Paso 3 de 4: Cobertura" → Tipo de Cobertura dropdown shows "Cobertura Total" pre-selected.
+- ✅ Admin detail dropdowns: 4 comboboxes on Datos tab (Tipo de Vehículo, Tipo de Cobertura, Aseguradora, Plan).
+- ✅ Aseguradora dropdown loads options dynamically (verified: Seguros Caracas, Mapfre, Oriental, La Previsora, Banesco).
+- ✅ `bun run lint` passes clean (0 errors).
+- ✅ All API endpoints return 200.
+
+### Files Modified
+- `src/components/seguros/coverage-comparison.tsx` (useRouter + selectPlan + CTA buttons + flex layout)
+- `src/app/page.tsx` (read cobertura query param + pass as prefillCobertura prop)
+- `src/components/seguros/solicitud-form.tsx` (prefillCobertura prop + apply on mount + jump to step 2)
+- `src/components/seguros/admin-policy-detail.tsx` (fieldOptions state + load from /api/settings + GroupCard fieldOptions prop + Select rendering)
+
+### Unresolved / Next-phase recommendations (updated)
+1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+3. **PDF template**: Integrate user's `pdfclean` template.
+4. **Notifications (email/SMS)**: External notification delivery on approval.
+5. **Policy expiry email**: Send reminder emails before vigencia ends.
+6. **Dashboard global date-range**: Add a date filter affecting all dashboard stats + charts.
+7. **Inline edit confirmation**: Show "unsaved changes" indicator + discard button in admin detail.
+8. **Policy clone/duplicate**: Button to clone an existing policy's data into a new solicitud.

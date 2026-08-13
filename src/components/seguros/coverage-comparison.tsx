@@ -1,8 +1,10 @@
 'use client'
 
-import { Check, X, Shield, ShieldCheck, Crown } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Check, X, Shield, ShieldCheck, Crown, ArrowRight } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 type Plan = {
   name: string
@@ -68,6 +70,12 @@ const PLANS: Plan[] = [
 ]
 
 export function CoverageComparison() {
+  const router = useRouter()
+
+  function selectPlan(plan: Plan) {
+    router.push(`?view=solicitud&cobertura=${encodeURIComponent(plan.name)}`)
+  }
+
   return (
     <section id="coberturas" className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
       <div className="mx-auto max-w-2xl text-center">
@@ -87,7 +95,7 @@ export function CoverageComparison() {
         {PLANS.map((plan) => (
           <Card
             key={plan.name}
-            className={`relative overflow-hidden border-white/10 bg-slate-900/60 ring-1 ${plan.ring} ${
+            className={`group relative flex flex-col overflow-hidden border-white/10 bg-slate-900/60 ring-1 ${plan.ring} transition-all hover:border-emerald-500/40 hover:shadow-xl hover:shadow-emerald-500/5 ${
               plan.popular ? 'lg:scale-105 lg:shadow-2xl lg:shadow-emerald-500/10' : ''
             }`}
           >
@@ -96,7 +104,7 @@ export function CoverageComparison() {
                 MÁS POPULAR
               </div>
             )}
-            <CardContent className="p-6">
+            <CardContent className="flex flex-1 flex-col p-6">
               <div className="mb-4 flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/5 ring-1 ring-white/10">
                   <plan.icon className={`h-5 w-5 ${plan.color}`} />
@@ -109,7 +117,7 @@ export function CoverageComparison() {
                 <span className="text-sm text-slate-400">{plan.period}</span>
               </div>
 
-              <ul className="space-y-3">
+              <ul className="flex-1 space-y-3">
                 {plan.features.map((f) => (
                   <li key={f.label} className="flex items-start gap-2.5 text-sm">
                     {f.included ? (
@@ -134,6 +142,19 @@ export function CoverageComparison() {
                   asegurada hasta <span className="font-semibold text-slate-200">$ 25.000</span>
                 </p>
               </div>
+
+              <Button
+                onClick={() => selectPlan(plan)}
+                variant={plan.popular ? 'default' : 'outline'}
+                className={`mt-4 w-full ${
+                  plan.popular
+                    ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400'
+                    : 'border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                Elegir este plan
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Button>
             </CardContent>
           </Card>
         ))}

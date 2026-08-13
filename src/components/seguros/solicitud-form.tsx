@@ -88,9 +88,11 @@ const STEP_REQUIRED_FIELDS: Record<number, string[]> = {
 export default function SolicitudForm({
   onDone,
   onBack,
+  prefillCobertura,
 }: {
   onDone: (code: string) => void
   onBack: () => void
+  prefillCobertura?: string
 }) {
   const [step, setStep] = useState(0)
   const [submitting, setSubmitting] = useState(false)
@@ -130,7 +132,7 @@ export default function SolicitudForm({
     mode: 'onBlur',
   })
 
-  // Load draft on mount
+  // Load draft on mount + apply cobertura prefill from query param
   useEffect(() => {
     const draft = sessionStorage.getItem('seguros_draft')
     if (draft) {
@@ -143,6 +145,13 @@ export default function SolicitudForm({
       } catch {
         /* ignore */
       }
+    }
+    // Apply cobertura prefill from landing page plan selection (takes priority)
+    if (prefillCobertura) {
+      setValue('tipoCobertura', prefillCobertura)
+      // Jump to coverage step (step 2) so the user sees the pre-selected value
+      setTimeout(() => setStep(2), 300)
+      toast.success(`Plan "${prefillCobertura}" preseleccionado`)
     }
   }, [])
 
