@@ -99,6 +99,23 @@ export default function SolicitudForm({
   const [success, setSuccess] = useState<{ code: string; id: string } | null>(null)
   // draft auto-save indicator
   const [draftSaved, setDraftSaved] = useState(false)
+  // configurable options loaded from /api/settings
+  const [options, setOptions] = useState<{
+    ASEGURADORAS: string[]
+    COVERAGE_TYPES: string[]
+    VEHICLE_TYPES: string[]
+    PLAN_TYPES: string[]
+  } | null>(null)
+
+  // Load configurable options from settings API
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((r) => r.json())
+      .then((d) => setOptions(d.settings))
+      .catch(() => {
+        /* fall back to empty arrays — SelectField will show no options */
+      })
+  }, [])
 
   const {
     register,
@@ -471,7 +488,7 @@ export default function SolicitudForm({
                     value={watch('tipoVehiculo') || ''}
                     placeholder="Seleccionar"
                     onCng={(v) => setValue('tipoVehiculo', v)}
-                    options={['Automóvil', 'Moto', 'Camión', 'Camioneta', 'Pickup', 'Autobús']}
+                    options={options?.VEHICLE_TYPES || []}
                   />
                 </Field>
                 <Field label="Marca">
@@ -527,17 +544,35 @@ export default function SolicitudForm({
               </CardHeader>
               <CardContent className="grid gap-4 sm:grid-cols-2">
                 <Field label="Aseguradora">
-                  <Input {...register('compania')} placeholder="Seguros..." className="bg-slate-950/50 border-white/10" />
+                  {options && options.ASEGURADORAS.length > 0 ? (
+                    <SelectField
+                      value={watch('compania') || ''}
+                      placeholder="Seleccionar"
+                      onCng={(v) => setValue('compania', v)}
+                      options={options.ASEGURADORAS}
+                    />
+                  ) : (
+                    <Input {...register('compania')} placeholder="Seguros..." className="bg-slate-950/50 border-white/10" />
+                  )}
                 </Field>
                 <Field label="Plan">
-                  <Input {...register('plan')} placeholder="Plan Total" className="bg-slate-950/50 border-white/10" />
+                  {options && options.PLAN_TYPES.length > 0 ? (
+                    <SelectField
+                      value={watch('plan') || ''}
+                      placeholder="Seleccionar"
+                      onCng={(v) => setValue('plan', v)}
+                      options={options.PLAN_TYPES}
+                    />
+                  ) : (
+                    <Input {...register('plan')} placeholder="Plan Total" className="bg-slate-950/50 border-white/10" />
+                  )}
                 </Field>
                 <Field label="Tipo de Cobertura">
                   <SelectField
                     value={watch('tipoCobertura') || ''}
                     placeholder="Seleccionar"
                     onCng={(v) => setValue('tipoCobertura', v)}
-                    options={['Responsabilidad Civil', 'Cobertura Total', 'Cobertura Amplia', 'Pérdida Total']}
+                    options={options?.COVERAGE_TYPES || []}
                   />
                 </Field>
                 <Field label="Suma Asegurada">

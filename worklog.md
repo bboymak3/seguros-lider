@@ -372,3 +372,66 @@ Task: QA assessment + admin settings page + expiry alerts + notifications bell +
 6. **Policy expiry email**: Send reminder emails before vigencia ends.
 7. **Settings → form integration**: Make solicitud-form load options dynamically from /api/settings instead of hardcoded arrays.
 8. **Audit log export**: Export activity log as CSV/JSON.
+
+---
+
+## Task ID: 6 (cron review — form settings integration + FAQ + audit export)
+Agent: main (Z.ai Code) — webDevReview cron round 5
+Task: QA assessment + dynamic form options + landing FAQ/animated stats + audit log export.
+
+### Work Log
+**QA Assessment (agent-browser)**
+- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+- Confirmed previous round's features (settings page, notifications bell, expiry alerts, keyboard shortcuts) all working.
+
+**Major Feature: Settings → Form Integration (solicitud-form.tsx)**
+- Added `options` state + useEffect to fetch configurable lists from `/api/settings` on mount.
+- Replaced hardcoded vehicle types array with `options?.VEHICLE_TYPES || []`.
+- Replaced hardcoded coverage types array with `options?.COVERAGE_TYPES || []`.
+- Converted Aseguradora field from plain text Input to SelectField with `options.ASEGURADORAS` (falls back to text Input if no settings loaded).
+- Converted Plan field from plain text Input to SelectField with `options.PLAN_TYPES` (same fallback).
+- Non-configurable options (tipoCedula, nacionalidad, estadoCivil, sexo, uso, frecuenciaPago) remain hardcoded as they're fixed enumerations.
+
+**Major Feature: Landing Page FAQ + Animated Stats**
+- New `src/components/seguros/use-count-up.ts` — `useCountUp` hook (ease-out cubic animation) + `useInView` hook (IntersectionObserver).
+- New `src/components/seguros/faq-section.tsx` with two exports:
+  - `AnimatedStats` — 4 stat cards with count-up animation triggered on scroll into view (15.000+, 99%, <24h, 7/24).
+  - `FaqSection` — 6-question accordion with smooth expand/collapse (grid-rows transition), email CTA card.
+- Updated `landing-page.tsx`: replaced old hardcoded stats strip with `<AnimatedStats />`, added `<FaqSection />` between testimonials and contact sections.
+
+**Major Feature: Audit Log Export (API + UI)**
+- New `GET /api/policies/[id]/activities/export?format=csv|json` endpoint:
+  - CSV: BOM + headers (Fecha, Acción, Descripción, Actor, Metadata), proper escaping.
+  - JSON: structured response with policy info + activities array + export timestamp.
+  - Both return as downloadable file attachment.
+- Updated `admin-policy-detail.tsx` ActivityTimeline component:
+  - Added CSV and JSON export download buttons in the Historial tab header.
+  - Buttons only appear when `activities.length > 0`.
+  - Each button is an `<a download>` link with icon (Download/FileJson) + label.
+  - Added `FileJson` icon import.
+
+### Stage Summary / Verification (agent-browser + curl)
+- ✅ All pages compile (HTTP 200), no console errors.
+- ✅ Solicitud form: vehicle types dropdown loads options from /api/settings (verified "Automóvil", "Moto", "Camión" appearing).
+- ✅ Aseguradora + Plan fields now use SelectField with loaded options (fallback to text input if no settings).
+- ✅ Animated stats: 4 counters visible on landing page (Pólizas emitidas, Tasa de aprobación, Tiempo de respuesta, Verificación QR).
+- ✅ FAQ section: "Preguntas frecuentes" heading + 6 question accordions visible; clicking expands answer with smooth animation.
+- ✅ FAQ email CTA card present ("¿Tienes otra pregunta?").
+- ✅ Audit log export: CSV and JSON download links present in Historial tab (when activities exist).
+- ✅ CSV export content verified: correct headers + 2 activity rows with proper data.
+- ✅ `bun run lint` passes clean (0 errors).
+- ✅ All API endpoints return 200.
+
+### Files Added/Modified
+- Added: `src/components/seguros/use-count-up.ts`, `src/components/seguros/faq-section.tsx`, `src/app/api/policies/[id]/activities/export/route.ts`
+- Modified: `src/components/seguros/solicitud-form.tsx` (dynamic options from /api/settings), `src/components/seguros/landing-page.tsx` (AnimatedStats + FaqSection), `src/components/seguros/admin-policy-detail.tsx` (audit export buttons + FileJson import)
+
+### Unresolved / Next-phase recommendations (updated)
+1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+3. **PDF template**: Integrate user's `pdfclean` template.
+4. **Notifications (email/SMS)**: External notification delivery on approval.
+5. **Policy expiry email**: Send reminder emails before vigencia ends.
+6. **Document replace**: One-click replace (delete+upload) in admin.
+7. **Admin settings → admin detail**: Make admin detail edit fields also use settings-backed dropdowns.
+8. **Global activity feed page**: Dedicated page showing all activity across all policies (not just the bell dropdown).

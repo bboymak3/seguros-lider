@@ -35,6 +35,7 @@ import {
   Mail,
   Hash,
   Clock,
+  FileJson,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -590,6 +591,28 @@ function ActivityTimeline({ policyId }: { policyId: string }) {
         <Badge variant="secondary" className="ml-auto bg-white/5 text-slate-400">
           {activities.length} evento(s)
         </Badge>
+        {activities.length > 0 && (
+          <div className="flex items-center gap-1">
+            <a
+              href={`/api/policies/${policyId}/activities/export?format=csv`}
+              download
+              className="flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+              title="Exportar como CSV"
+            >
+              <Download className="h-3 w-3" />
+              <span className="hidden sm:inline">CSV</span>
+            </a>
+            <a
+              href={`/api/policies/${policyId}/activities/export?format=json`}
+              download
+              className="flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+              title="Exportar como JSON"
+            >
+              <FileJson className="h-3 w-3" />
+              <span className="hidden sm:inline">JSON</span>
+            </a>
+          </div>
+        )}
       </div>
       <CardContent className="p-4">
         {loading ? (

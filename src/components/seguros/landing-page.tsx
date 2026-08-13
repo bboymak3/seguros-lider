@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { PublicLookup } from './public-lookup'
+import { AnimatedStats, FaqSection } from './faq-section'
 
 export default function LandingPage({
   onSolicitud,
@@ -215,22 +216,8 @@ export default function LandingPage({
         </div>
       </section>
 
-      {/* Stats strip */}
-      <section className="border-y border-white/10 bg-slate-900/50">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px overflow-hidden px-4 sm:px-6 md:grid-cols-4">
-          {[
-            ['+15.000', 'Pólizas emitidas'],
-            ['99.8%', 'Tasa de aprobación'],
-            ['< 24h', 'Tiempo de respuesta'],
-            ['24/7', 'Verificación QR'],
-          ].map(([n, l]) => (
-            <div key={l} className="px-2 py-6 text-center sm:px-6">
-              <p className="text-2xl font-bold text-emerald-400 sm:text-3xl">{n}</p>
-              <p className="mt-1 text-xs text-slate-400 sm:text-sm">{l}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Animated stats */}
+      <AnimatedStats />
 
       {/* Services */}
       <section id="servicios" className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
@@ -361,6 +348,9 @@ export default function LandingPage({
           ))}
         </div>
       </section>
+
+      {/* FAQ */}
+      <FaqSection />
 
       {/* Contact */}
       <section id="contacto" className="border-t border-white/10 bg-slate-900/40">
