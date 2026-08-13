@@ -1,0 +1,97 @@
+// Prisma schema for Seguros (Insurance) platform
+// Portable: designed so it can be migrated to Cloudflare D1 with minimal changes.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Policy {
+  id            String   @id @default(cuid())
+  // Public-facing verification code (short, used in QR /v/CODE)
+  verifyCode    String   @unique
+  policyNumber  String?  // assigned by admin on approval (e.g. 576501)
+
+  // --- Status ---
+  // PENDIENTE (requested, not yet approved) | APROBADA | RECHAZADA | ANULADA
+  status        String   @default("PENDIENTE")
+  notes         String?  // internal admin notes
+
+  // --- Personal / Cliente data ---
+  nombre        String
+  apellido      String?
+  cedula        String
+  tipoCedula    String?  // V (Venezolana), E (Extranjera), J (Juridica), etc.
+  fechaNacimiento String?
+  nacionalidad  String?
+  estadoCivil   String?
+  sexo          String?
+  telefono      String?
+  telefonoAlt   String?
+  email         String?
+  direccion     String?
+  ciudad        String?
+  estado        String?
+  ocupacion     String?
+
+  // --- Vehicle data ---
+  tipoVehiculo  String?  // Automovil, Moto, Camion, etc.
+  marca         String?
+  modelo        String?
+  ano           String?
+  placa         String?
+  color         String?
+  serialCarroceria String?
+  serialMotor   String?
+  uso           String?  // Particular, Commercial, etc.
+  capacidad     String?
+  clase         String?
+  tipo          String?
+
+  // --- Policy / coverage data ---
+  tipoCobertura String?  // Responsabilidad Civil, Total, etc.
+  compania      String?  // Aseguradora
+  plan          String?
+  prima         String?
+  sumaAsegurada String?
+  deducible     String?
+  vigenciaDesde String?
+  vigenciaHasta String?
+  frecuenciaPago String? // Mensual, Trimestral, Anual
+
+  // --- Document references (stored in R2 / local uploads) ---
+  // Path conventions under bucket my-emdash-media/seguros/{verifyCode}/...
+  cedulaDocPath     String?
+  cedulaDocName     String?
+  cedulaDocType     String? // mime
+  tituloDocPath     String?
+  tituloDocName     String?
+  tituloDocType     String?
+
+  // --- Generated artifacts ---
+  pdfPath        String?  // generated filled PDF path
+  qrPath         String?  // generated QR image path
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  aprobadoAt     DateTime?
+  aprobadoPor    String?
+
+  documents      Document[]
+}
+
+model Document {
+  id            String   @id @default(cuid())
+  policyId      String
+  policy        Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  tipo          String   // CEDULA | TITULO | OTRO
+  fileName      String
+  filePath      String   // bucket path
+  mimeType      String
+  size          Int?
+  createdAt     DateTime @default(now())
+}
