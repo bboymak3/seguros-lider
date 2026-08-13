@@ -813,3 +813,33 @@ Task: Add vehicle classes (18 types), plans with prices (€/$/Bs), editable pri
 5. **Document uploads in form**: Título de Propiedad + Cédula/RIF file uploads (already exist in step 3, but should be labeled per the user's spec).
 6. **Admin detail**: Add the new vehicle/asegurado/tomador fields to the admin detail edit form.
 7. **Policy PDF**: Include vehicle class + plan + prices in the generated PDF certificate.
+
+---
+
+## Task ID: 13 (README + env.example for download)
+Agent: main (Z.ai Code)
+Task: Crear README completo + .env.example para que el proyecto se pueda descargar y otra IA/desarrollador pueda entenderlo.
+
+### Work Log
+- Created comprehensive `README.md` with:
+  - Stack tecnológico completo
+  - Arquitectura visual (diagrama ASCII)
+  - Estructura del proyecto (árbol de directorios)
+  - Modelo de datos (6 modelos documentados)
+  - Todos los API endpoints (tabla)
+  - Flujos principales (solicitud, aprobación, verificación, lista de precios)
+  - Instalación local paso a paso
+  - Guía de despliegue en Cloudflare (D1 + R2)
+  - Configuración y variables de entorno
+  - Scripts disponibles
+  - Características de UI
+  - Funcionalidades del admin
+  - Notas para desarrolladores/IA
+- Created `.env.example` with all required env vars (DATABASE_URL, NEXT_PUBLIC_APP_URL, Cloudflare refs)
+- Verified: lint clean, all pages compile (HTTP 200), all API endpoints return 200.
+
+### Files Added
+- `README.md` (comprehensive project documentation)
+- `.env.example` (environment variable template)
+
+The project is now ready for download. The README provides everything an AI or developer needs to understand the architecture, run locally, and deploy to Cloudflare.
