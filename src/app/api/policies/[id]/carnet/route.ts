@@ -133,10 +133,10 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
     // QR: bajado 6 renglones (~36pts) + aumentado 30% (55->72)
     const qr = await generatePolicyQr(safe(p.verifyCode))
     const qrImg = await pdfDoc.embedPng(qr.buffer)
-    const qrSize = 72 // 55 * 1.3 = 71.5 ≈ 72
+    const qrSize = 79 // 72 * 1.1 = 79.2 ≈ 79 (+10%)
     page.drawImage(qrImg, {
       x: width - qrSize - 20,
-      y: height - qrSize - 66, // bajado 6 renglones desde el original (height - qrSize - 30)
+      y: height - qrSize - 72, // bajado 1 renglón más (de -66 a -72)
       width: qrSize,
       height: qrSize,
     })

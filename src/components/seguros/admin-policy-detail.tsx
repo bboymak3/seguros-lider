@@ -377,7 +377,7 @@ export function AdminPolicyDetail({
   }>) || []
 
   const status = policy.status as string
-  const verifyUrl = `/?v=${policy.verifyCode}`
+  const verifyUrl = `https://app-seguro-activo.pages.dev/?v=${policy.verifyCode}`
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
@@ -415,6 +415,11 @@ export function AdminPolicyDetail({
             <a href={`/api/policies/${id}/pdf`} target="_blank" rel="noreferrer">
               <Button size="sm" variant="outline" className="border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900">
                 <Download className="mr-1 h-4 w-4" /> PDF
+              </Button>
+            </a>
+            <a href={`/api/policies/${id}/carnet`} target="_blank" rel="noreferrer">
+              <Button size="sm" variant="outline" className="border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900">
+                <Download className="mr-1 h-4 w-4" /> Carnet
               </Button>
             </a>
             {hasChanges && (
@@ -495,7 +500,7 @@ export function AdminPolicyDetail({
                 variant="ghost"
                 className="h-7 px-2 text-slate-500 hover:text-slate-900"
                 onClick={() => {
-                  navigator.clipboard.writeText(`${window.location.origin}${verifyUrl}`)
+                  navigator.clipboard.writeText(verifyUrl)
                   toast.success('URL copiada')
                 }}
               >
