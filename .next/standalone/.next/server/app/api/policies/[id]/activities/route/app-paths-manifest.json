@@ -1,0 +1,3 @@
+{
+  "/api/policies/[id]/activities/route": "app/api/policies/[id]/activities/route.js"
+}

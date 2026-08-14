@@ -1,0 +1,3 @@
+module.exports=[20266,__turbopack_context__=>{"use strict";var __TURBOPACK__imported__module__52607__=__turbopack_context__.i(52607);let _db=null;if(!(0,__TURBOPACK__imported__module__52607__.isD1)())try{let req=eval("require"),{PrismaClient}=req("@prisma/client");_db=new PrismaClient({log:["error","warn"]})}catch{}let _proxy=new Proxy({},{get(){throw Error("Prisma not available in production — use D1 queries")}}),db=_db||_proxy;__turbopack_context__.s(["db",0,db])}];
+
+//# sourceMappingURL=src_lib_db_ts_aba52852._.js.map

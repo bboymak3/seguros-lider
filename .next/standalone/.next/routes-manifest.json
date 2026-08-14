@@ -1,0 +1,252 @@
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "app",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/api/files/[...path]",
+      "regex": "^/api/files/(.+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPpath": "nxtPpath"
+      },
+      "namedRegex": "^/api/files/(?<nxtPpath>.+?)(?:/)?$"
+    },
+    {
+      "page": "/api/plans/[id]",
+      "regex": "^/api/plans/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/plans/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/policies/[id]",
+      "regex": "^/api/policies/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/policies/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/policies/[id]/activities",
+      "regex": "^/api/policies/([^/]+?)/activities(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/policies/(?<nxtPid>[^/]+?)/activities(?:/)?$"
+    },
+    {
+      "page": "/api/policies/[id]/activities/export",
+      "regex": "^/api/policies/([^/]+?)/activities/export(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/policies/(?<nxtPid>[^/]+?)/activities/export(?:/)?$"
+    },
+    {
+      "page": "/api/policies/[id]/approve",
+      "regex": "^/api/policies/([^/]+?)/approve(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/policies/(?<nxtPid>[^/]+?)/approve(?:/)?$"
+    },
+    {
+      "page": "/api/policies/[id]/documents",
+      "regex": "^/api/policies/([^/]+?)/documents(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/policies/(?<nxtPid>[^/]+?)/documents(?:/)?$"
+    },
+    {
+      "page": "/api/policies/[id]/documents/[docId]",
+      "regex": "^/api/policies/([^/]+?)/documents/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid",
+        "nxtPdocId": "nxtPdocId"
+      },
+      "namedRegex": "^/api/policies/(?<nxtPid>[^/]+?)/documents/(?<nxtPdocId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/policies/[id]/pdf",
+      "regex": "^/api/policies/([^/]+?)/pdf(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/policies/(?<nxtPid>[^/]+?)/pdf(?:/)?$"
+    },
+    {
+      "page": "/api/policies/[id]/qr",
+      "regex": "^/api/policies/([^/]+?)/qr(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/policies/(?<nxtPid>[^/]+?)/qr(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/api/activities",
+      "regex": "^/api/activities(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/activities(?:/)?$"
+    },
+    {
+      "page": "/api/activities/export",
+      "regex": "^/api/activities/export(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/activities/export(?:/)?$"
+    },
+    {
+      "page": "/api/banner",
+      "regex": "^/api/banner(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/banner(?:/)?$"
+    },
+    {
+      "page": "/api/cedula-lookup",
+      "regex": "^/api/cedula\\-lookup(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/cedula\\-lookup(?:/)?$"
+    },
+    {
+      "page": "/api/cne-lookup",
+      "regex": "^/api/cne\\-lookup(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/cne\\-lookup(?:/)?$"
+    },
+    {
+      "page": "/api/debug",
+      "regex": "^/api/debug(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/debug(?:/)?$"
+    },
+    {
+      "page": "/api/notifications",
+      "regex": "^/api/notifications(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/notifications(?:/)?$"
+    },
+    {
+      "page": "/api/plans",
+      "regex": "^/api/plans(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/plans(?:/)?$"
+    },
+    {
+      "page": "/api/policies",
+      "regex": "^/api/policies(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/policies(?:/)?$"
+    },
+    {
+      "page": "/api/policies/bulk",
+      "regex": "^/api/policies/bulk(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/policies/bulk(?:/)?$"
+    },
+    {
+      "page": "/api/policies/expiring",
+      "regex": "^/api/policies/expiring(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/policies/expiring(?:/)?$"
+    },
+    {
+      "page": "/api/policies/export",
+      "regex": "^/api/policies/export(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/policies/export(?:/)?$"
+    },
+    {
+      "page": "/api/policies/lookup",
+      "regex": "^/api/policies/lookup(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/policies/lookup(?:/)?$"
+    },
+    {
+      "page": "/api/policies/seed-test",
+      "regex": "^/api/policies/seed\\-test(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/policies/seed\\-test(?:/)?$"
+    },
+    {
+      "page": "/api/policies/verify",
+      "regex": "^/api/policies/verify(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/policies/verify(?:/)?$"
+    },
+    {
+      "page": "/api/settings",
+      "regex": "^/api/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/settings(?:/)?$"
+    },
+    {
+      "page": "/api/stats",
+      "regex": "^/api/stats(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/stats(?:/)?$"
+    },
+    {
+      "page": "/api/vehicle-classes",
+      "regex": "^/api/vehicle\\-classes(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/vehicle\\-classes(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

@@ -1,15 +1,2 @@
-node_modules/
-.next/
-storage/
-db/
-dev.log
-server.log
-.env
-.zscripts/
 skills/
-tests/
-examples/
-.cache/
-download/
-upload/
-*.db
+node_modules/
