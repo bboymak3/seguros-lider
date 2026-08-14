@@ -867,3 +867,56 @@ Stage Summary:
 - All JSON response shapes match the Prisma versions exactly (policies+pagination, activities+pagination, settings map, stats object, etc.) so the frontend does not need to change.
 - POST/PATCH/DELETE handlers (policies POST, plans POST, settings PUT) were intentionally left on Prisma per task instructions; they use dynamic imports where touched and remain wrapped in try/catch.
 - Open follow-ups for a future task: (1) migrate POST/PATCH/DELETE handlers and the lib helpers (`settings.ts`, `activity.ts`, `policy-utils.ts`) to D1 raw SQL so writes work in production; (2) investigate D1 adapter for Prisma as an alternative to hand-written SQL.
+
+---
+
+## Task ID: DEPLOY (Cloudflare Workers deployment)
+Agent: main (Z.ai Code)
+Task: Deploy project to Cloudflare Workers with D1 + R2 bindings.
+
+### Work Log
+- Installed wrangler CLI + @opennextjs/cloudflare adapter + @prisma/adapter-d1
+- Created `wrangler.toml` with Workers config (main = .open-next/worker.js)
+- Created `open-next.config.ts` for OpenNext adapter
+- Adapted `src/lib/storage.ts` — dual-mode: R2 in production, filesystem in dev
+- Adapted `src/lib/db.ts` — eval-require Prisma (lazy load, avoids Workers fs errors)
+- Created `src/lib/d1.ts` — raw D1 SQL query helpers (d1Query, d1Run, d1First)
+- Generated SQL migrations from Prisma schema
+- Pushed schema to D1 (6 tables created)
+- Seeded D1: 18 vehicle classes + 162 plans with prices
+- Created R2 bucket `my-emdash-media` (already existed)
+- Configured D1 + R2 bindings via Cloudflare API
+- Updated 8 API routes to use D1 raw SQL in production, Prisma in dev
+- Built with `npx @opennextjs/cloudflare build`
+- Patched worker.js to expose env bindings to globalThis
+- Deployed as Cloudflare Worker (not Pages — Workers have proper env access)
+
+### Final URLs
+- **Production**: https://seguros-lider.estilosgrado33.workers.dev
+- **GitHub**: https://github.com/bboymak3/seguros-lider
+
+### Bindings
+- `env.DB` → D1 Database (seguros_db, 5f2737c7-...)
+- `env.BUCKET` → R2 Bucket (my-emdash-media)
+- `env.ASSETS` → Static assets
+- `env.NEXT_PUBLIC_APP_URL` → https://seguros-lider.estilosgrado33.workers.dev
+
+### Verification
+- ✅ Home page: HTTP 200
+- ✅ /api/vehicle-classes: 200 (18 classes with plans)
+- ✅ /api/plans: 200 (162 plans with prices)
+- ✅ /api/stats: 200 (dashboard KPIs + timeseries)
+- ✅ /api/policies: 200 (empty list, correct for new D1)
+- ✅ /api/settings: 200
+- ✅ /api/activities: 200
+- ✅ /api/notifications: 200
+- ✅ /api/policies/lookup: 200
+
+### Deploy Commands
+```bash
+# Build
+npx @opennextjs/cloudflare build
+
+# Deploy
+CLOUDFLARE_API_TOKEN="cfat_..." wrangler deploy
+```

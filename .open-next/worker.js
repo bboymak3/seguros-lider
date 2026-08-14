@@ -14,6 +14,7 @@ export { DOShardedTagCache } from "./.build/durable-objects/sharded-tag-cache.js
 export { BucketCachePurge } from "./.build/durable-objects/bucket-cache-purge.js";
 export default {
     async fetch(request, env, ctx) {
+        if (env) { if (env.DB) globalThis.DB = env.DB; if (env.BUCKET) globalThis.BUCKET = env.BUCKET; if (env.ASSETS) globalThis.ASSETS = env.ASSETS; }
         return runWithCloudflareRequestContext(request, env, ctx, async () => {
             const response = maybeGetSkewProtectionResponse(request);
             if (response) {

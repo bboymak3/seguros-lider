@@ -23,8 +23,7 @@ export const isD1 = () => getD1() !== null
 export async function d1Query<T = Record<string, unknown>>(sql: string, params: unknown[] = []): Promise<T[]> {
   const d1 = getD1()
   if (!d1) throw new Error('D1 not available')
-  const stmt = d1.prepare(sql)
-  if (params.length > 0) stmt.bind(...params)
+  const stmt = params.length > 0 ? d1.prepare(sql).bind(...params) : d1.prepare(sql)
   const result = await stmt.all()
   return (result.results || []) as T[]
 }
@@ -32,8 +31,7 @@ export async function d1Query<T = Record<string, unknown>>(sql: string, params: 
 export async function d1Run(sql: string, params: unknown[] = []): Promise<void> {
   const d1 = getD1()
   if (!d1) throw new Error('D1 not available')
-  const stmt = d1.prepare(sql)
-  if (params.length > 0) stmt.bind(...params)
+  const stmt = params.length > 0 ? d1.prepare(sql).bind(...params) : d1.prepare(sql)
   await stmt.run()
 }
 
