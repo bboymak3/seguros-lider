@@ -85,10 +85,6 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
     drawText(asegName.trim(), 55, height - 96, 8, true)
     drawText('Cédula:', 10, height - 109, 6, false, GREY)
     drawText(safe(p.tipoCedula || 'V') + '-' + safe(p.asegCedula || p.cedula), 45, height - 109, 8, true)
-    drawText('Tomador:', 200, height - 96, 6, false, GREY)
-    drawText(asegName.trim(), 240, height - 96, 8, true)
-    drawText('Cédula:', 200, height - 109, 6, false, GREY)
-    drawText(safe(p.tipoCedula || 'V') + '-' + safe(p.tomCedula || p.cedula), 235, height - 109, 8, true)
 
     page.drawRectangle({ x: 5, y: height - 132, width: width / 2 - 10, height: 14, color: ORANGE })
     drawText('DATOS DEL VEHÍCULO', 10, height - 127, 6, true, WHITE)
