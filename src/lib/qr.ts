@@ -27,8 +27,14 @@ export async function generatePolicyQr(
     },
   })
 
-  const storageKey = storage.keyFor(verifyCode, 'qr.png', 'assets')
-  await storage.put(storageKey, buffer, 'image/png')
+  // Try to store in R2, but don't fail if storage is unavailable
+  let storageKey = ''
+  try {
+    storageKey = storage.keyFor(verifyCode, 'qr.png', 'assets')
+    await storage.put(storageKey, buffer, 'image/png')
+  } catch {
+    /* storage might not be available in Workers — QR still works in memory */
+  }
 
   return {
     buffer,

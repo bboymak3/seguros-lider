@@ -201,8 +201,9 @@ export async function generatePolicyPdf(data: PolicyPdfData) {
   })
 
   const pdfBytes = await pdfDoc.save()
-  const storageKey = storage.keyFor(data.verifyCode, 'certificado.pdf', 'assets')
+  let storageKey = ''
   try {
+    storageKey = storage.keyFor(data.verifyCode, 'certificado.pdf', 'assets')
     await storage.put(storageKey, Buffer.from(pdfBytes), 'application/pdf')
   } catch {
     /* storage might not be available in Workers */

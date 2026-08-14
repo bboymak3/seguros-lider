@@ -32,6 +32,7 @@ import {
   Paperclip,
   Calendar,
   Tag,
+  FlaskConical,
   ChevronLeft,
   ChevronRight,
   Settings as SettingsIcon,
@@ -84,7 +85,7 @@ type Policy = Record<string, unknown> & {
   tituloDocName?: string | null
 }
 
-type View = 'dashboard' | 'pendientes' | 'todas' | 'nueva' | 'settings' | 'actividad' | 'precios'
+type View = 'dashboard' | 'pendientes' | 'todas' | 'nueva' | 'settings' | 'actividad' | 'precios' | 'seedtest'
 
 const ADMIN_PASSWORD = 'admin123'
 
@@ -409,6 +410,10 @@ function AdminShell({
     )
   }
 
+  if (view === 'seedtest') {
+    return <SeedTestView onDone={() => { setView('pendientes'); refreshAll() }} />
+  }
+
   if (selectedId) {
     return (
       <AdminPolicyDetail
@@ -429,6 +434,7 @@ function AdminShell({
     { key: 'precios', label: 'Lista de Precios', icon: Tag },
     { key: 'actividad', label: 'Actividad', icon: Activity },
     { key: 'nueva', label: 'Nueva Solicitud', icon: Plus },
+    { key: 'seedtest', label: 'Solicitud de Prueba', icon: FlaskConical },
     { key: 'settings', label: 'Configuración', icon: SettingsIcon },
   ]
 
@@ -1284,6 +1290,95 @@ function PolicyRow({
           </div>
         )}
       </button>
+    </div>
+  )
+}
+
+function SeedTestView({ onDone }: { onDone: () => void }) {
+  const [creating, setCreating] = useState(false)
+  const [results, setResults] = useState<Array<{ verifyCode: string; nombre: string; marca: string; placa: string; plan: string }>>([])
+
+  async function createOne() {
+    setCreating(true)
+    try {
+      const res = await fetch('/api/policies/seed-test', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      toast.success(data.message)
+      setResults(prev => [{ verifyCode: data.policy.verifyCode, nombre: data.policy.nombre, marca: data.policy.marca, placa: data.policy.placa, plan: data.policy.plan }, ...prev])
+    } catch (e) {
+      toast.error((e as Error).message)
+    } finally {
+      setCreating(false)
+    }
+  }
+
+  async function createMany(count: number) {
+    setCreating(true)
+    for (let i = 0; i < count; i++) {
+      try {
+        const res = await fetch('/api/policies/seed-test', { method: 'POST' })
+        const data = await res.json()
+        if (res.ok) {
+          setResults(prev => [{ verifyCode: data.policy.verifyCode, nombre: data.policy.nombre, marca: data.policy.marca, placa: data.policy.placa, plan: data.policy.plan }, ...prev])
+        }
+      } catch { /* ignore individual errors */ }
+    }
+    toast.success(`${count} solicitudes ficticias creadas`)
+    setCreating(false)
+  }
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-900">
+          <FlaskConical className="h-5 w-5 text-emerald-600" />
+          Generar Solicitud Ficticia
+        </h2>
+        <p className="mt-1 text-sm text-slate-500">
+          Crea solicitudes de prueba con datos aleatorios para agilizar las pruebas del sistema.
+        </p>
+      </div>
+
+      <Card className="border-slate-300 bg-slate-200/60">
+        <CardContent className="flex flex-wrap items-center gap-3 p-4">
+          <Button onClick={createOne} disabled={creating} className="bg-emerald-500 text-slate-900 hover:bg-emerald-400">
+            {creating ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Plus className="mr-1 h-4 w-4" />}
+            Crear 1 solicitud
+          </Button>
+          <Button onClick={() => createMany(5)} disabled={creating} variant="outline" className="border-slate-400 bg-white text-slate-700 hover:bg-slate-100">
+            Crear 5 solicitudes
+          </Button>
+          <Button onClick={() => createMany(10)} disabled={creating} variant="outline" className="border-slate-400 bg-white text-slate-700 hover:bg-slate-100">
+            Crear 10 solicitudes
+          </Button>
+          <Button variant="ghost" onClick={onDone} className="ml-auto text-slate-500 hover:text-slate-900">
+            Ver solicitudes →
+          </Button>
+        </CardContent>
+      </Card>
+
+      {results.length > 0 && (
+        <Card className="border-slate-300 bg-slate-200/60">
+          <div className="border-b border-slate-300 px-5 py-3">
+            <h3 className="text-sm font-semibold text-slate-900">Solicitudes creadas ({results.length})</h3>
+          </div>
+          <div className="p-2 max-h-96 overflow-y-auto">
+            {results.map((r, i) => (
+              <div key={i} className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-slate-300/50">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/15 text-sm font-semibold text-emerald-700">
+                  {r.nombre.charAt(0)}
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-slate-900">{r.nombre}</p>
+                  <p className="text-xs text-slate-500">{r.marca} · Placa {r.placa} · {r.plan}</p>
+                </div>
+                <span className="font-mono text-xs text-emerald-600">{r.verifyCode}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
     </div>
   )
 }
