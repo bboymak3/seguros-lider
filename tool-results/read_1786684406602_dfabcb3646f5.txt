@@ -1,0 +1,923 @@
+     1→# Seguros Líder — Worklog
+     2→
+     3→## Project Status: ✅ Core MVP Complete & Browser-Verified
+     4→
+     5→A full insurance policy management platform (solicitud → admin approval → QR-verified certificate) built on Next.js 16 + Prisma/SQLite. All golden-path flows verified end-to-end with agent-browser.
+     6→
+     7→### Architecture Note (deployment)
+     8→The user requested Astro + Cloudflare D1 + R2. This sandbox is locked to Next.js 16 + Prisma/SQLite, so the app was built with a **storage abstraction layer** (`src/lib/storage.ts`) that emulates the R2 bucket `my-emdash-media/seguros/` on the local filesystem. To deploy to Cloudflare, swap the 4 methods in `storage.ts` (`put/get/delete/getSignedUrl`) for the R2 S3-compatible API — no call-site changes needed. D1 migration is similarly isolated to `prisma/schema.prisma` + `src/lib/db.ts`.
+     9→
+    10→---
+    11→
+    12→## Task ID: 1 (initial build)
+    13→Agent: main (Z.ai Code)
+    14→Task: Build the complete seguros platform from scratch.
+    15→
+    16→### Work Log
+    17→- Installed `qrcode`, `pdf-lib`, `@pdf-lib/fontkit`, `@types/qrcode`.
+    18→- Designed Prisma schema: `Policy` (40+ fields: cliente, vehículo, cobertura, documentos, status) + `Document` model. Pushed to SQLite.
+    19→- Built storage abstraction (`src/lib/storage.ts`) emulating R2 bucket `my-emdash-media/seguros/`.
+    20→- Built QR generator (`src/lib/qr.ts`) — encodes `/?v=<code>`, stores PNG in bucket.
+    21→- Built PDF generator (`src/lib/pdf.ts`) — A4 certificate with header band, cliente/vehículo/cobertura sections, green QR box (bottom-right), watermark, footer. Embeds generated QR.
+    22→- Built API routes:
+    23→  - `POST/GET /api/policies` — create + list (with status/q filters)
+    24→  - `GET/PATCH/DELETE /api/policies/[id]` — full edit + cascade delete
+    25→  - `POST /api/policies/[id]/approve` — approve + assign policy number + regenerate PDF
+    26→  - `POST /api/policies/[id]/documents` — multipart upload (CEDULA/TITULO/OTRO), validates JPG/PNG/WEBP/PDF ≤10MB
+    27→  - `DELETE /api/policies/[id]/documents/[docId]` — remove + clear mirror fields
+    28→  - `GET /api/policies/[id]/pdf` — generate & stream PDF
+    29→  - `GET /api/policies/[id]/qr` — QR PNG
+    30→  - `GET /api/policies/verify?code=` — public lookup
+    31→  - `GET /api/files/[...path]` — serve stored objects
+    32→  - `GET /api/stats` — dashboard counts
+    33→- Built frontend (single `/` route, view-switching via query params):
+    34→  - `landing-page.tsx` — dark navy/emerald hero, services grid, how-it-works, testimonials, contact, sticky footer
+    35→  - `solicitud-form.tsx` — 3-section form (cliente/vehículo/cobertura) + optional doc uploads, success screen with verify code
+    36→  - `verify-page.tsx` — public certificate view (mirrors liderdeseguros.com/v/576501), status banner, QR, cliente/vehículo/cobertura sections, PDF download
+    37→  - `admin-dashboard.tsx` — password gate (`admin123`), sidebar nav, 6 stat cards, pendientes/todas list views with search, recent list
+    38→  - `admin-policy-detail.tsx` — 3 tabs (Datos edit all fields / Documentos manage uploads / Certificado QR+PDF), approve/reject, copy verify URL
+    39→- Fixed lint errors (SelectValue naming collision, setState-in-effect, unused eslint directives).
+    40→
+    41→### Stage Summary / Verification (agent-browser)
+    42→- ✅ Landing page renders (HTTP 200), VLM confirms professional design, no layout issues.
+    43→- ✅ Solicitud form → submit → success screen with verify code (e.g. `321686`).
+    44→- ✅ Admin login (`admin123`) → dashboard with stats + recent list.
+    45→- ✅ Policy detail → edit → approve → "Póliza aprobada y certificado generado".
+    46→- ✅ PDF endpoint returns 17KB application/pdf; QR endpoint returns 4KB image/png.
+    47→- ✅ Verification page (`?v=321686`) shows APROBADA, "Póliza N° 000001", "Póliza válida y vigente", QR image, PDF download.
+    48→- ✅ Document upload stores at `my-emdash-media/seguros/321686/cedula/test-cedula.png`, served back via `/api/files/...`.
+    49→- ✅ Admin Documents tab shows uploaded cédula with delete button + upload slots for both doc types.
+    50→- ✅ `bun run lint` passes clean (0 errors).
+    51→
+    52→### Unresolved / Next-phase recommendations
+    53→1. **Auth**: Replace demo password gate (`admin123`) with NextAuth.js v4 (already in deps).
+    54→2. **Cloudflare deployment**: Swap `storage.ts` → R2 binding; migrate Prisma SQLite → D1; deploy via `wrangler`. (User has D1 `seguros_db` ID `5f2737c7-...` and R2 path `my-emdash-media/seguros/`.)
+    55→3. **PDF template**: Currently generated from scratch with pdf-lib. To use the user's `pdfclean` template from `github.com/bboymak3/pdf-seguros`, load it via `PDFDocument.load()` + `copyPages` and overlay fields.
+    56→4. **Edit document flow**: Currently supports upload + delete; could add "replace" (delete+upload in one action) and inline image preview/lightbox.
+    57→5. **Notifications**: Email/SMS on approval (resend/twilio).
+    58→
+    59→---
+    60→
+    61→## Task ID: 2 (cron review — enhancements)
+    62→Agent: main (Z.ai Code) — webDevReview cron round 1
+    63→Task: QA assessment + bug fixes + new features + styling improvements.
+    64→
+    65→### Work Log
+    66→**QA Assessment (agent-browser)**
+    67→- Verified landing page (HTTP 200, no console errors), solicitud form submission (success), admin login + dashboard, policy detail, verification page. All golden paths intact.
+    68→- VLM analysis of dashboard identified gaps: missing charts, no CSV export, no bulk actions, KPI contrast issues, truncated names, duplicate icons.
+    69→
+    70→**Bug Fixes / Styling**
+    71→- Fixed KPI number contrast (now `text-white text-3xl font-bold`).
+    72→- Fixed name truncation in list rows (full name shown, initials badge with gradient).
+    73→- Fixed duplicate icons (Tasa Aprobación now uses `Percent` icon).
+    74→- Added ring accents + hover scale on stat cards.
+    75→- Added skeleton loaders for list rows + recent list.
+    76→- Added empty states with icons for all list views.
+    77→- Added pending-count badge in sidebar nav item.
+    78→- Added mini stats panel in sidebar (aprobadas hoy, con docs, total).
+    79→- Added bulk-action sticky bar with approve/reject/anular/delete.
+    80→
+    81→**New Database Model**
+    82→- Added `ActivityLog` model (id, policyId, action, description, actor, metadata JSON, createdAt).
+    83→- Created `src/lib/activity.ts` helper with `logActivity()` + `ACTION_LABELS`.
+    84→- Wired activity logging into: POST /policies (CREATED), PATCH /policies/[id] (UPDATED/STATUS_CHANGED/APPROVED/REJECTED/ANULADA), POST /approve (APPROVED+PDF_GENERATED), POST /documents (DOCUMENT_UPLOADED), DELETE /documents/[docId] (DOCUMENT_DELETED).
+    85→
+    86→**New API Endpoints**
+    87→- Enhanced `GET /api/stats` — now returns: counts, today/yesterday deltas, aprobadasHoy, withDocs, 14-day timeseries, statusDistribution (pie), topBrands (bar), topEstados (bar), tipoDistribution.
+    88→- `GET /api/policies/export` — CSV export with BOM (UTF-8 for Excel), 30 columns, supports status/q filters.
+    89→- `GET /api/policies/lookup?q=` — public lookup by cédula/placa/policyNumber/verifyCode, returns minimal info (10 results max).
+    90→- `POST /api/policies/bulk` — bulk approve/reject/anular/delete with sequential policy-number assignment + per-policy activity logging.
+    91→- `GET /api/policies/[id]/activities` — audit trail (last 100 events).
+    92→
+    93→**New Frontend Components**
+    94→- `src/components/seguros/dashboard-charts.tsx` — recharts visualizations:
+    95→  - Area chart: 14-day timeseries (total/aprobadas/pendientes with gradient fills)
+    96→  - Pie chart: status distribution (donut with legend)
+    97→  - Horizontal bar: top vehicle brands
+    98→  - Horizontal bar: top geographic estados
+    99→  - Skeleton + empty states for all charts
+   100→- `src/components/seguros/public-lookup.tsx` — public search widget (cedula/placa/code) with result cards linking to verification page.
+   101→
+   102→**Enhanced Existing Components**
+   103→- `admin-dashboard.tsx` — full rewrite:
+   104→  - 6 KPI cards with trend deltas (↑/↓ vs ayer), ring accents, hover scale
+   105→  - Dashboard charts section (4 charts)
+   106→  - Bulk selection: per-row checkboxes + "Seleccionar todo" + sticky bulk-action bar
+   107→  - CSV export button in header
+   108→  - Status filter dropdown on "Todas las Pólizas"
+   109→  - Skeleton loaders + empty states
+   110→- `admin-policy-detail.tsx` — added 4th tab "Historial":
+   111→  - ActivityTimeline component with vertical timeline UI
+   112→  - Color-coded action icons (emerald=approved, red=rejected, sky=created, violet=doc uploaded, amber=doc deleted)
+   113→  - Connector lines between events
+   114→- `landing-page.tsx` — added public lookup section between hero and stats strip.
+   115→
+   116→### Stage Summary / Verification (agent-browser)
+   117→- ✅ All pages compile (HTTP 200), no console errors.
+   118→- ✅ Dashboard renders 4 charts (area/pie/2 bars) + 6 KPI cards with trend deltas.
+   119→- ✅ CSV export returns `text/csv; charset=utf-8` with BOM, 30 columns.
+   120→- ✅ Bulk approve: tested via API → 1 policy approved, activities logged (APPROVED + PDF_GENERATED).
+   121→- ✅ Public lookup: searched "98765432" → found Maria's policy → clicked → navigated to verification page showing APROBADA + N° 000002.
+   122→- ✅ Activity timeline: shows "Póliza aprobada masivamente con N° 000002" + "Certificado PDF generado (aprobación masiva)".
+   123→- ✅ Status filter dropdown + "Seleccionar todo" + bulk-action bar all present.
+   124→- ✅ Sidebar shows pending badge (count) + mini stats panel.
+   125→- ✅ `bun run lint` passes clean (0 errors).
+   126→
+   127→### Files Added/Modified
+   128→- Added: `src/lib/activity.ts`, `src/components/seguros/dashboard-charts.tsx`, `src/components/seguros/public-lookup.tsx`
+   129→- Added API: `src/app/api/policies/export/route.ts`, `src/app/api/policies/lookup/route.ts`, `src/app/api/policies/bulk/route.ts`, `src/app/api/policies/[id]/activities/route.ts`
+   130→- Modified: `prisma/schema.prisma` (ActivityLog model), `src/app/api/stats/route.ts` (charts data), `src/app/api/policies/route.ts`, `src/app/api/policies/[id]/route.ts`, `src/app/api/policies/[id]/approve/route.ts`, `src/app/api/policies/[id]/documents/route.ts`, `src/app/api/policies/[id]/documents/[docId]/route.ts` (activity logging)
+   131→- Modified: `src/components/seguros/admin-dashboard.tsx` (full rewrite), `src/components/seguros/admin-policy-detail.tsx` (historial tab), `src/components/seguros/landing-page.tsx` (public lookup section)
+   132→
+   133→### Unresolved / Next-phase recommendations (updated)
+   134→1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+   135→2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+   136→3. **PDF template**: Integrate user's `pdfclean` template.
+   137→4. **Date-range filter**: Add date picker to list views for historical analysis.
+   138→5. **Notifications**: Email/SMS on approval.
+   139→6. **Dashboard drill-down**: Click a chart segment to filter the list.
+   140→7. **Pagination**: For lists exceeding 100 items.
+   141→8. **Document replace**: One-click replace (delete+upload) in admin.
+   142→
+   143→
+   144→---
+   145→
+   146→## Task ID: 3 (cron review — wizard form + pagination + filters)
+   147→Agent: main (Z.ai Code) — webDevReview cron round 2
+   148→Task: QA assessment + multi-step wizard form + pagination + date filters + print styles.
+   149→
+   150→### Work Log
+   151→**QA Assessment (agent-browser + VLM)**
+   152→- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+   153→- VLM analysis of dashboard: professional design confirmed; identified needs for pagination, date filters, wizard form, print support.
+   154→- VLM analysis of form: long-form fatigue identified → recommended wizard/stepper approach.
+   155→
+   156→**Major Feature: Multi-step Wizard Form (solicitud-form.tsx full rewrite)**
+   157→- Converted single-page long form into 4-step wizard: Cliente → Vehículo → Cobertura → Documentos.
+   158→- Visual stepper with icons (User/Car/ShieldCheck/IdCard), done/current/inactive states, connector lines with animated progress fill.
+   159→- Progress bar (gradient emerald→teal) + "Paso X de 4" heading + percentage indicator.
+   160→- Per-step validation: required fields validated before advancing (trigger from react-hook-form).
+   161→- Auto-save draft to sessionStorage (debounced 800ms) with "Guardar" button + "Borrador recuperado" toast on reload.
+   162→- Draft cleared on successful submission.
+   163→- Siguiente/Anterior navigation with smooth scroll-to-top.
+   164→- Summary confirmation card on final step before submit.
+   165→- Improved success screen with ring accent on check icon.
+   166→
+   167→**Major Feature: Pagination (API + UI)**
+   168→- Enhanced `GET /api/policies` to support `page` + `pageSize` params (default 20, max 100).
+   169→- Returns `{ policies, pagination: { page, pageSize, total, totalPages, hasNext, hasPrev } }`.
+   170→- Admin list views now paginate at 10 per page.
+   171→- Pagination footer with: "Página X de Y (Z total)", prev/next chevrons, numbered page buttons (smart window of 5).
+   172→- Active page highlighted in emerald.
+   173→
+   174→**Major Feature: Date-range Filter (API + UI)**
+   175→- Enhanced `GET /api/policies` to support `from` + `to` date params (ISO date strings).
+   176→- Admin list views show a date-range filter row: two date inputs (Desde/Hasta) + "Filtrar" + "Limpiar" buttons.
+   177→- Total result count displayed inline.
+   178→- Filter persists across page navigation.
+   179→
+   180→**Feature: Print-friendly Verification Page**
+   181→- Added `@media print` styles to globals.css (white bg, black text, hide `.no-print` elements).
+   182→- Added "Imprimir" button to verify-page (calls `window.print()`).
+   183→- Header, footer, and action buttons marked `.no-print` so they don't appear in printed output.
+   184→- Certificate data sections use `.print-break-inside-avoid` for clean page breaks.
+   185→
+   186→**Styling Improvements**
+   187→- Custom scrollbar styles (`.scrollbar-thin`) for dark theme.
+   188→- Wizard stepper with ring-4 accent on current step.
+   189→- Gradient progress bar (emerald→teal).
+   190→- Pagination buttons with hover states.
+   191→- Date filter row in a bordered container with labeled inputs.
+   192→
+   193→### Stage Summary / Verification (agent-browser + curl)
+   194→- ✅ All pages compile (HTTP 200), no console errors.
+   195→- ✅ Wizard form: Step 1 (Cliente) → fill required → "Siguiente" → Step 2 (Vehículo) with "Anterior" button. Stepper shows progress.
+   196→- ✅ VLM confirms wizard stepper is clear and professional.
+   197→- ✅ VLM confirms dashboard KPIs + charts render well.
+   198→- ✅ Pagination API: `?page=1&pageSize=5` returns correct `{ policies, pagination }` shape.
+   199→- ✅ Date filter UI present (Desde/Hasta inputs + Filtrar button).
+   200→- ✅ Status filter dropdown present (Todos los estados / Pendientes / Aprobadas / etc).
+   201→- ✅ CSV export button present in header.
+   202→- ✅ Print button on verification page.
+   203→- ✅ `bun run lint` passes clean (0 errors).
+   204→- ✅ All API endpoints return 200 (stats, policies, export, lookup).
+   205→
+   206→### Files Modified
+   207→- `src/components/seguros/solicitud-form.tsx` — full rewrite as 4-step wizard
+   208→- `src/app/api/policies/route.ts` — added pagination + date-range filter
+   209→- `src/components/seguros/admin-dashboard.tsx` — added pagination UI, date filter UI, new state (pagination, page, dateFrom, dateTo), goToPage/applyDateFilter/clearDateFilter functions
+   210→- `src/components/seguros/verify-page.tsx` — added Print button + no-print classes
+   211→- `src/app/globals.css` — print styles + custom scrollbar
+   212→
+   213→### Unresolved / Next-phase recommendations (updated)
+   214→1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+   215→2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+   216→3. **PDF template**: Integrate user's `pdfclean` template.
+   217→4. **Dashboard drill-down**: Click a chart segment to filter the list.
+   218→5. **Document preview lightbox**: Click to enlarge images in admin.
+   219→6. **Notifications**: Email/SMS on approval.
+   220→7. **Contrast improvements**: Some secondary text (dates, sub-labels) could be brighter for accessibility.
+   221→8. **Form autosave indicator**: Show "Guardado hace Xs" toast.
+   222→
+   223→---
+   224→
+   225→## Task ID: 4 (cron review — drill-down + lightbox + summary card + contrast)
+   226→Agent: main (Z.ai Code) — webDevReview cron round 3
+   227→Task: QA assessment + dashboard drill-down + document lightbox + summary card + contrast improvements.
+   228→
+   229→### Work Log
+   230→**QA Assessment (agent-browser)**
+   231→- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+   232→- VLM analysis of dashboard confirmed professional design; identified remaining next-phase items.
+   233→
+   234→**Major Feature: Dashboard Drill-down (click chart to filter list)**
+   235→- Updated `dashboard-charts.tsx` to accept `onDrillDown?: (type, value) => void` callback.
+   236→- Pie chart (status distribution): clicking a slice maps "Aprobadas"→APROBADA etc. and triggers drill-down.
+   237→- Bar chart (top brands): clicking a bar triggers `onDrillDown('brand', name)`.
+   238→- Bar chart (top estados): clicking a bar triggers `onDrillDown('estado', name)`.
+   239→- All clickable charts show "Clic para filtrar" hint + cursor-pointer + hover opacity.
+   240→- Admin dashboard wires `onDrillDown` to: set status filter or search query → switch to "Todas las Pólizas" view → reload policies → show toast "Filtrando por...".
+   241→
+   242→**Major Feature: Document Preview Lightbox (admin-policy-detail.tsx)**
+   243→- Rewrote `DocCard` component with 3 action buttons: Vista previa (Eye), Abrir en pestaña (ExternalLink), Eliminar (Trash2).
+   244→- Clicking the document thumbnail or "Vista previa" opens a full-screen Lightbox modal.
+   245→- New `Lightbox` component:
+   246→  - Full-screen overlay with backdrop blur, click-outside-to-close.
+   247→  - Header with filename + "Abrir" link + "Cerrar" button (with Esc hint).
+   248→  - Body: image (object-contain, max 75vh) or PDF (iframe, 75vh).
+   249→  - Esc key closes, body scroll locked while open.
+   250→- Hover effect on thumbnail (scale-105).
+   251→
+   252→**Feature: Policy Summary Card (admin-policy-detail.tsx)**
+   253→- Added summary card between action bar and tabs.
+   254→- Status-colored top accent bar (emerald/red/slate/amber based on status).
+   255→- 8-field grid (4 cols on lg): Tomador, Cédula, Vehículo, Placa, Cobertura, Vigencia, Creada, Aprobada.
+   256→- Each field has an icon badge (emerald bg) + label + value.
+   257→- New `SummaryItem` helper component.
+   258→
+   259→**Accessibility: Contrast Improvements**
+   260→- KPI card sub-text: `text-slate-500` → `text-slate-400` (brighter, better WCAG ratio).
+   261→- Date filter labels (Desde/Hasta): `text-slate-500` → `text-slate-400`.
+   262→- All `text-[10px] uppercase tracking-wider` labels: `text-slate-500` → `text-slate-400`.
+   263→
+   264→### Stage Summary / Verification (agent-browser + curl)
+   265→- ✅ All pages compile (HTTP 200), no console errors.
+   266→- ✅ Summary card renders with 8 fields (Tomador, Cédula, Vehículo, Placa, Cobertura, Vigencia, Creada, Aprobada).
+   267→- ✅ VLM confirms summary card is "bien estructurada" with "jerarquía visual efectiva".
+   268→- ✅ Document lightbox: "Vista previa" button present → click opens modal with image + filename header + Abrir/Cerrar buttons.
+   269→- ✅ Dashboard drill-down: clicked pie sector → navigated to "Todas las Pólizas" with status filter set to "Aprobadas" + toast "Filtrando por estado: APROBADA".
+   270→- ✅ "Clic para filtrar" hints visible on all 3 clickable charts.
+   271→- ✅ `bun run lint` passes clean (0 errors).
+   272→- ✅ All API endpoints return 200.
+   273→
+   274→### Files Modified
+   275→- `src/components/seguros/dashboard-charts.tsx` — added `onDrillDown` prop + click handlers on Pie/Bar/Bar
+   276→- `src/components/seguros/admin-dashboard.tsx` — wired `onDrillDown` in DashboardView, contrast improvements (slate-500→slate-400)
+   277→- `src/components/seguros/admin-policy-detail.tsx` — new Lightbox + SummaryItem components, rewrote DocCard, added summary card, new icon imports (Eye, X, Calendar, Phone, Mail, Hash, Clock)
+   278→
+   279→### Unresolved / Next-phase recommendations (updated)
+   280→1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+   281→2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+   282→3. **PDF template**: Integrate user's `pdfclean` template.
+   283→4. **Notifications**: Email/SMS on approval.
+   284→5. **Keyboard shortcuts**: Add "/" to focus search, "g d" to go to dashboard, etc.
+   285→6. **Document replace**: One-click replace (delete+upload) in admin.
+   286→7. **Policy expiry alerts**: Highlight policies nearing vigencia end.
+   287→8. **Admin settings page**: Configure aseguradoras, coverage types, etc.
+   288→
+   289→---
+   290→
+   291→## Task ID: 5 (cron review — settings page + expiry alerts + notifications + shortcuts)
+   292→Agent: main (Z.ai Code) — webDevReview cron round 4
+   293→Task: QA assessment + admin settings page + expiry alerts + notifications bell + keyboard shortcuts.
+   294→
+   295→### Work Log
+   296→**QA Assessment (agent-browser)**
+   297→- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+   298→- Confirmed previous round's features (drill-down, lightbox, summary card) all working.
+   299→
+   300→**New Database Model: Setting**
+   301→- Added `Setting` model (id, key @unique, value JSON string, updatedAt).
+   302→- Created `src/lib/settings.ts` with `getSetting`, `setSetting`, `getAllSettings` helpers.
+   303→- Defaults seeded: 8 aseguradoras, 4 coverage types, 6 vehicle types, 4 plan types.
+   304→
+   305→**New API Endpoints**
+   306→- `GET /api/settings` — returns all configurable lists (ASEGURADORAS, COVERAGE_TYPES, VEHICLE_TYPES, PLAN_TYPES).
+   307→- `PUT /api/settings` — update one or more lists (upserts to DB).
+   308→- `GET /api/policies/expiring?days=30` — returns approved policies expiring within N days + already-expired policies.
+   309→- `GET /api/notifications?limit=10` — returns recent global activity (across all policies) with policy info joined.
+   310→
+   311→**Major Feature: Admin Settings Page (admin-settings.tsx)**
+   312→- New `AdminSettings` component rendered when view === 'settings'.
+   313→- 4 config cards in 2x2 grid: Aseguradoras, Tipos de Cobertura, Tipos de Vehículo, Planes.
+   314→- Each card shows: icon badge, label, description, count badge, existing items as removable chips, add-new input + "+" button.
+   315→- Enter key adds item; chip trash button removes item.
+   316→- Save button (header + footer bar) persists all changes via PUT /api/settings.
+   317→- "Restablecer" button reloads from server.
+   318→- Green confirmation bar at bottom explaining scope.
+   319→- Added "Configuración" nav item with Settings icon.
+   320→
+   321→**Major Feature: Expiry Alerts Widget (expiry-alerts.tsx)**
+   322→- New `ExpiryAlerts` component on the dashboard (between charts and recent list).
+   323→- Two tabs: "Por vencer" (next 30 days) and "Vencidas" (already expired).
+   324→- Each policy row: icon badge (amber/red by urgency), name, policy number, vehicle info, expiry date, days-remaining badge.
+   325→- Color coding: red for expired or ≤7 days, amber for 8-30 days.
+   326→- Click navigates to admin view.
+   327→- Auto-hides if no expiring/expired policies.
+   328→- Uses scrollbar-thin for the scrollable list.
+   329→
+   330→**Major Feature: Notifications Bell (notifications-bell.tsx)**
+   331→- New `NotificationsBell` component in admin header (next to CSV export button).
+   332→- Bell icon with unread count badge (red, top-right).
+   333→- Click opens dropdown panel (80-96 width) with recent 15 activities.
+   334→- Each notification: action-specific icon (color-coded), description, policy name + number, time-ago.
+   335→- Auto-polls every 30 seconds for new notifications.
+   336→- Click-outside-to-close, unread count resets on open.
+   337→- Icons mapped per action: CREATED (sky), APPROVED (emerald), REJECTED (red), DOCUMENT_UPLOADED (violet), etc.
+   338→
+   339→**Feature: Keyboard Shortcuts**
+   340→- "/" — focuses the search input (when not already typing).
+   341→- "g d" — go to Dashboard.
+   342→- "g p" — go to Pendientes.
+   343→- "g t" — go to Todas.
+   344→- "g s" — go to Configuración.
+   345→- "g n" — go to Nueva Solicitud.
+   346→- Shortcuts disabled when typing in inputs/textareas.
+   347→- "Atajos de teclado" hint panel added to sidebar with kbd-styled keys.
+   348→
+   349→### Stage Summary / Verification (agent-browser + curl)
+   350→- ✅ All pages compile (HTTP 200), no console errors.
+   351→- ✅ Settings page: renders 4 config cards (Aseguradoras 8, Cobertura 4, Vehículos 6, Planes 4).
+   352→- ✅ VLM confirms settings page is "Excelente estructura" with "jerarquía visual clara".
+   353→- ✅ Notifications bell: click opens panel showing "Póliza aprobada masivamente con N° 000002" + other recent activities.
+   354→- ✅ Keyboard shortcut "/": pressed → focused the search input (verified activeElement).
+   355→- ✅ "Atajos de teclado" hint panel visible in sidebar.
+   356→- ✅ "Configuración" nav item present and clickable.
+   357→- ✅ ExpiryAlerts widget on dashboard (auto-hides when no expiring policies, which is the case with current test data).
+   358→- ✅ `bun run lint` passes clean (0 errors).
+   359→- ✅ All API endpoints return 200 (stats, policies, export, lookup, settings, expiring, notifications).
+   360→
+   361→### Files Added/Modified
+   362→- Added: `src/lib/settings.ts`, `src/components/seguros/admin-settings.tsx`, `src/components/seguros/expiry-alerts.tsx`, `src/components/seguros/notifications-bell.tsx`
+   363→- Added API: `src/app/api/settings/route.ts`, `src/app/api/policies/expiring/route.ts`, `src/app/api/notifications/route.ts`
+   364→- Modified: `prisma/schema.prisma` (Setting model), `src/components/seguros/admin-dashboard.tsx` (settings view, notifications bell, expiry alerts, keyboard shortcuts, shortcuts hint panel, new icon imports)
+   365→
+   366→### Unresolved / Next-phase recommendations (updated)
+   367→1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+   368→2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+   369→3. **PDF template**: Integrate user's `pdfclean` template.
+   370→4. **Notifications (email/SMS)**: External notification delivery on approval.
+   371→5. **Landing page FAQ**: Add FAQ section + animated stat counters.
+   372→6. **Policy expiry email**: Send reminder emails before vigencia ends.
+   373→7. **Settings → form integration**: Make solicitud-form load options dynamically from /api/settings instead of hardcoded arrays.
+   374→8. **Audit log export**: Export activity log as CSV/JSON.
+   375→
+   376→---
+   377→
+   378→## Task ID: 6 (cron review — form settings integration + FAQ + audit export)
+   379→Agent: main (Z.ai Code) — webDevReview cron round 5
+   380→Task: QA assessment + dynamic form options + landing FAQ/animated stats + audit log export.
+   381→
+   382→### Work Log
+   383→**QA Assessment (agent-browser)**
+   384→- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+   385→- Confirmed previous round's features (settings page, notifications bell, expiry alerts, keyboard shortcuts) all working.
+   386→
+   387→**Major Feature: Settings → Form Integration (solicitud-form.tsx)**
+   388→- Added `options` state + useEffect to fetch configurable lists from `/api/settings` on mount.
+   389→- Replaced hardcoded vehicle types array with `options?.VEHICLE_TYPES || []`.
+   390→- Replaced hardcoded coverage types array with `options?.COVERAGE_TYPES || []`.
+   391→- Converted Aseguradora field from plain text Input to SelectField with `options.ASEGURADORAS` (falls back to text Input if no settings loaded).
+   392→- Converted Plan field from plain text Input to SelectField with `options.PLAN_TYPES` (same fallback).
+   393→- Non-configurable options (tipoCedula, nacionalidad, estadoCivil, sexo, uso, frecuenciaPago) remain hardcoded as they're fixed enumerations.
+   394→
+   395→**Major Feature: Landing Page FAQ + Animated Stats**
+   396→- New `src/components/seguros/use-count-up.ts` — `useCountUp` hook (ease-out cubic animation) + `useInView` hook (IntersectionObserver).
+   397→- New `src/components/seguros/faq-section.tsx` with two exports:
+   398→  - `AnimatedStats` — 4 stat cards with count-up animation triggered on scroll into view (15.000+, 99%, <24h, 7/24).
+   399→  - `FaqSection` — 6-question accordion with smooth expand/collapse (grid-rows transition), email CTA card.
+   400→- Updated `landing-page.tsx`: replaced old hardcoded stats strip with `<AnimatedStats />`, added `<FaqSection />` between testimonials and contact sections.
+   401→
+   402→**Major Feature: Audit Log Export (API + UI)**
+   403→- New `GET /api/policies/[id]/activities/export?format=csv|json` endpoint:
+   404→  - CSV: BOM + headers (Fecha, Acción, Descripción, Actor, Metadata), proper escaping.
+   405→  - JSON: structured response with policy info + activities array + export timestamp.
+   406→  - Both return as downloadable file attachment.
+   407→- Updated `admin-policy-detail.tsx` ActivityTimeline component:
+   408→  - Added CSV and JSON export download buttons in the Historial tab header.
+   409→  - Buttons only appear when `activities.length > 0`.
+   410→  - Each button is an `<a download>` link with icon (Download/FileJson) + label.
+   411→  - Added `FileJson` icon import.
+   412→
+   413→### Stage Summary / Verification (agent-browser + curl)
+   414→- ✅ All pages compile (HTTP 200), no console errors.
+   415→- ✅ Solicitud form: vehicle types dropdown loads options from /api/settings (verified "Automóvil", "Moto", "Camión" appearing).
+   416→- ✅ Aseguradora + Plan fields now use SelectField with loaded options (fallback to text input if no settings).
+   417→- ✅ Animated stats: 4 counters visible on landing page (Pólizas emitidas, Tasa de aprobación, Tiempo de respuesta, Verificación QR).
+   418→- ✅ FAQ section: "Preguntas frecuentes" heading + 6 question accordions visible; clicking expands answer with smooth animation.
+   419→- ✅ FAQ email CTA card present ("¿Tienes otra pregunta?").
+   420→- ✅ Audit log export: CSV and JSON download links present in Historial tab (when activities exist).
+   421→- ✅ CSV export content verified: correct headers + 2 activity rows with proper data.
+   422→- ✅ `bun run lint` passes clean (0 errors).
+   423→- ✅ All API endpoints return 200.
+   424→
+   425→### Files Added/Modified
+   426→- Added: `src/components/seguros/use-count-up.ts`, `src/components/seguros/faq-section.tsx`, `src/app/api/policies/[id]/activities/export/route.ts`
+   427→- Modified: `src/components/seguros/solicitud-form.tsx` (dynamic options from /api/settings), `src/components/seguros/landing-page.tsx` (AnimatedStats + FaqSection), `src/components/seguros/admin-policy-detail.tsx` (audit export buttons + FileJson import)
+   428→
+   429→### Unresolved / Next-phase recommendations (updated)
+   430→1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+   431→2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+   432→3. **PDF template**: Integrate user's `pdfclean` template.
+   433→4. **Notifications (email/SMS)**: External notification delivery on approval.
+   434→5. **Policy expiry email**: Send reminder emails before vigencia ends.
+   435→6. **Document replace**: One-click replace (delete+upload) in admin.
+   436→7. **Admin settings → admin detail**: Make admin detail edit fields also use settings-backed dropdowns.
+   437→8. **Global activity feed page**: Dedicated page showing all activity across all policies (not just the bell dropdown).
+   438→
+   439→---
+   440→
+   441→## Task ID: 7 (cron review — activity feed + document replace + landing timeline)
+   442→Agent: main (Z.ai Code) — webDevReview cron round 6
+   443→Task: QA assessment + global activity feed page + document replace + landing timeline redesign.
+   444→
+   445→### Work Log
+   446→**QA Assessment (agent-browser)**
+   447→- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+   448→- Confirmed previous round's features (settings→form integration, FAQ, audit export) all working.
+   449→
+   450→**Major Feature: Global Activity Feed Page**
+   451→- New `GET /api/activities` endpoint with pagination + filters (action, from, to date range).
+   452→- Returns activities with joined policy info (verifyCode, policyNumber, nombre, status).
+   453→- New `ActivityFeed` component (`activity-feed.tsx`):
+   454→  - Filter row: action dropdown (8 options), date-from/to inputs, Filtrar + Limpiar buttons, total count.
+   455→  - Activity list: each item has color-coded icon badge (9 action types), description, policy name + number + status badge + time-ago.
+   456→  - Click any item → opens that policy's detail.
+   457→  - Pagination footer with numbered buttons + prev/next chevrons.
+   458→  - Skeleton loaders + empty state.
+   459→- Added "Actividad" nav item (Activity icon) in admin sidebar.
+   460→- New view 'actividad' in admin dashboard.
+   461→
+   462→**Feature: Document One-Click Replace**
+   463→- Added `replaceDoc` function in admin-policy-detail: opens file picker → confirms replacement → deletes old doc → uploads new doc with same tipo.
+   464→- Added "Reemplazar" button (RefreshCw icon) to DocCard header (between Abrir and Eliminar).
+   465→- Button hover: emerald accent. Tooltip: "Reemplazar".
+   466→- Confirmation dialog shows old and new filenames.
+   467→
+   468→**Feature: Landing Page "How it Works" Timeline Redesign**
+   469→- Replaced simple 4-column horizontal grid with a vertical timeline:
+   470→  - Gradient vertical line (emerald, fading down).
+   471→  - 4 nodes with icons (FileText, Upload, Clock, QrCode) in bordered circles.
+   472→  - Each step: number (01-04), title, time badge (~5 min, ~2 min, <24 h, Inmediato), description.
+   473→  - Responsive: adapts from mobile (narrow) to desktop.
+   474→  - "Proceso simple" badge + CTA button at bottom.
+   475→- Added Upload icon import to landing page.
+   476→
+   477→### Stage Summary / Verification (agent-browser + curl)
+   478→- ✅ All pages compile (HTTP 200), no console errors.
+   479→- ✅ Activity feed: "Actividad Global" heading + 3 activities visible (CREATED carlos, APPROVED Maria, PDF_GENERATED Maria) with policy info, status badges, time-ago.
+   480→- ✅ Activity feed filters: action dropdown + date inputs + Filtrar/Limpiar buttons present.
+   481→- ✅ Activity feed pagination UI present.
+   482→- ✅ VLM confirms activity feed is "limpio, moderno y coherente" with "buena estructura".
+   483→- ✅ Document replace: "Reemplazar" button present on DocCard (verified 3 button titles: Vista previa, Reemplazar, Eliminar).
+   484→- ✅ Landing timeline: 4 steps render with time badges (~5 min, ~2 min, <24 h, Inmediato).
+   485→- ✅ `bun run lint` passes clean (0 errors).
+   486→- ✅ All API endpoints return 200 (including new /api/activities).
+   487→
+   488→### Files Added/Modified
+   489→- Added: `src/app/api/activities/route.ts`, `src/components/seguros/activity-feed.tsx`
+   490→- Modified: `src/components/seguros/admin-dashboard.tsx` (actividad view + nav item + ActivityFeed import), `src/components/seguros/admin-policy-detail.tsx` (replaceDoc function + DocCard onReplace prop + Reemplazar button), `src/components/seguros/landing-page.tsx` (vertical timeline redesign + Upload icon import)
+   491→
+   492→### Unresolved / Next-phase recommendations (updated)
+   493→1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+   494→2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+   495→3. **PDF template**: Integrate user's `pdfclean` template.
+   496→4. **Notifications (email/SMS)**: External notification delivery on approval.
+   497→5. **Policy expiry email**: Send reminder emails before vigencia ends.
+   498→6. **Admin detail → settings dropdowns**: Make admin detail edit fields use settings-backed dropdowns (currently plain text inputs).
+   499→7. **Activity feed → CSV export**: Export the global activity feed as CSV.
+   500→8. **Dashboard quick-stats cards clickable**: Make KPI cards navigate to filtered lists.
+   501→
+   502→---
+   503→
+   504→## Task ID: 8 (cron review — clickable KPIs + coverage comparison + activity CSV export)
+   505→Agent: main (Z.ai Code) — webDevReview cron round 7
+   506→Task: QA assessment + clickable dashboard KPI cards + landing coverage comparison + activity feed CSV export.
+   507→
+   508→### Work Log
+   509→**QA Assessment (agent-browser)**
+   510→- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+   511→- Confirmed previous round's features (activity feed, document replace, landing timeline) all working.
+   512→
+   513→**Major Feature: Clickable Dashboard KPI Cards**
+   514→- Added `onCardClick?: (filter: string) => void` prop to DashboardView.
+   515→- Each KPI card now has a `filter` property: Total→ALL, Pendientes→PENDIENTE, Aprobadas→APROBADA, Rechazadas→RECHAZADA, Tasa Aprobación→APROBADA. "Solicitudes Hoy" has filter=null (not status-based, so not clickable).
+   516→- Cards with filter !== null are clickable: cursor-pointer, hover bg + shadow-lg + emerald glow.
+   517→- Clicking a card: sets statusFilter, clears search, resets to page 1, switches to "todas" view, reloads policies with that status, shows toast ("Filtrando por estado: X" or "Mostrando todas las pólizas").
+   518→- Wired `onCardClick` in AdminShell DashboardView usage.
+   519→
+   520→**Major Feature: Landing Page Coverage Comparison Section**
+   521→- New `CoverageComparison` component (`coverage-comparison.tsx`):
+   522→  - 3 plan cards: Responsabilidad Civil ($25/mes), Cobertura Total ($65/mes, "MÁS POPULAR"), Cobertura Amplia ($95/mes).
+   523→  - Each card: icon badge (Shield/ShieldCheck/Crown), name, price, 6 feature rows with check/X icons (included/excluded).
+   524→  - Popular plan: scaled up (lg:scale-105), emerald gradient badge, shadow glow.
+   525→  - Deducible + suma asegurada info box at bottom of each card.
+   526→  - Disclaimer text below grid.
+   527→- Added "Coberturas" nav link in header.
+   528→- Placed between Services and How-it-works sections.
+   529→- VLM confirms: "precios y features con estructura lógica", "jerarquía visual clara", "diseño moderno y profesional".
+   530→
+   531→**Feature: Activity Feed CSV Export**
+   532→- New `GET /api/activities/export?action=&from=&to=` endpoint:
+   533→  - Returns all activities (up to 5000) with joined policy info as CSV.
+   534→  - 9 columns: Fecha, Acción, Descripción, Actor, Código Verificación, N° Póliza, Tomador, Cédula, Estado Póliza.
+   535→  - BOM UTF-8 for Excel, proper CSV escaping.
+   536→  - Respects action + date range filters.
+   537→- Added "Exportar CSV" button (Download icon) to ActivityFeed header.
+   538→  - Only appears when pagination.total > 0.
+   539→  - Opens export URL in new tab with current filters applied.
+   540→
+   541→### Stage Summary / Verification (agent-browser + curl)
+   542→- ✅ All pages compile (HTTP 200), no console errors.
+   543→- ✅ KPI cards clickable: verified cursor:pointer + onclick attributes; "Ver lista →" hint text present.
+   544→- ✅ KPI click navigation: clicked "Aprobadas" card → navigated to "Todas las Pólizas" with status filter set to "Aprobadas".
+   545→- ✅ Coverage comparison: 3 plan cards render (Responsabilidad Civil, Cobertura Total, Cobertura Amplia) with "MÁS POPULAR" badge on Cobertura Total.
+   546→- ✅ VLM confirms coverage section has "estructura lógica" and "jerarquía visual clara".
+   547→- ✅ Activity feed export: "Exportar CSV" button present; CSV endpoint returns 200 with correct headers + data rows.
+   548→- ✅ `bun run lint` passes clean (0 errors).
+   549→- ✅ All API endpoints return 200 (including new /api/activities/export).
+   550→
+   551→### Files Added/Modified
+   552→- Added: `src/components/seguros/coverage-comparison.tsx`, `src/app/api/activities/export/route.ts`
+   553→- Modified: `src/components/seguros/admin-dashboard.tsx` (onCardClick prop + clickable cards + wiring), `src/components/seguros/landing-page.tsx` (CoverageComparison section + Coberturas nav link), `src/components/seguros/activity-feed.tsx` (exportCsv function + Exportar CSV button + Download icon import)
+   554→
+   555→### Unresolved / Next-phase recommendations (updated)
+   556→1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+   557→2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+   558→3. **PDF template**: Integrate user's `pdfclean` template.
+   559→4. **Notifications (email/SMS)**: External notification delivery on approval.
+   560→5. **Policy expiry email**: Send reminder emails before vigencia ends.
+   561→6. **Admin detail → settings dropdowns**: Make admin detail edit fields use settings-backed dropdowns.
+   562→7. **Coverage comparison → solicitud**: Click a plan card to pre-fill the form with that coverage type.
+   563→8. **Dashboard date-range selector**: Add a global date range filter affecting all dashboard stats.
+   564→
+   565→---
+   566→
+   567→## Task ID: 9 (cron review — coverage prefill + admin detail dropdowns)
+   568→Agent: main (Z.ai Code) — webDevReview cron round 8
+   569→Task: QA assessment + coverage comparison prefill + admin detail settings-backed dropdowns.
+   570→
+   571→### Work Log
+   572→**QA Assessment (agent-browser)**
+   573→- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+   574→- Confirmed previous round's features (clickable KPIs, coverage comparison, activity CSV export) all working.
+   575→
+   576→**Major Feature: Coverage Comparison → Solicitud Prefill**
+   577→- Made CoverageComparison cards clickable with "Elegir este plan" CTA buttons.
+   578→- Each card now has a Button that calls `selectPlan(plan)` → navigates to `?view=solicitud&cobertura=<planName>`.
+   579→- Plan cards restructured: flex-col layout, features list flex-1 so CTA sits at bottom consistently.
+   580→- Popular plan uses emerald variant; others use outline variant.
+   581→- ArrowRight icon with group-hover translate animation.
+   582→- Updated `page.tsx` Router to read `cobertura` query param and pass as `prefillCobertura` prop to SolicitudForm.
+   583→- Updated SolicitudForm to accept `prefillCobertura?: string`:
+   584→  - On mount, if prefillCobertura is set: `setValue('tipoCobertura', prefillCobertura)`.
+   585→  - Jumps to step 2 (Cobertura) after 300ms so user sees the pre-selected value.
+   586→  - Shows toast: `Plan "Cobertura Total" preseleccionado`.
+   587→- Cards have hover effects: border-emerald glow, shadow-xl, group-hover translate on arrow.
+   588→
+   589→**Major Feature: Admin Detail Settings-Backed Dropdowns**
+   590→- Updated GroupCard component to accept `fieldOptions?: Record<string, string[]>` prop.
+   591→- When a field has options in fieldOptions, renders a Select dropdown instead of plain Input.
+   592→- AdminPolicyDetail now loads settings from `/api/settings` on mount and builds fieldOptions map:
+   593→  - `tipoVehiculo` → VEHICLE_TYPES
+   594→  - `tipoCobertura` → COVERAGE_TYPES
+   595→  - `compania` → ASEGURADORAS
+   596→  - `plan` → PLAN_TYPES
+   597→- All 3 GroupCards (Cliente, Vehículo, Cobertura) receive fieldOptions.
+   598→- Fields without configured options remain plain text inputs (graceful fallback).
+   599→- Editing a dropdown field updates form state same as text inputs.
+   600→
+   601→### Stage Summary / Verification (agent-browser + curl)
+   602→- ✅ All pages compile (HTTP 200), no console errors.
+   603→- ✅ Coverage comparison: 3 "Elegir este plan" buttons present on plan cards.
+   604→- ✅ Plan prefill: clicked "Elegir este plan" (Cobertura Total) → navigated to solicitud → step jumped to "Paso 3 de 4: Cobertura" → Tipo de Cobertura dropdown shows "Cobertura Total" pre-selected.
+   605→- ✅ Admin detail dropdowns: 4 comboboxes on Datos tab (Tipo de Vehículo, Tipo de Cobertura, Aseguradora, Plan).
+   606→- ✅ Aseguradora dropdown loads options dynamically (verified: Seguros Caracas, Mapfre, Oriental, La Previsora, Banesco).
+   607→- ✅ `bun run lint` passes clean (0 errors).
+   608→- ✅ All API endpoints return 200.
+   609→
+   610→### Files Modified
+   611→- `src/components/seguros/coverage-comparison.tsx` (useRouter + selectPlan + CTA buttons + flex layout)
+   612→- `src/app/page.tsx` (read cobertura query param + pass as prefillCobertura prop)
+   613→- `src/components/seguros/solicitud-form.tsx` (prefillCobertura prop + apply on mount + jump to step 2)
+   614→- `src/components/seguros/admin-policy-detail.tsx` (fieldOptions state + load from /api/settings + GroupCard fieldOptions prop + Select rendering)
+   615→
+   616→### Unresolved / Next-phase recommendations (updated)
+   617→1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+   618→2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+   619→3. **PDF template**: Integrate user's `pdfclean` template.
+   620→4. **Notifications (email/SMS)**: External notification delivery on approval.
+   621→5. **Policy expiry email**: Send reminder emails before vigencia ends.
+   622→6. **Dashboard global date-range**: Add a date filter affecting all dashboard stats + charts.
+   623→7. **Inline edit confirmation**: Show "unsaved changes" indicator + discard button in admin detail.
+   624→8. **Policy clone/duplicate**: Button to clone an existing policy's data into a new solicitud.
+   625→
+   626→---
+   627→
+   628→## Task ID: 10 (cron review — unsaved changes indicator + policy clone)
+   629→Agent: main (Z.ai Code) — webDevReview cron round 9
+   630→Task: QA assessment + inline unsaved-changes indicator + policy clone/duplicate feature.
+   631→
+   632→### Work Log
+   633→**QA Assessment (agent-browser)**
+   634→- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+   635→- Confirmed previous round's features (coverage prefill, admin detail dropdowns) all working.
+   636→
+   637→**Major Feature: Inline Unsaved-Changes Indicator**
+   638→- Added `originalForm` state to track the saved version of the form.
+   639→- Added `hasChanges` computed via `useMemo` — compares current form to originalForm field by field.
+   640→- Added `beforeunload` event listener that warns before navigating away with unsaved changes.
+   641→- Header now shows:
+   642→  - "Cambios sin guardar" badge (amber, pulsing dot) when hasChanges=true.
+   643→  - "Descartar cambios" button (RotateCcw icon, red hover) — only when hasChanges.
+   644→  - "Guardar" button disabled when !hasChanges (prevents redundant saves).
+   645→- Bottom of Datos tab (save bar):
+   646→  - Shows "Tienes cambios sin guardar" (amber) when hasChanges, or "Todos los cambios guardados" (emerald check) when !hasChanges.
+   647→  - "Descartar" button + "Guardar cambios" button (disabled when !hasChanges).
+   648→- `discardChanges()` function: confirms then resets form to originalForm.
+   649→- `save()` now updates originalForm after successful save (clears hasChanges).
+   650→
+   651→**Major Feature: Policy Clone/Duplicate**
+   652→- Added "Clonar" button (Copy icon) in the action bar of admin policy detail.
+   653→- `clonePolicy()` function:
+   654→  - Confirms with user ("¿Crear una nueva solicitud con los mismos datos?").
+   655→  - Builds payload from current form, excluding policyNumber, status, and notes.
+   656→  - POSTs to /api/policies (creates new solicitud with PENDIENTE status).
+   657→  - On success: toast "Solicitud clonada con código XXXXXX" + navigates to the new policy.
+   658→- Added `onNavigate?: (newId: string) => void` prop to AdminPolicyDetail.
+   659→- AdminDashboard passes `onNavigate={(newId) => setSelectedId(newId)}` so clone navigates to the new policy detail.
+   660→- Added `cloning` state for button loading spinner.
+   661→- Verificado: cloned Maria's policy → new policy created with code 398239, status PENDIENTE, same name "Maria Editada".
+   662→
+   663→### Stage Summary / Verification (agent-browser + curl)
+   664→- ✅ All pages compile (HTTP 200), no console errors.
+   665→- ✅ Unsaved indicator: "Guardar" button disabled when no changes; editing a field → "Cambios sin guardar" badge appears in header + "Descartar cambios" button + "Guardar" enabled.
+   666→- ✅ Bottom save bar: shows "Tienes cambios sin guardar" (amber) when dirty, "Todos los cambios guardados" (emerald) when clean.
+   667→- ✅ Clone: clicked "Clonar" → new policy created (code 398239, PENDIENTE) → navigated to new policy detail → toast confirmed.
+   668→- ✅ `bun run lint` passes clean (0 errors).
+   669→- ✅ All API endpoints return 200.
+   670→
+   671→### Files Modified
+   672→- `src/components/seguros/admin-policy-detail.tsx` (originalForm state + hasChanges useMemo + beforeunload + discardChanges + clonePolicy + Clonar button + unsaved indicator badges + disabled save logic + RotateCcw/Check icon imports + onNavigate prop)
+   673→- `src/components/seguros/admin-dashboard.tsx` (pass onNavigate to AdminPolicyDetail)
+   674→
+   675→### Unresolved / Next-phase recommendations (updated)
+   676→1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+   677→2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+   678→3. **PDF template**: Integrate user's `pdfclean` template.
+   679→4. **Notifications (email/SMS)**: External notification delivery on approval.
+   680→5. **Policy expiry email**: Send reminder emails before vigencia ends.
+   681→6. **Dashboard global date-range**: Add a date filter affecting all dashboard stats + charts.
+   682→7. **Policy clone with documents**: Currently clones data only; could also copy document references.
+   683→8. **Admin detail keyboard shortcut**: Cmd/Ctrl+S to save from anywhere in the detail.
+   684→
+   685→---
+   686→
+   687→## Task ID: 11 (cron review — Ctrl+S shortcut + testimonials redesign)
+   688→Agent: main (Z.ai Code) — webDevReview cron round 10
+   689→Task: QA assessment + Cmd/Ctrl+S keyboard shortcut + testimonials visual redesign.
+   690→
+   691→### Work Log
+   692→**QA Assessment (agent-browser)**
+   693→- All golden paths intact (landing, form, admin, verify, PDF, docs). No console errors.
+   694→- Confirmed previous round's features (unsaved indicator, policy clone) all working.
+   695→
+   696→**Feature: Cmd/Ctrl+S Keyboard Shortcut**
+   697→- Added useEffect in admin-policy-detail that listens for keydown events.
+   698→- When (metaKey || ctrlKey) && key === 's': preventDefault + calls save() if hasChanges && !saving.
+   699→- Added "Ctrl+S" kbd hint next to "Tienes cambios sin guardar" text in the bottom save bar (hidden on mobile, visible on sm+).
+   700→- Dependencies: [hasChanges, saving, form] so the handler always has fresh state.
+   701→- Verificado: edited a field → "Ctrl+S" hint appeared → pressed Ctrl+S → "Cambios guardados" toast + "Todos los cambios guardados" indicator.
+   702→
+   703→**Feature: Testimonials Section Redesign**
+   704→- Replaced simple name-only testimonials with richer card design:
+   705→  - Section header: "Testimonios" badge + "Lo que dicen nuestros clientes" heading + subtitle.
+   706→  - Each card: large decorative quote mark (serif, emerald, absolute positioned top-right).
+   707→  - 5 stars row (amber).
+   708→  - Quote text (longer, more detailed).
+   709→  - Footer with avatar circle (gradient emerald bg, initial letter, ring) + name + city.
+   710→  - Hover effects: border-emerald glow, shadow-xl, quote mark brightens.
+   711→- Full names with cities: María González (Caracas), Carlos Rodríguez (Maracay), Andrea Pérez (Valencia).
+   712→- VLM confirms: "limpio y profesional", "buena jerarquía visual", "avatares distintivos".
+   713→
+   714→### Stage Summary / Verification (agent-browser + curl)
+   715→- ✅ All pages compile (HTTP 200), no console errors.
+   716→- ✅ Ctrl+S shortcut: edited field → hint appeared → pressed Ctrl+S → saved successfully → "Todos los cambios guardados".
+   717→- ✅ Testimonials: "Testimonios" badge + heading + 3 cards with avatars, names, cities, stars.
+   718→- ✅ VLM confirms testimonials have "buena jerarquía visual" and "avatares distintivos".
+   719→- ✅ `bun run lint` passes clean (0 errors).
+   720→- ✅ All API endpoints return 200.
+   721→
+   722→### Files Modified
+   723→- `src/components/seguros/admin-policy-detail.tsx` (Cmd/Ctrl+S useEffect + kbd hint in save bar)
+   724→- `src/components/seguros/landing-page.tsx` (testimonials section redesign with header, quote marks, avatars, cities)
+   725→
+   726→### Unresolved / Next-phase recommendations (updated)
+   727→1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+   728→2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+   729→3. **PDF template**: Integrate user's `pdfclean` template.
+   730→4. **Notifications (email/SMS)**: External notification delivery on approval.
+   731→5. **Policy expiry email**: Send reminder emails before vigencia ends.
+   732→6. **Dashboard global date-range**: Add a date filter affecting all dashboard stats + charts.
+   733→7. **Policy clone with documents**: Currently clones data only; could also copy document references.
+   734→8. **Admin detail Esc-to-close**: Esc key to go back from detail to list.
+   735→
+   736→---
+   737→
+   738→## Task ID: 12 (user request — vehicle classes + plans + price list + form restructure)
+   739→Agent: main (Z.ai Code)
+   740→Task: Add vehicle classes (18 types), plans with prices (€/$/Bs), editable price list in admin, and restructure the solicitud form with the new fields.
+   741→
+   742→### Work Log
+   743→**Database Schema Updates**
+   744→- Added `VehicleClass` model (id, code, name, sortOrder) — 18 vehicle classes.
+   745→- Added `Plan` model (id, externalId, name, vehicleClassId, priceEur, priceUsd, priceBs, active) — 162 plans.
+   746→- Added new Policy fields: asegurado (asegNombre, asegApellido, asegCedula, asegEmail), tomador (tom* fields, tomadorIgualAseg), vehicle (poseeTrailer, placaExtranjera, cantidadPuestos, capacidadCarga), policy (vehicleClassId, planId, primaEur, primaUsd, primaBs).
+   747→- Added relations: Policy → VehicleClass, Policy → Plan.
+   748→
+   749→**Seed Script (scripts/seed-plans.ts)**
+   750→- Created script with all 18 vehicle classes (AUTO ESCUELA, AUTOBUS PLACA EXTRAJERA, AUTOBUSES, CARGA, etc.).
+   751→- Created script with all 162 plans from the user-provided data, each with prices in EUR, USD, and Bs.
+   752→- Uses upsert so it's idempotent (can re-run safely).
+   753→- Run with: `bun run scripts/seed-plans.ts`.
+   754→- Result: 18 vehicle classes + 162 plans seeded successfully.
+   755→
+   756→**New API Endpoints**
+   757→- `GET/POST /api/vehicle-classes` — list all classes with their plans (withPlans param).
+   758→- `GET/POST /api/plans` — list all plans (filter by vehicleClassId).
+   759→- `PATCH/DELETE /api/plans/[id]` — update/delete a plan.
+   760→
+   761→**Price List Management Page (admin)**
+   762→- New `PriceListManager` component in admin (view: 'precios').
+   763→- "Lista de Precios" nav item (Tag icon) in sidebar.
+   764→- Features:
+   765→  - Search by name, class, or ID.
+   766→  - Filter by vehicle class dropdown.
+   767→  - Table with 162 plans: ID, Clase (badge), Plan name, EUR, USD, Bs, Estado (Activo/Inactivo), Acciones.
+   768→  - Inline edit: click edit → edit price fields + active toggle → save/cancel.
+   769→  - Delete plan (with confirmation).
+   770→  - Add new plan form (expandable): ID, name, class, EUR, USD, Bs.
+   771→  - Currency icons (Euro, DollarSign, Coins) next to prices.
+   772→  - Sticky header, scrollbar-thin for the table.
+   773→  - Count badge: "18 clases · 162 planes".
+   774→
+   775→**Solicitud Form Restructure**
+   776→- Updated zod schema with all new fields (asegurado, tomador, vehicle extras, plan/prima fields).
+   777→- **Vehicle step** updated with new fields:
+   778→  - Placa o Matrícula, Marca, Modelo, Tipo, Año, Uso del Vehículo.
+   779→  - ¿Posee Trailer? (Sí/No), ¿Posee Placa Extranjera? (Sí/No).
+   780→  - Serial de Carrocería, Serial del Motor.
+   781→  - Cantidad de Puestos, Capacidad de Carga (Kg), Color, Clase.
+   782→- **Coverage step** now has TWO cards:
+   783→  1. "Póliza — Clase de Vehículo y Plan":
+   784→     - Clase de Vehículo dropdown (loads 18 classes from /api/vehicle-classes).
+   785→     - Seleccionar Plan dropdown (loads plans for the selected class, shows name + 3 prices).
+   786→     - Price summary card (emerald) showing EUR, USD, Bs with icons.
+   787→     - "Ver lista de precios completa →" link to admin price list.
+   788→  2. "Cobertura y Condiciones Adicionales" (the existing fields: aseguradora, plan, cobertura, etc.).
+   789→- SelectField component extended with `optionsRaw` prop for custom SelectContent (needed for plan options with prices).
+   790→- Vehicle classes + plans loaded from /api/vehicle-classes on mount.
+   791→- Selecting a plan auto-fills: planId, plan name, primaEur, primaUsd, primaBs.
+   792→
+   793→### Stage Summary / Verification (agent-browser + curl)
+   794→- ✅ All pages compile (HTTP 200), no console errors.
+   795→- ✅ Seed: 18 vehicle classes + 162 plans in database.
+   796→- ✅ Price list admin: 162 plan rows in table, search + filter working, "18 clases · 162 planes" badge.
+   797→- ✅ Solicitud form: vehicle class dropdown loads 18 classes (verified AUTO ESCUELA, CARGA, MOTO, etc.).
+   798→- ✅ Plan selector: selected MOTO → showed 5 MOTO plans with prices (PLAN LIDER MOTO — 15.00€ / 17.31$ / 13,276.20Bs).
+   799→- ✅ Price summary: selected plan → EUR 15.00, USD 17.31, Bs displayed with icons.
+   800→- ✅ "Ver lista de precios completa →" link present on form.
+   801→- ✅ `bun run lint` passes clean (0 errors).
+   802→- ✅ All API endpoints return 200.
+   803→
+   804→### Files Added/Modified
+   805→- Added: `scripts/seed-plans.ts`, `src/app/api/vehicle-classes/route.ts`, `src/app/api/plans/route.ts`, `src/app/api/plans/[id]/route.ts`, `src/components/seguros/price-list-manager.tsx`
+   806→- Modified: `prisma/schema.prisma` (VehicleClass, Plan models + new Policy fields), `src/components/seguros/admin-dashboard.tsx` (precios view + nav item + Tag icon + PriceListManager import), `src/components/seguros/solicitud-form.tsx` (new schema fields + vehicle class/plan selectors + price summary + new vehicle fields)
+   807→
+   808→### Unresolved / Next-phase recommendations (updated)
+   809→1. **Auth**: Still demo password — migrate to NextAuth.js v4.
+   810→2. **Cloudflare deployment**: storage.ts → R2; Prisma → D1.
+   811→3. **PDF template**: Integrate user's `pdfclean` template.
+   812→4. **Asegurado/Tomador sections**: Form currently has the fields in schema but the UI sections need to be added (asegurado fields + "tomador = asegurado" button + tomador fields with estado/municipio/parroquia).
+   813→5. **Document uploads in form**: Título de Propiedad + Cédula/RIF file uploads (already exist in step 3, but should be labeled per the user's spec).
+   814→6. **Admin detail**: Add the new vehicle/asegurado/tomador fields to the admin detail edit form.
+   815→7. **Policy PDF**: Include vehicle class + plan + prices in the generated PDF certificate.
+   816→
+   817→---
+   818→
+   819→## Task ID: 13 (README + env.example for download)
+   820→Agent: main (Z.ai Code)
+   821→Task: Crear README completo + .env.example para que el proyecto se pueda descargar y otra IA/desarrollador pueda entenderlo.
+   822→
+   823→### Work Log
+   824→- Created comprehensive `README.md` with:
+   825→  - Stack tecnológico completo
+   826→  - Arquitectura visual (diagrama ASCII)
+   827→  - Estructura del proyecto (árbol de directorios)
+   828→  - Modelo de datos (6 modelos documentados)
+   829→  - Todos los API endpoints (tabla)
+   830→  - Flujos principales (solicitud, aprobación, verificación, lista de precios)
+   831→  - Instalación local paso a paso
+   832→  - Guía de despliegue en Cloudflare (D1 + R2)
+   833→  - Configuración y variables de entorno
+   834→  - Scripts disponibles
+   835→  - Características de UI
+   836→  - Funcionalidades del admin
+   837→  - Notas para desarrolladores/IA
+   838→- Created `.env.example` with all required env vars (DATABASE_URL, NEXT_PUBLIC_APP_URL, Cloudflare refs)
+   839→- Verified: lint clean, all pages compile (HTTP 200), all API endpoints return 200.
+   840→
+   841→### Files Added
+   842→- `README.md` (comprehensive project documentation)
+   843→- `.env.example` (environment variable template)
+   844→
+   845→The project is now ready for download. The README provides everything an AI or developer needs to understand the architecture, run locally, and deploy to Cloudflare.
+   846→
+   847→---
+   848→Task ID: D1-MIGRATION
+   849→Agent: general-purpose
+   850→Task: Update API routes to use D1 raw SQL in production
+   851→
+   852→Work Log:
+   853→- Audited existing API routes and the vehicle-classes example to confirm the D1 vs Prisma branch pattern (isD1() → d1Query/d1First/d1Run; else dynamic `await import('@/lib/db')`).
+   854→- Updated `src/app/api/stats/route.ts` GET: D1 path issues one scalar-subquery SELECT (counts for total/pendientes/aprobadas/rechazadas/anuladas/hoy/ayer/aprobadasHoy/withDocs), one GROUP BY substr(createdAt,1,10) for the 14-day timeseries, and three GROUP BY queries for topBrands / topEstados / tipoDistribution. Prisma path preserved verbatim with dynamic import. Whole handler wrapped in try/catch returning JSON 500 on error.
+   855→- Updated `src/app/api/policies/route.ts` GET: D1 path builds a parameterized WHERE clause (status, q LIKE across 6 columns, createdAt range), fetches policies with a correlated json_group_array subquery for documents, plus a parallel COUNT(*) for total. Returns the same `{ policies, pagination }` shape as the Prisma version. POST left using Prisma but switched to `await import('@/lib/db')` inside the existing try/catch.
+   856→- Updated `src/app/api/plans/route.ts` GET: D1 path uses LEFT JOIN VehicleClass + ORDER BY vc.sortOrder, CAST(priceEur AS REAL); reassembles the `vehicleClass` nested object (null when no relation) and coerces the `active` column from 0/1 to boolean. POST left using Prisma but switched to dynamic `await import('@/lib/db')`.
+   857→- Updated `src/app/api/settings/route.ts` GET: D1 path queries the Setting table directly and applies the same DEFAULTS map as `src/lib/settings.ts` (inlined to avoid touching the Prisma-dependent helper). PUT handler left unchanged (still uses Prisma via settings.ts). Imported `SETTING_KEYS` is safe because it's a const enum-like object — the Prisma access only happens when `getAllSettings()`/`setSetting()` are called.
+   858→- Updated `src/app/api/policies/verify/route.ts` GET: D1 path uses `d1First` for the policy row and a separate `d1Query` for documents, returning `{ policy: { ...policy, documents } }`.
+   859→- Updated `src/app/api/notifications/route.ts` GET: D1 path uses a correlated json_object subquery to embed the policy summary (verifyCode, policyNumber, nombre, apellido, status), parses it back to an object, and respects the `limit` query param.
+   860→- Updated `src/app/api/policies/lookup/route.ts` GET: D1 path tries exact verifyCode match first via `d1First`, falls back to LIKE search across cedula/placa/policyNumber, returns the same 9-column projection as the Prisma select.
+   861→- Updated `src/app/api/activities/route.ts` GET: D1 path builds a parameterized WHERE clause (action, createdAt range), uses correlated json_object subquery for the policy relation, parallel COUNT(*) for pagination totals, returns the same `{ activities, pagination }` shape.
+   862→- Verified no new TypeScript errors were introduced: `npx tsc --noEmit` shows zero diagnostics in any of the 8 modified route files (pre-existing errors in unrelated files like pdf.ts, storage.ts, d1.ts, admin-dashboard.tsx remain untouched).
+   863→
+   864→Stage Summary:
+   865→- All 8 GET handlers now follow the D1-or-Prisma branch pattern with `isD1()` short-circuit and dynamic `await import('@/lib/db')` so Prisma is never loaded at module level in production.
+   866→- All D1 raw SQL uses parameterized bindings (no string interpolation of user input) for safe query construction; LIKE patterns use `%${q}%` placeholders.
+   867→- All JSON response shapes match the Prisma versions exactly (policies+pagination, activities+pagination, settings map, stats object, etc.) so the frontend does not need to change.
+   868→- POST/PATCH/DELETE handlers (policies POST, plans POST, settings PUT) were intentionally left on Prisma per task instructions; they use dynamic imports where touched and remain wrapped in try/catch.
+   869→- Open follow-ups for a future task: (1) migrate POST/PATCH/DELETE handlers and the lib helpers (`settings.ts`, `activity.ts`, `policy-utils.ts`) to D1 raw SQL so writes work in production; (2) investigate D1 adapter for Prisma as an alternative to hand-written SQL.
+   870→
+   871→---
+   872→
+   873→## Task ID: DEPLOY (Cloudflare Workers deployment)
+   874→Agent: main (Z.ai Code)
+   875→Task: Deploy project to Cloudflare Workers with D1 + R2 bindings.
+   876→
+   877→### Work Log
+   878→- Installed wrangler CLI + @opennextjs/cloudflare adapter + @prisma/adapter-d1
+   879→- Created `wrangler.toml` with Workers config (main = .open-next/worker.js)
+   880→- Created `open-next.config.ts` for OpenNext adapter
+   881→- Adapted `src/lib/storage.ts` — dual-mode: R2 in production, filesystem in dev
+   882→- Adapted `src/lib/db.ts` — eval-require Prisma (lazy load, avoids Workers fs errors)
+   883→- Created `src/lib/d1.ts` — raw D1 SQL query helpers (d1Query, d1Run, d1First)
+   884→- Generated SQL migrations from Prisma schema
+   885→- Pushed schema to D1 (6 tables created)
+   886→- Seeded D1: 18 vehicle classes + 162 plans with prices
+   887→- Created R2 bucket `my-emdash-media` (already existed)
+   888→- Configured D1 + R2 bindings via Cloudflare API
+   889→- Updated 8 API routes to use D1 raw SQL in production, Prisma in dev
+   890→- Built with `npx @opennextjs/cloudflare build`
+   891→- Patched worker.js to expose env bindings to globalThis
+   892→- Deployed as Cloudflare Worker (not Pages — Workers have proper env access)
+   893→
+   894→### Final URLs
+   895→- **Production**: https://seguros-lider.estilosgrado33.workers.dev
+   896→- **GitHub**: https://github.com/bboymak3/seguros-lider
+   897→
+   898→### Bindings
+   899→- `env.DB` → D1 Database (seguros_db, 5f2737c7-...)
+   900→- `env.BUCKET` → R2 Bucket (my-emdash-media)
+   901→- `env.ASSETS` → Static assets
+   902→- `env.NEXT_PUBLIC_APP_URL` → https://seguros-lider.estilosgrado33.workers.dev
+   903→
+   904→### Verification
+   905→- ✅ Home page: HTTP 200
+   906→- ✅ /api/vehicle-classes: 200 (18 classes with plans)
+   907→- ✅ /api/plans: 200 (162 plans with prices)
+   908→- ✅ /api/stats: 200 (dashboard KPIs + timeseries)
+   909→- ✅ /api/policies: 200 (empty list, correct for new D1)
+   910→- ✅ /api/settings: 200
+   911→- ✅ /api/activities: 200
+   912→- ✅ /api/notifications: 200
+   913→- ✅ /api/policies/lookup: 200
+   914→
+   915→### Deploy Commands
+   916→```bash
+   917→# Build
+   918→npx @opennextjs/cloudflare build
+   919→
+   920→# Deploy
+   921→CLOUDFLARE_API_TOKEN="cfat_..." wrangler deploy
+   922→```
+   923→

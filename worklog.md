@@ -920,3 +920,30 @@ npx @opennextjs/cloudflare build
 # Deploy
 CLOUDFLARE_API_TOKEN="cfat_..." wrangler deploy
 ```
+
+---
+
+Task ID: FIX-ADMIN-D1
+Agent: general-purpose
+Task: Fix admin detail + approve routes for D1 production
+
+Work Log:
+- Audited existing D1-aware patterns in `/api/policies/route.ts` and `/api/vehicle-classes/route.ts` plus helpers in `src/lib/d1.ts` (`isD1`, `d1Query`, `d1First`, `d1Run`).
+- Rewrote `/api/policies/[id]/route.ts`:
+  - GET: D1 path does `SELECT * FROM Policy WHERE id = ?` + `SELECT * FROM Document WHERE policyId = ?`; Prisma path unchanged.
+  - PATCH: D1 path selects before-state for status-change detection, builds a dynamic `UPDATE Policy SET … WHERE id = ?` from the same 41-field allowlist, runs an inline `INSERT INTO ActivityLog` (because `logActivity` uses Prisma), then re-fetches the policy + documents. Prisma path kept verbatim.
+  - DELETE: D1 path selects policy + documents, deletes stored files (each wrapped in its own try/catch so a storage hiccup doesn't block the DB cleanup), then cascades `DELETE FROM Document` → `DELETE FROM ActivityLog` → `DELETE FROM Policy`.
+  - Top-level `db` import replaced with inline `await import('@/lib/db')` in the else branches; `storage` and `logActivity` imports retained at top.
+  - All three handlers wrapped in try/catch with consistent JSON error responses.
+- Rewrote `/api/policies/[id]/approve/route.ts`:
+  - D1 path: fetch policy, compute policyNumber (body → existing → `nextPolicyNumber()`, which is itself D1-aware), run a single `UPDATE Policy SET status='APROBADA', policyNumber=?, aprobadoAt=?, aprobadoPor=?, vigenciaDesde=?, vigenciaHasta=?, notes=?, updatedAt=? WHERE id = ?`, insert an `APPROVED` ActivityLog row, re-fetch and return the updated policy.
+  - PDF/QR generation explicitly skipped on D1 per task instructions (storage layer is being migrated to R2 separately).
+  - Prisma path kept verbatim, including the PDF regeneration + `PDF_GENERATED` activity log.
+  - Top-level imports trimmed: `db` and `generatePolicyPdf` moved to inline `await import(...)` inside the else branch.
+- Verified with `npx tsc --noEmit`: zero new errors introduced in either modified route (pre-existing unrelated errors elsewhere in the project remain unchanged).
+
+Stage Summary:
+- Admin policy detail page (`/admin/politicas/[id]`) should now render and accept edits in D1 production — GET, PATCH, and DELETE all hit raw SQL when `isD1()` is true.
+- Approve action works end-to-end on D1 (status flip + policy number + activity log); only PDF/QR certificate regeneration is deferred until the R2 storage migration.
+- Pattern is now consistent across all `/api/policies/*` routes: D1 raw SQL via `d1Query/d1First/d1Run`, Prisma via lazy `await import('@/lib/db')` for local dev.
+- No tests written (per instructions). Next step once storage is R2-ready: re-enable the `generatePolicyPdf` block in the approve route's D1 branch and persist `pdfPath`/`qrPath` on the Policy row.
