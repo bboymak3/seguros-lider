@@ -5967,3 +5967,1867 @@ Import trace:
 https://nextjs.org/docs/messages/module-not-found
 
 
+[01:49:33.063] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:49:34.291] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:49:38.673] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:49:38.673] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/lib/db.ts
+    ./src/app/api/policies/expiring/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:49:38.674] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/stats/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:49:38.674] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/notifications/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:49:38.674] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:49:38.674] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/settings/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:49:38.676] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:49:38.677] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:49:38.678] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/verify/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:49:38.678] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:49:38.678] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/lib/qr.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:34.920] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:38.318] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:38.318] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/lib/db.ts
+    ./src/app/api/policies/expiring/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:38.318] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/stats/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:38.319] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/notifications/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:38.319] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:38.319] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/settings/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:38.319] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:38.320] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:38.320] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/verify/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:38.322] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:38.322] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/lib/qr.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:43.732] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:45.963] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:45.963] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/lib/db.ts
+    ./src/app/api/policies/expiring/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:45.965] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/stats/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:45.966] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/notifications/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:45.967] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:45.967] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/settings/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:45.967] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:45.968] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:45.968] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/verify/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:45.970] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:50:45.970] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/lib/qr.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:22.479] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:25.872] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:25.872] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/lib/db.ts
+    ./src/app/api/policies/expiring/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:25.873] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/stats/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:25.873] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/notifications/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:25.873] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:25.875] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/settings/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:25.876] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:25.876] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:25.876] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/verify/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:25.877] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:25.877] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/lib/qr.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:00.600] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:04.800] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:04.801] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/lib/db.ts
+    ./src/app/api/policies/expiring/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:04.802] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/stats/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:04.802] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/notifications/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:04.804] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:04.805] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/settings/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:04.805] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:04.806] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:04.807] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/verify/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:04.807] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:04.814] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/lib/qr.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:17.596] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:21.209] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:21.209] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/lib/db.ts
+    ./src/app/api/policies/expiring/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:21.209] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/stats/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:21.210] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/notifications/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:21.211] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:21.212] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/settings/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:21.212] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:21.212] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:21.213] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/verify/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:21.213] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:21.213] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/lib/qr.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:27.574] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:31.258] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:31.259] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/lib/db.ts
+    ./src/app/api/policies/expiring/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:31.259] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/stats/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:31.259] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/notifications/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:31.260] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:31.260] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/settings/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:31.260] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:31.261] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/app/api/policies/[id]/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:31.261] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/verify/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:31.262] Server  WARN    ⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  11 |   } catch { /* ignore */ }
+  12 |   try {
+> 13 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 |     const env = getRequestContext().env
+  15 |     const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
+  16 |     if (d1 && typeof d1.prepare === 'function') return d1
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/d1.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:52:31.265] Server  WARN    ⚠ ./src/lib/storage.ts:30:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+  28 |   // Try @opennextjs/cloudflare getRequestContext
+  29 |   try {
+> 30 |     const { getRequestContext } = require('@opennextjs/cloudflare/next')
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  31 |     const env = getRequestContext().env
+  32 |     const bucket = (env as Record<string, unknown>).BUCKET as R2Bucket | undefined
+  33 |     if (bucket && typeof bucket.put === 'function') {
+
+
+
+Import trace:
+  App Route:
+    ./src/lib/storage.ts
+    ./src/lib/qr.ts
+    ./src/app/api/policies/[id]/qr/route.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
