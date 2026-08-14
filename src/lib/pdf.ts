@@ -297,7 +297,7 @@ export async function generatePolicyPdf(data: PolicyPdfData) {
   const qrSize = 55
   page.drawImage(qrImg, {
     x: width - qrSize - 25,
-    y: height - qrSize - 20,
+    y: height - qrSize - 32,
     width: qrSize,
     height: qrSize,
   })
