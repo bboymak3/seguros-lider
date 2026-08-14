@@ -119,9 +119,11 @@ export async function generatePolicyPdf(data: PolicyPdfData) {
   // === SECTION I: ASEGURADO ===
   drawSectionHeader(height - 155, 'I. Datos del Asegurado — Nombre(s) y Apellidos o Razón Social:')
   const asegName = safe(data.asegNombre || data.nombre) + ' ' + safe(data.asegApellido || data.apellido)
-  drawText(asegName.trim(), 220, height - 163, 9, true)
-  drawText('Cédula o Rif:', 420, height - 163, 7, false, GREY)
-  drawText(safe(data.tipoCedula || 'V') + '-' + safe(data.asegCedula || data.cedula), 478, height - 163, 9, true)
+  // Nombre en la línea siguiente al título de la sección para evitar superposición
+  drawText('Nombre:', ML, height - 170, 7, false, GREY)
+  drawText(asegName.trim(), ML + 50, height - 170, 9, true)
+  drawText('Cédula o Rif:', ML + 300, height - 170, 7, false, GREY)
+  drawText(safe(data.tipoCedula || 'V') + '-' + safe(data.asegCedula || data.cedula), ML + 370, height - 170, 9, true)
   drawText('Carácter:', ML, height - 178, 7, false, GREY)
   drawText('Propietario', ML + 50, height - 178, 8)
   drawText('Datos del Registro:', 300, height - 178, 7, false, GREY)
@@ -158,15 +160,26 @@ export async function generatePolicyPdf(data: PolicyPdfData) {
   drawText(new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit' }), ML + 210, height - 320, 8, true)
   drawText('Vigencia Desde:', ML + 290, height - 320, 7, false, GREY)
   drawText(safe(data.vigenciaDesde) || '—', ML + 355, height - 320, 8, true)
+  // Calcular fecha de vencimiento: 1 año después de la fecha de emisión/vigenciaDesde
+  const vigHasta = safe(data.vigenciaHasta) || (() => {
+    const fecha = safe(data.vigenciaDesde) ? new Date(data.vigenciaDesde) : new Date()
+    fecha.setFullYear(fecha.getFullYear() + 1)
+    return fecha.toLocaleDateString('es-VE')
+  })()
   drawText('Hasta:', ML + 430, height - 320, 7, false, GREY)
-  drawText(safe(data.vigenciaHasta) || '—', ML + 465, height - 320, 8, true)
+  drawText(vigHasta, ML + 465, height - 320, 8, true)
 
   drawText('Frecuencia de pago:', ML, height - 338, 7, false, GREY)
   drawText('ANUAL', ML + 85, height - 338, 8, true)
   drawText('Recibo Desde:', ML + 200, height - 338, 7, false, GREY)
   drawText(safe(data.vigenciaDesde) || '—', ML + 265, height - 338, 8, true)
   drawText('Hasta:', ML + 370, height - 338, 7, false, GREY)
-  drawText(safe(data.vigenciaHasta) || '—', ML + 405, height - 338, 8, true)
+  // Usar la misma fecha de vencimiento calculada
+  drawText(safe(data.vigenciaHasta) || (() => {
+    const fecha = safe(data.vigenciaDesde) ? new Date(data.vigenciaDesde) : new Date()
+    fecha.setFullYear(fecha.getFullYear() + 1)
+    return fecha.toLocaleDateString('es-VE')
+  })(), ML + 405, height - 338, 8, true)
   drawText('Moneda: DÓLAR', ML + 470, height - 338, 7, true)
 
   // Vehicle section
@@ -284,11 +297,11 @@ export async function generatePolicyPdf(data: PolicyPdfData) {
   const qrSize = 55
   page.drawImage(qrImg, {
     x: width - qrSize - 25,
-    y: height - qrSize - 105,
+    y: height - qrSize - 50,
     width: qrSize,
     height: qrSize,
   })
-  drawText('Verificar', width - qrSize - 22, height - 120, 5, false, GREY)
+  drawText('Verificar', width - qrSize - 22, height - 65, 5, false, GREY)
 
   // === STATUS ===
   const status = (data.status || 'PENDIENTE').toUpperCase()
