@@ -1,34 +1,26 @@
 import { NextResponse } from 'next/server'
-import { isD1, d1Query } from '@/lib/d1'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
+  const g = globalThis as Record<string, unknown>
+  const debug = [
+    `globalThis.DB: ${typeof g.DB}`,
+    `globalThis.BUCKET: ${typeof g.BUCKET}`,
+  ]
+  
+  // Try to use D1 directly
   try {
-    const errors: string[] = []
-    errors.push(`isD1: ${isD1()}`)
-    
-    if (isD1()) {
-      // Test simple queries
-      try {
-        const r = await d1Query('SELECT COUNT(*) as c FROM Policy')
-        errors.push(`Policy count: ${JSON.stringify(r)}`)
-      } catch (e) { errors.push(`Policy count error: ${(e as Error).message}`) }
-      
-      try {
-        const r = await d1Query('SELECT COUNT(*) as c FROM ActivityLog')
-        errors.push(`ActivityLog count: ${JSON.stringify(r)}`)
-      } catch (e) { errors.push(`ActivityLog error: ${(e as Error).message}`) }
-      
-      // Test with params
-      try {
-        const r = await d1Query('SELECT COUNT(*) as c FROM Policy WHERE status = ?', ['PENDIENTE'])
-        errors.push(`Pending count: ${JSON.stringify(r)}`)
-      } catch (e) { errors.push(`Pending error: ${(e as Error).message}`) }
+    const d1 = g.DB as D1Database
+    if (d1 && typeof d1.prepare === 'function') {
+      const result = await d1.prepare('SELECT COUNT(*) as c FROM VehicleClass').all()
+      debug.push(`D1 direct query: ${JSON.stringify(result.results)}`)
+    } else {
+      debug.push('D1 not available on globalThis')
     }
-    
-    return NextResponse.json({ debug: errors })
   } catch (e) {
-    return NextResponse.json({ error: (e as Error).message })
+    debug.push(`D1 error: ${(e as Error).message}`)
   }
+  
+  return NextResponse.json({ debug })
 }

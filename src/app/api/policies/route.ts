@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { isD1, d1Query, d1First } from '@/lib/d1'
+import { isD1, d1Query, d1First, d1Run } from '@/lib/d1'
 import { generateVerifyCode } from '@/lib/policy-utils'
 import { logActivity } from '@/lib/activity'
 
@@ -156,61 +156,102 @@ export async function GET(req: NextRequest) {
 /** POST /api/policies — create a new solicitud */
 export async function POST(req: NextRequest) {
   try {
-    const { db } = await import('@/lib/db')
     const body = await req.json()
     const verifyCode = await generateVerifyCode()
 
-    const policy = await db.policy.create({
-      data: {
-        verifyCode,
-        nombre: body.nombre?.toString().trim() || 'Sin Nombre',
-        apellido: body.apellido?.toString().trim() || null,
-        cedula: body.cedula?.toString().trim() || '',
-        tipoCedula: body.tipoCedula || null,
-        fechaNacimiento: body.fechaNacimiento || null,
-        nacionalidad: body.nacionalidad || null,
-        estadoCivil: body.estadoCivil || null,
-        sexo: body.sexo || null,
-        telefono: body.telefono || null,
-        telefonoAlt: body.telefonoAlt || null,
-        email: body.email || null,
-        direccion: body.direccion || null,
-        ciudad: body.ciudad || null,
-        estado: body.estado || null,
-        ocupacion: body.ocupacion || null,
-        tipoVehiculo: body.tipoVehiculo || null,
-        marca: body.marca || null,
-        modelo: body.modelo || null,
-        ano: body.ano || null,
-        placa: body.placa || null,
-        color: body.color || null,
-        serialCarroceria: body.serialCarroceria || null,
-        serialMotor: body.serialMotor || null,
-        uso: body.uso || null,
-        capacidad: body.capacidad || null,
-        clase: body.clase || null,
-        tipo: body.tipo || null,
-        tipoCobertura: body.tipoCobertura || null,
-        compania: body.compania || null,
-        plan: body.plan || null,
-        prima: body.prima || null,
-        sumaAsegurada: body.sumaAsegurada || null,
-        deducible: body.deducible || null,
-        vigenciaDesde: body.vigenciaDesde || null,
-        vigenciaHasta: body.vigenciaHasta || null,
-        frecuenciaPago: body.frecuenciaPago || null,
-        notes: body.notes || null,
-      },
-    })
+    if (isD1()) {
+      // D1 raw SQL insert
+      const id = 'pol_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)
+      const now = new Date().toISOString()
 
-    await logActivity(
-      policy.id,
-      'CREATED',
-      `Solicitud creada por ${policy.nombre} ${policy.apellido || ''} (cédula ${policy.cedula}) con código ${policy.verifyCode}`,
-      body.actor || 'public'
-    )
+      const fields = [
+        'id', 'verifyCode', 'status', 'createdAt', 'updatedAt',
+        'nombre', 'apellido', 'cedula', 'telefono', 'email',
+        'asegNombre', 'asegApellido', 'asegCedula', 'asegEmail',
+        'tomNombre', 'tomApellido', 'tomCedula', 'tomEmail',
+        'tomFechaNacimiento', 'tomEstadoCivil', 'tomGenero', 'tomTelefono',
+        'tomEstado', 'tomMunicipio', 'tomParroquia', 'tomDireccion',
+        'placa', 'marca', 'modelo', 'tipoVehiculo', 'ano', 'color',
+        'serialCarroceria', 'serialMotor', 'uso', 'cantidadPuestos', 'capacidadCarga',
+        'poseeTrailer', 'placaExtranjera',
+        'vehicleClassId', 'planId', 'plan', 'prima', 'primaEur', 'primaUsd', 'primaBs',
+      ]
 
-    return NextResponse.json({ policy }, { status: 201 })
+      const values = [
+        id, verifyCode, 'PENDIENTE', now, now,
+        body.nombre || 'Sin Nombre', body.apellido || null, body.cedula || '', body.telefono || null, body.email || null,
+        body.asegNombre || null, body.asegApellido || null, body.asegCedula || null, body.asegEmail || null,
+        body.tomNombre || null, body.tomApellido || null, body.tomCedula || null, body.tomEmail || null,
+        body.tomFechaNacimiento || null, body.tomEstadoCivil || null, body.tomGenero || null, body.tomTelefono || null,
+        body.tomEstado || null, body.tomMunicipio || null, body.tomParroquia || null, body.tomDireccion || null,
+        body.placa || null, body.marca || null, body.modelo || null, body.tipoVehiculo || null, body.ano || null, body.color || null,
+        body.serialCarroceria || null, body.serialMotor || null, body.uso || null, body.cantidadPuestos || null, body.capacidadCarga || null,
+        body.poseeTrailer || 'No', body.placaExtranjera || 'No',
+        body.vehicleClassId || null, body.planId || null, body.plan || null, body.prima || null, body.primaEur || null, body.primaUsd || null, body.primaBs || null,
+      ]
+
+      const placeholders = fields.map(() => '?').join(', ')
+      const sql = `INSERT INTO Policy (${fields.join(', ')}) VALUES (${placeholders})`
+      await d1Run(sql, values)
+
+      // Log activity
+      const actId = 'act_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)
+      await d1Run(
+        `INSERT INTO ActivityLog (id, policyId, action, description, actor, createdAt) VALUES (?, ?, ?, ?, ?, ?)`,
+        [actId, id, 'CREATED', `Solicitud creada por ${body.nombre || ''} ${body.apellido || ''} (cédula ${body.cedula || ''}) con código ${verifyCode}`, body.actor || 'public', now]
+      )
+
+      return NextResponse.json({ policy: { id, verifyCode, status: 'PENDIENTE' } }, { status: 201 })
+    } else {
+      const { db } = await import('@/lib/db')
+      const policy = await db.policy.create({
+        data: {
+          verifyCode,
+          nombre: body.nombre?.toString().trim() || 'Sin Nombre',
+          apellido: body.apellido?.toString().trim() || null,
+          cedula: body.cedula?.toString().trim() || '',
+          telefono: body.telefono || null,
+          email: body.email || null,
+          asegNombre: body.asegNombre || null,
+          asegApellido: body.asegApellido || null,
+          asegCedula: body.asegCedula || null,
+          asegEmail: body.asegEmail || null,
+          tomNombre: body.tomNombre || null,
+          tomApellido: body.tomApellido || null,
+          tomCedula: body.tomCedula || null,
+          tomEmail: body.tomEmail || null,
+          tomFechaNacimiento: body.tomFechaNacimiento || null,
+          tomEstadoCivil: body.tomEstadoCivil || null,
+          tomGenero: body.tomGenero || null,
+          tomTelefono: body.tomTelefono || null,
+          tomEstado: body.tomEstado || null,
+          tomMunicipio: body.tomMunicipio || null,
+          tomParroquia: body.tomParroquia || null,
+          tomDireccion: body.tomDireccion || null,
+          tipoVehiculo: body.tipoVehiculo || null,
+          marca: body.marca || null,
+          modelo: body.modelo || null,
+          ano: body.ano || null,
+          placa: body.placa || null,
+          color: body.color || null,
+          serialCarroceria: body.serialCarroceria || null,
+          serialMotor: body.serialMotor || null,
+          uso: body.uso || null,
+          cantidadPuestos: body.cantidadPuestos || null,
+          capacidadCarga: body.capacidadCarga || null,
+          poseeTrailer: body.poseeTrailer || 'No',
+          placaExtranjera: body.placaExtranjera || 'No',
+          vehicleClassId: body.vehicleClassId || null,
+          planId: body.planId || null,
+          plan: body.plan || null,
+          prima: body.prima || null,
+          primaEur: body.primaEur || null,
+          primaUsd: body.primaUsd || null,
+          primaBs: body.primaBs || null,
+        },
+      })
+      return NextResponse.json({ policy }, { status: 201 })
+    }
   } catch (e) {
     console.error('create policy error', e)
     return NextResponse.json(

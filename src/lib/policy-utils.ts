@@ -1,11 +1,20 @@
-import { db } from './db'
+import { isD1, d1First, d1Query } from './d1'
 
 /** Generate a short, unique, human-friendly verify code (like 576501). */
 export async function generateVerifyCode(): Promise<string> {
   for (let i = 0; i < 20; i++) {
     const code = String(Math.floor(100000 + Math.random() * 899999))
-    const exists = await db.policy.findUnique({ where: { verifyCode: code } })
-    if (!exists) return code
+    if (isD1()) {
+      const row = await d1First<{ verifyCode: string }>(
+        'SELECT verifyCode FROM Policy WHERE verifyCode = ?',
+        [code]
+      )
+      if (!row) return code
+    } else {
+      const { db } = await import('./db')
+      const exists = await db.policy.findUnique({ where: { verifyCode: code } })
+      if (!exists) return code
+    }
   }
   // fallback with timestamp suffix
   return String(Date.now()).slice(-6)
@@ -16,8 +25,16 @@ export function formatPolicyNumber(n: number): string {
 }
 
 export async function nextPolicyNumber(): Promise<string> {
-  const count = await db.policy.count({ where: { status: 'APROBADA' } })
-  return formatPolicyNumber(count + 1)
+  if (isD1()) {
+    const row = await d1First<{ c: number }>(
+      "SELECT COUNT(*) as c FROM Policy WHERE status = 'APROBADA'"
+    )
+    return formatPolicyNumber((row?.c || 0) + 1)
+  } else {
+    const { db } = await import('./db')
+    const count = await db.policy.count({ where: { status: 'APROBADA' } })
+    return formatPolicyNumber(count + 1)
+  }
 }
 
 export const ACCEPTED_DOC_MIMES = [
