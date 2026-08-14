@@ -14,6 +14,7 @@
   "/api/policies/[id]/activities/export/route": "/api/policies/[id]/activities/export",
   "/api/policies/[id]/activities/route": "/api/policies/[id]/activities",
   "/api/policies/[id]/approve/route": "/api/policies/[id]/approve",
+  "/api/policies/[id]/carnet/route": "/api/policies/[id]/carnet",
   "/api/policies/[id]/documents/[docId]/route": "/api/policies/[id]/documents/[docId]",
   "/api/policies/[id]/documents/route": "/api/policies/[id]/documents",
   "/api/policies/[id]/pdf/route": "/api/policies/[id]/pdf",

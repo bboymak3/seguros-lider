@@ -173,6 +173,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../src/app/api/policies/[id]/carnet/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/policies/[id]/carnet">> = Specific
+  const handler = {} as typeof import("../../src/app/api/policies/[id]/carnet/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/api/policies/[id]/documents/[docId]/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/policies/[id]/documents/[docId]">> = Specific

@@ -70,6 +70,14 @@
       "namedRegex": "^/api/policies/(?<nxtPid>[^/]+?)/approve(?:/)?$"
     },
     {
+      "page": "/api/policies/[id]/carnet",
+      "regex": "^/api/policies/([^/]+?)/carnet(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/policies/(?<nxtPid>[^/]+?)/carnet(?:/)?$"
+    },
+    {
       "page": "/api/policies/[id]/documents",
       "regex": "^/api/policies/([^/]+?)/documents(?:/)?$",
       "routeKeys": {
