@@ -15,6 +15,33 @@ function safe(v?: string | null): string {
   return v && String(v).trim().length > 0 ? String(v) : ''
 }
 
+/**
+ * Always returns a valid "Hasta" date = emision + 1 year.
+ * Handles both ISO format (2026-08-14) and es-VE format (14/8/2026).
+ */
+function calcFechaVenc(vigDesde?: string | null, vigHasta?: string | null, createdAt?: Date | string): string {
+  if (vigHasta && vigHasta.trim() && !vigHasta.includes('Invalid')) return vigHasta
+  let fecha: Date
+  const desde = safe(vigDesde) || (createdAt ? new Date(createdAt).toLocaleDateString('es-VE') : '')
+  if (desde) {
+    const iso = new Date(desde)
+    if (!isNaN(iso.getTime())) {
+      fecha = new Date(iso)
+    } else {
+      const parts = desde.split('/')
+      if (parts.length === 3) {
+        fecha = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]))
+      } else {
+        fecha = new Date()
+      }
+    }
+  } else {
+    fecha = new Date()
+  }
+  fecha.setFullYear(fecha.getFullYear() + 1)
+  return fecha.toLocaleDateString('es-VE')
+}
+
 export interface PolicyPdfData {
   verifyCode: string
   policyNumber?: string | null
@@ -160,12 +187,8 @@ export async function generatePolicyPdf(data: PolicyPdfData) {
   drawText(new Date().toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit' }), ML + 210, height - 320, 8, true)
   drawText('Vigencia Desde:', ML + 290, height - 320, 7, false, GREY)
   drawText(safe(data.vigenciaDesde) || '—', ML + 355, height - 320, 8, true)
-  // Calcular fecha de vencimiento: 1 año después de la fecha de emisión/vigenciaDesde
-  const vigHasta = safe(data.vigenciaHasta) || (() => {
-    const fecha = safe(data.vigenciaDesde) ? new Date(data.vigenciaDesde) : new Date()
-    fecha.setFullYear(fecha.getFullYear() + 1)
-    return fecha.toLocaleDateString('es-VE')
-  })()
+  // Calcular fecha de vencimiento: 1 año después de la fecha de emisión
+  const vigHasta = calcFechaVenc(data.vigenciaDesde, data.vigenciaHasta, data.createdAt)
   drawText('Hasta:', ML + 430, height - 320, 7, false, GREY)
   drawText(vigHasta, ML + 465, height - 320, 8, true)
 
@@ -174,12 +197,7 @@ export async function generatePolicyPdf(data: PolicyPdfData) {
   drawText('Recibo Desde:', ML + 200, height - 338, 7, false, GREY)
   drawText(safe(data.vigenciaDesde) || '—', ML + 265, height - 338, 8, true)
   drawText('Hasta:', ML + 370, height - 338, 7, false, GREY)
-  // Usar la misma fecha de vencimiento calculada
-  drawText(safe(data.vigenciaHasta) || (() => {
-    const fecha = safe(data.vigenciaDesde) ? new Date(data.vigenciaDesde) : new Date()
-    fecha.setFullYear(fecha.getFullYear() + 1)
-    return fecha.toLocaleDateString('es-VE')
-  })(), ML + 405, height - 338, 8, true)
+  drawText(vigHasta, ML + 405, height - 338, 8, true)
   drawText('Moneda: DÓLAR', ML + 470, height - 338, 7, true)
 
   // Vehicle section

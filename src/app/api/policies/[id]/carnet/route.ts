@@ -7,6 +7,34 @@ export const dynamic = 'force-dynamic'
 
 type Ctx = { params: Promise<{ id: string }> }
 
+/**
+ * Helper: always returns a valid "Hasta" date = emision + 1 year.
+ * Handles both ISO format (2026-08-14) and es-VE format (14/8/2026).
+ */
+function calcVencimiento(vigDesde: string, vigHasta?: string): string {
+  if (vigHasta && vigHasta.trim() && !vigHasta.includes('Invalid')) return vigHasta
+  let fecha: Date
+  if (vigDesde && !vigDesde.includes('Invalid')) {
+    // Try ISO first
+    const iso = new Date(vigDesde)
+    if (!isNaN(iso.getTime())) {
+      fecha = new Date(iso)
+    } else {
+      // Try es-VE format: DD/MM/YYYY
+      const parts = vigDesde.split('/')
+      if (parts.length === 3) {
+        fecha = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]))
+      } else {
+        fecha = new Date()
+      }
+    }
+  } else {
+    fecha = new Date()
+  }
+  fecha.setFullYear(fecha.getFullYear() + 1)
+  return fecha.toLocaleDateString('es-VE')
+}
+
 export async function GET(_req: NextRequest, { params }: Ctx) {
   const { id } = await params
 
@@ -42,48 +70,55 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
       try { page.drawText(t, { x, y, size, font: bold ? helvBold : helv, color, maxWidth: 200 }) } catch {}
     }
 
-    // === LEFT SIDE ===
+    // === LEFT SIDE === (10% more compact = reduce all Y offsets by ~1.5pts)
     page.drawRectangle({ x: 0, y: height - 25, width: width / 2, height: 25, color: NAVY })
     drawText('ASOCIACIÓN COOPERATIVA LÍDER', 8, height - 12, 6, true, WHITE)
     drawText('DE SEGUROS PARA VEHÍCULOS R.L.', 8, height - 20, 5, true, WHITE)
     drawText('RIF: J-31105096-6', 8, height - 32, 5, false, GREY)
-    drawText('PROTECCIÓN QUE TE ACOMPAÑA', 8, height - 40, 5, false, ORANGE)
-    drawText('CERTIFICADO DE RESPONSABILIDAD', 10, height - 60, 8, true, NAVY)
-    drawText('CIVIL VEHICULAR', 10, height - 72, 8, true, NAVY)
-    page.drawLine({ start: { x: 10, y: height - 85 }, end: { x: width / 2 - 10, y: height - 85 }, thickness: 0.5, color: GREY })
+    drawText('PROTECCIÓN QUE TE ACOMPAÑA', 8, height - 39, 5, false, ORANGE)
+    drawText('CERTIFICADO DE RESPONSABILIDAD', 10, height - 57, 8, true, NAVY)
+    drawText('CIVIL VEHICULAR', 10, height - 69, 8, true, NAVY)
+    page.drawLine({ start: { x: 10, y: height - 82 }, end: { x: width / 2 - 10, y: height - 82 }, thickness: 0.5, color: GREY })
 
     const asegName = safe(p.asegNombre || p.nombre) + ' ' + safe(p.asegApellido || p.apellido)
-    drawText('Asegurado:', 10, height - 100, 6, false, GREY)
-    drawText(asegName.trim(), 55, height - 100, 8, true)
-    drawText('Cédula:', 10, height - 115, 6, false, GREY)
-    drawText(safe(p.tipoCedula || 'V') + '-' + safe(p.asegCedula || p.cedula), 45, height - 115, 8, true)
-    drawText('Tomador:', 200, height - 100, 6, false, GREY)
-    drawText(asegName.trim(), 240, height - 100, 8, true)
-    drawText('Cédula:', 200, height - 115, 6, false, GREY)
-    drawText(safe(p.tipoCedula || 'V') + '-' + safe(p.tomCedula || p.cedula), 235, height - 115, 8, true)
+    drawText('Asegurado:', 10, height - 96, 6, false, GREY)
+    drawText(asegName.trim(), 55, height - 96, 8, true)
+    drawText('Cédula:', 10, height - 109, 6, false, GREY)
+    drawText(safe(p.tipoCedula || 'V') + '-' + safe(p.asegCedula || p.cedula), 45, height - 109, 8, true)
+    drawText('Tomador:', 200, height - 96, 6, false, GREY)
+    drawText(asegName.trim(), 240, height - 96, 8, true)
+    drawText('Cédula:', 200, height - 109, 6, false, GREY)
+    drawText(safe(p.tipoCedula || 'V') + '-' + safe(p.tomCedula || p.cedula), 235, height - 109, 8, true)
 
-    page.drawRectangle({ x: 5, y: height - 140, width: width / 2 - 10, height: 14, color: ORANGE })
-    drawText('DATOS DEL VEHÍCULO', 10, height - 135, 6, true, WHITE)
+    page.drawRectangle({ x: 5, y: height - 132, width: width / 2 - 10, height: 14, color: ORANGE })
+    drawText('DATOS DEL VEHÍCULO', 10, height - 127, 6, true, WHITE)
 
-    drawText('Clase:', 10, height - 155, 6, false, GREY); drawText(safe(p.clase || p.tipoVehiculo) || '—', 40, height - 155, 7, true)
-    drawText('Marca:', 10, height - 168, 6, false, GREY); drawText(safe(p.marca) || '—', 40, height - 168, 7, true)
-    drawText('Modelo:', 10, height - 181, 6, false, GREY); drawText(safe(p.modelo || p.ano) || '—', 45, height - 181, 7, true)
-    drawText('Año:', 10, height - 194, 6, false, GREY); drawText(safe(p.ano) || '—', 35, height - 194, 7, true)
-    drawText('Color:', 10, height - 207, 6, false, GREY); drawText(safe(p.color) || '—', 40, height - 207, 7, true)
-    drawText('Uso:', 180, height - 155, 6, false, GREY); drawText(safe(p.uso) || '—', 200, height - 155, 7, true)
-    drawText('Placa:', 180, height - 168, 6, false, GREY); drawText(safe(p.placa) || '—', 210, height - 168, 7, true)
-    drawText('Tipo:', 180, height - 181, 6, false, GREY); drawText(safe(p.tipo) || '—', 205, height - 181, 7, true)
-    drawText('S/M:', 180, height - 194, 6, false, GREY); drawText(safe(p.serialMotor) || '—', 200, height - 194, 6, true)
-    drawText('S/C:', 180, height - 207, 6, false, GREY); drawText(safe(p.serialCarroceria) || '—', 200, height - 207, 6, true)
+    // 10% more compact: reduce spacing from 13 to ~11.5
+    drawText('Clase:', 10, height - 146, 6, false, GREY); drawText(safe(p.clase || p.tipoVehiculo) || '—', 40, height - 146, 7, true)
+    drawText('Marca:', 10, height - 158, 6, false, GREY); drawText(safe(p.marca) || '—', 40, height - 158, 7, true)
+    drawText('Modelo:', 10, height - 169, 6, false, GREY); drawText(safe(p.modelo || p.ano) || '—', 45, height - 169, 7, true)
+    drawText('Año:', 10, height - 180, 6, false, GREY); drawText(safe(p.ano) || '—', 35, height - 180, 7, true)
+    drawText('Color:', 10, height - 191, 6, false, GREY); drawText(safe(p.color) || '—', 40, height - 191, 7, true)
+    drawText('Uso:', 180, height - 146, 6, false, GREY); drawText(safe(p.uso) || '—', 200, height - 146, 7, true)
+    drawText('Placa:', 180, height - 158, 6, false, GREY); drawText(safe(p.placa) || '—', 210, height - 158, 7, true)
+    drawText('Tipo:', 180, height - 169, 6, false, GREY); drawText(safe(p.tipo) || '—', 205, height - 169, 7, true)
+    drawText('S/M:', 180, height - 180, 6, false, GREY); drawText(safe(p.serialMotor) || '—', 200, height - 180, 6, true)
+    drawText('S/C:', 180, height - 191, 6, false, GREY); drawText(safe(p.serialCarroceria) || '—', 200, height - 191, 6, true)
 
-    page.drawLine({ start: { x: 10, y: height - 220 }, end: { x: width / 2 - 10, y: height - 220 }, thickness: 0.5, color: GREY })
-    drawText('VIGENCIA:', 10, height - 235, 6, true, NAVY)
-    const vigDesde = safe(p.vigenciaDesde) || new Date().toLocaleDateString('es-VE')
-    const fechaFin = new Date(vigDesde); fechaFin.setFullYear(fechaFin.getFullYear() + 1)
-    const vigHasta = safe(p.vigenciaHasta) || fechaFin.toLocaleDateString('es-VE')
-    drawText(vigDesde + ' - ' + vigHasta, 55, height - 235, 7, true)
-    drawText('N°:', 10, height - 250, 6, true, NAVY)
-    drawText(safe(p.policyNumber) || safe(p.verifyCode), 25, height - 250, 8, true)
+    page.drawLine({ start: { x: 10, y: height - 202 }, end: { x: width / 2 - 10, y: height - 202 }, thickness: 0.5, color: GREY })
+
+    // === VIGENCIA (fix Invalid Date) ===
+    drawText('VIGENCIA:', 10, height - 216, 6, true, NAVY)
+    // Use vigenciaDesde, or createdAt as fallback for the emission date
+    const vigDesdeRaw = safe(p.vigenciaDesde) || (safe(p.createdAt) ? new Date(safe(p.createdAt)).toLocaleDateString('es-VE') : new Date().toLocaleDateString('es-VE'))
+    const vigHasta = calcVencimiento(vigDesdeRaw, safe(p.vigenciaHasta))
+    drawText(vigDesdeRaw + ' - ' + vigHasta, 55, height - 216, 7, true)
+
+    // N° Póliza + N° Recibo
+    drawText('N° Póliza:', 10, height - 230, 6, true, NAVY)
+    drawText(safe(p.policyNumber) || safe(p.verifyCode), 55, height - 230, 7, true)
+    drawText('N° Recibo:', 180, height - 230, 6, true, NAVY)
+    drawText(safe(p.verifyCode), 230, height - 230, 7, true)
 
     // === RIGHT SIDE ===
     const rightX = width / 2 + 10
@@ -95,11 +130,16 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
     drawText('@liderdesegurosparavehiculos', rightX, height - 100, 7)
     drawText('sucursalmiranda@liderdeseguros.com', rightX, height - 115, 7)
 
-    // QR
+    // QR: bajado 6 renglones (~36pts) + aumentado 30% (55->72)
     const qr = await generatePolicyQr(safe(p.verifyCode))
     const qrImg = await pdfDoc.embedPng(qr.buffer)
-    const qrSize = 55
-    page.drawImage(qrImg, { x: width - qrSize - 20, y: height - qrSize - 30, width: qrSize, height: qrSize })
+    const qrSize = 72 // 55 * 1.3 = 71.5 ≈ 72
+    page.drawImage(qrImg, {
+      x: width - qrSize - 20,
+      y: height - qrSize - 66, // bajado 6 renglones desde el original (height - qrSize - 30)
+      width: qrSize,
+      height: qrSize,
+    })
 
     drawText('Lleva tus documentos digitales', rightX, height - 150, 5, false, GREY)
     drawText('Respeta las señales de tránsito', rightX, height - 165, 5, false, GREY)
@@ -108,6 +148,7 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
     drawText('Inscrita en la Superintendencia... ACS-000005', rightX, height - 220, 4, false, GREY)
     drawText('Autorización SUNACOOP N° 95198', rightX, height - 230, 4, false, GREY)
 
+    // Status
     const status = safe(p.status).toUpperCase() || 'PENDIENTE'
     const sc = status === 'APROBADA' ? rgb(0, 0.5, 0) : rgb(0.8, 0.5, 0)
     drawText(status, width / 2 - 20, 10, 8, true, sc)

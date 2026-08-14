@@ -5184,12 +5184,12 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/src_lib_pdf_ts_17a7354d._.js": {
-      "bytes": 716737,
+      "bytes": 716877,
       "imports": [],
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__9938e8b8._.js": {
-      "bytes": 13793,
+      "bytes": 14201,
       "imports": [
         {
           "path": ".open-next/server-functions/default/node_modules/next/dist/shared/lib/no-fallback-error.external.js",
@@ -10446,10 +10446,10 @@
           "bytesInOutput": 464994
         },
         ".open-next/server-functions/default/.next/server/chunks/src_lib_pdf_ts_17a7354d._.js": {
-          "bytesInOutput": 978282
+          "bytesInOutput": 978477
         },
         ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__9938e8b8._.js": {
-          "bytesInOutput": 14343
+          "bytesInOutput": 14787
         },
         ".open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_api_policies_[id]_carnet_route_actions_fb43c252.js": {
           "bytesInOutput": 297
@@ -10827,7 +10827,7 @@
           "bytesInOutput": 60094
         }
       },
-      "bytes": 5646970
+      "bytes": 5647609
     }
   }
 }
