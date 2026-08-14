@@ -120,14 +120,14 @@ export async function generatePolicyPdf(data: PolicyPdfData) {
   drawSectionHeader(height - 137, 'I. Datos del Asegurado — Nombre(s) y Apellidos o Razón Social:')
   const asegName = safe(data.asegNombre || data.nombre) + ' ' + safe(data.asegApellido || data.apellido)
   // Nombre en la línea siguiente al título de la sección para evitar superposición
-  drawText('Nombre:', ML, height - 152, 7, false, GREY)
-  drawText(asegName.trim(), ML + 50, height - 152, 9, true)
-  drawText('Cédula o Rif:', ML + 300, height - 152, 7, false, GREY)
-  drawText(safe(data.tipoCedula || 'V') + '-' + safe(data.asegCedula || data.cedula), ML + 370, height - 152, 9, true)
-  drawText('Carácter:', ML, height - 160, 7, false, GREY)
-  drawText('Propietario', ML + 50, height - 160, 8)
-  drawText('Datos del Registro:', 300, height - 160, 7, false, GREY)
-  drawText('—', 390, height - 160, 8)
+  drawText('Nombre:', ML, height - 170, 7, false, GREY)
+  drawText(asegName.trim(), ML + 50, height - 170, 9, true)
+  drawText('Cédula o Rif:', ML + 300, height - 170, 7, false, GREY)
+  drawText(safe(data.tipoCedula || 'V') + '-' + safe(data.asegCedula || data.cedula), ML + 370, height - 170, 9, true)
+  drawText('Carácter:', ML, height - 178, 7, false, GREY)
+  drawText('Propietario', ML + 50, height - 178, 8)
+  drawText('Datos del Registro:', 300, height - 178, 7, false, GREY)
+  drawText('—', 390, height - 178, 8)
 
   // === SECTION II: TOMADOR ===
   drawSectionHeader(height - 200, 'II. Datos del Tomador')
@@ -297,7 +297,7 @@ export async function generatePolicyPdf(data: PolicyPdfData) {
   const qrSize = 55
   page.drawImage(qrImg, {
     x: width - qrSize - 25,
-    y: height - qrSize - 14,
+    y: height - qrSize - 20,
     width: qrSize,
     height: qrSize,
   })
