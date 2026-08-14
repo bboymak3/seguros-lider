@@ -14,7 +14,18 @@ const BUCKET_PREFIX = 'my-emdash-media/seguros/'
 
 // Detect if we're running in Cloudflare Workers (has R2 binding)
 function getR2Bucket(): R2Bucket | null {
-  // Try @opennextjs/cloudflare getRequestContext first
+  // Check globalThis first (set by our patched Worker fetch handler)
+  try {
+    const g = globalThis as Record<string, unknown>
+    const bucket = (g.BUCKET ?? g.__BUCKET) as R2Bucket | undefined
+    if (bucket && typeof bucket.put === 'function') {
+      return bucket
+    }
+  } catch {
+    /* not in Workers */
+  }
+
+  // Try @opennextjs/cloudflare getRequestContext
   try {
     const { getRequestContext } = require('@opennextjs/cloudflare/next')
     const env = getRequestContext().env
@@ -25,21 +36,8 @@ function getR2Bucket(): R2Bucket | null {
   } catch {
     /* not in Workers */
   }
-
-  // Fallback: check globalThis
-  try {
-    const g = globalThis as Record<string, unknown>
-    const bucket = (g.BUCKET ?? g.__BUCKET) as R2Bucket | undefined
-    if (bucket && typeof bucket.put === 'function') {
-      return bucket
-    }
-  } catch {
-    /* not in Workers */
-  }
   return null
 }
-
-const isR2 = typeof globalThis !== 'undefined' && getR2Bucket() !== null
 
 // Local filesystem root (dev only)
 const BUCKET_ROOT = path.join(process.cwd(), 'storage', 'seguros')

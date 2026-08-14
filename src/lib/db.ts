@@ -1,58 +1,31 @@
-import { PrismaClient } from '@prisma/client'
-import { PrismaD1 } from '@prisma/adapter-d1'
-
 /**
  * Database client — supports both local SQLite (dev) and Cloudflare D1 (prod).
- *
- * In Cloudflare Workers/Pages, bindings are accessed via `getRequestContext()` from
- * `@opennextjs/cloudflare/next`. In dev, we use PrismaClient with SQLite directly.
+ * 
+ * Prisma is loaded via eval-require to prevent bundlers from including it
+ * in the Cloudflare Workers bundle (which would cause fs.readdir errors).
  */
 
-function getD1Binding(): D1Database | null {
-  // Try @opennextjs/cloudflare getRequestContext first
+import { isD1 } from './d1'
+
+let _db: unknown = null
+
+// Load Prisma only in local dev (not in Cloudflare D1)
+if (!isD1()) {
   try {
-    // Dynamic import to avoid breaking local dev
-    const { getRequestContext } = require('@opennextjs/cloudflare/next')
-    const env = getRequestContext().env
-    const d1 = (env as Record<string, unknown>).DB as D1Database | undefined
-    if (d1 && typeof d1.prepare === 'function') {
-      return d1
-    }
+    // eval-require prevents the bundler from resolving @prisma/client at build time
+    const req = eval('require')
+    const { PrismaClient } = req('@prisma/client')
+    _db = new PrismaClient({ log: ['error', 'warn'] })
   } catch {
-    /* not in Workers */
+    /* Prisma not available */
   }
-
-  // Fallback: check globalThis
-  try {
-    const g = globalThis as Record<string, unknown>
-    const d1 = (g.DB ?? g.__DB) as D1Database | undefined
-    if (d1 && typeof d1.prepare === 'function') {
-      return d1
-    }
-  } catch {
-    /* not in Workers */
-  }
-
-  return null
 }
 
-function createClient() {
-  const d1 = getD1Binding()
-  if (d1) {
-    const adapter = new PrismaD1(d1)
-    return new PrismaClient({ adapter })
+// In production (D1), db is a proxy that throws helpful errors
+const _proxy = new Proxy({}, {
+  get() {
+    throw new Error('Prisma not available in production — use D1 queries')
   }
+})
 
-  // Local development — use SQLite directly
-  return new PrismaClient({
-    log: process.env.NODE_ENV !== 'production' ? ['error', 'warn'] : ['error'],
-  })
-}
-
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
-}
-
-export const db = globalForPrisma.prisma ?? createClient()
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+export const db = (_db || _proxy) as import('@prisma/client').PrismaClient

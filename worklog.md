@@ -843,3 +843,27 @@ Task: Crear README completo + .env.example para que el proyecto se pueda descarg
 - `.env.example` (environment variable template)
 
 The project is now ready for download. The README provides everything an AI or developer needs to understand the architecture, run locally, and deploy to Cloudflare.
+
+---
+Task ID: D1-MIGRATION
+Agent: general-purpose
+Task: Update API routes to use D1 raw SQL in production
+
+Work Log:
+- Audited existing API routes and the vehicle-classes example to confirm the D1 vs Prisma branch pattern (isD1() → d1Query/d1First/d1Run; else dynamic `await import('@/lib/db')`).
+- Updated `src/app/api/stats/route.ts` GET: D1 path issues one scalar-subquery SELECT (counts for total/pendientes/aprobadas/rechazadas/anuladas/hoy/ayer/aprobadasHoy/withDocs), one GROUP BY substr(createdAt,1,10) for the 14-day timeseries, and three GROUP BY queries for topBrands / topEstados / tipoDistribution. Prisma path preserved verbatim with dynamic import. Whole handler wrapped in try/catch returning JSON 500 on error.
+- Updated `src/app/api/policies/route.ts` GET: D1 path builds a parameterized WHERE clause (status, q LIKE across 6 columns, createdAt range), fetches policies with a correlated json_group_array subquery for documents, plus a parallel COUNT(*) for total. Returns the same `{ policies, pagination }` shape as the Prisma version. POST left using Prisma but switched to `await import('@/lib/db')` inside the existing try/catch.
+- Updated `src/app/api/plans/route.ts` GET: D1 path uses LEFT JOIN VehicleClass + ORDER BY vc.sortOrder, CAST(priceEur AS REAL); reassembles the `vehicleClass` nested object (null when no relation) and coerces the `active` column from 0/1 to boolean. POST left using Prisma but switched to dynamic `await import('@/lib/db')`.
+- Updated `src/app/api/settings/route.ts` GET: D1 path queries the Setting table directly and applies the same DEFAULTS map as `src/lib/settings.ts` (inlined to avoid touching the Prisma-dependent helper). PUT handler left unchanged (still uses Prisma via settings.ts). Imported `SETTING_KEYS` is safe because it's a const enum-like object — the Prisma access only happens when `getAllSettings()`/`setSetting()` are called.
+- Updated `src/app/api/policies/verify/route.ts` GET: D1 path uses `d1First` for the policy row and a separate `d1Query` for documents, returning `{ policy: { ...policy, documents } }`.
+- Updated `src/app/api/notifications/route.ts` GET: D1 path uses a correlated json_object subquery to embed the policy summary (verifyCode, policyNumber, nombre, apellido, status), parses it back to an object, and respects the `limit` query param.
+- Updated `src/app/api/policies/lookup/route.ts` GET: D1 path tries exact verifyCode match first via `d1First`, falls back to LIKE search across cedula/placa/policyNumber, returns the same 9-column projection as the Prisma select.
+- Updated `src/app/api/activities/route.ts` GET: D1 path builds a parameterized WHERE clause (action, createdAt range), uses correlated json_object subquery for the policy relation, parallel COUNT(*) for pagination totals, returns the same `{ activities, pagination }` shape.
+- Verified no new TypeScript errors were introduced: `npx tsc --noEmit` shows zero diagnostics in any of the 8 modified route files (pre-existing errors in unrelated files like pdf.ts, storage.ts, d1.ts, admin-dashboard.tsx remain untouched).
+
+Stage Summary:
+- All 8 GET handlers now follow the D1-or-Prisma branch pattern with `isD1()` short-circuit and dynamic `await import('@/lib/db')` so Prisma is never loaded at module level in production.
+- All D1 raw SQL uses parameterized bindings (no string interpolation of user input) for safe query construction; LIKE patterns use `%${q}%` placeholders.
+- All JSON response shapes match the Prisma versions exactly (policies+pagination, activities+pagination, settings map, stats object, etc.) so the frontend does not need to change.
+- POST/PATCH/DELETE handlers (policies POST, plans POST, settings PUT) were intentionally left on Prisma per task instructions; they use dynamic imports where touched and remain wrapped in try/catch.
+- Open follow-ups for a future task: (1) migrate POST/PATCH/DELETE handlers and the lib helpers (`settings.ts`, `activity.ts`, `policy-utils.ts`) to D1 raw SQL so writes work in production; (2) investigate D1 adapter for Prisma as an alternative to hand-written SQL.
