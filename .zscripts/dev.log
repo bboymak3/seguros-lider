@@ -574,3 +574,828 @@ https://nextjs.org/docs/messages/module-not-found
 
 
  GET / 200 in 73ms (compile: 4ms, render: 69ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 73ms (compile: 12ms, render: 61ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 55ms (compile: 4ms, render: 51ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 61ms (compile: 6ms, render: 55ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 59ms (compile: 6ms, render: 53ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 120ms (compile: 4ms, render: 116ms)
+ GET / 200 in 68ms (compile: 4ms, render: 63ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 125ms (compile: 6ms, render: 119ms)
+ GET / 200 in 64ms (compile: 6ms, render: 58ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 73ms (compile: 5ms, render: 68ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 59ms (compile: 4ms, render: 55ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 58ms (compile: 3ms, render: 55ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 65ms (compile: 4ms, render: 61ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 71ms (compile: 11ms, render: 61ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 75ms (compile: 7ms, render: 68ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 206ms (compile: 128ms, render: 78ms)
+⚠ ./src/lib/d1.ts:13:35
+Module not found: Can't resolve '@opennextjs/cloudflare/next'
+[0m [90m 11 |[39m   } [36mcatch[39m { [90m/* ignore */[39m }
+ [90m 12 |[39m   [36mtry[39m {
+[31m[1m>[22m[39m[90m 13 |[39m     [36mconst[39m { getRequestContext } [33m=[39m require([32m'@opennextjs/cloudflare/next'[39m)
+ [90m    |[39m                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m     [36mconst[39m env [33m=[39m getRequestContext()[33m.[39menv
+ [90m 15 |[39m     [36mconst[39m d1 [33m=[39m (env [36mas[39m [33mRecord[39m[33m<[39m[33mstring[39m[33m,[39m unknown[33m>[39m)[33m.[39m[33mDB[39m [36mas[39m [33mD1Database[39m [33m|[39m undefined
+ [90m 16 |[39m     [36mif[39m (d1 [33m&&[39m [36mtypeof[39m d1[33m.[39mprepare [33m===[39m [32m'function'[39m) [36mreturn[39m d1[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/d1.ts [Client Component Browser]
+    ./src/lib/policy-utils.ts [Client Component Browser]
+    ./src/components/seguros/solicitud-form.tsx [Client Component Browser]
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/d1.ts [Client Component SSR]
+    ./src/lib/policy-utils.ts [Client Component SSR]
+    ./src/components/seguros/solicitud-form.tsx [Client Component SSR]
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
