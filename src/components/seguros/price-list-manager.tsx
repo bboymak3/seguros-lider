@@ -155,18 +155,18 @@ export function PriceListManager() {
             <Tag className="h-5 w-5 text-emerald-400" />
             Lista de Precios
           </h2>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-slate-500">
             Gestiona las clases de vehículo y planes con precios en €, $ y Bs.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="bg-white/5 text-slate-300">
+          <Badge variant="secondary" className="bg-slate-200 text-slate-600">
             {classes.length} clases · {allPlans.length} planes
           </Badge>
           <Button
             size="sm"
             onClick={() => setShowAddPlan(!showAddPlan)}
-            className="bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+            className="bg-emerald-500 text-slate-900 hover:bg-emerald-400"
           >
             <Plus className="mr-1 h-4 w-4" />
             Nuevo Plan
@@ -179,31 +179,31 @@ export function PriceListManager() {
         <Card className="border-emerald-500/20 bg-emerald-500/5">
           <CardContent className="grid gap-3 p-4 sm:grid-cols-3 lg:grid-cols-6">
             <div className="space-y-1">
-              <Label className="text-[11px] uppercase text-slate-400">ID</Label>
+              <Label className="text-[11px] uppercase text-slate-500">ID</Label>
               <Input
                 type="number"
                 value={newPlan.externalId}
                 onChange={(e) => setNewPlan({ ...newPlan, externalId: e.target.value })}
                 placeholder="999"
-                className="h-9 bg-slate-950/50 border-white/10"
+                className="h-9 bg-slate-100/50 border-slate-300"
               />
             </div>
             <div className="space-y-1 sm:col-span-2">
-              <Label className="text-[11px] uppercase text-slate-400">Nombre del plan</Label>
+              <Label className="text-[11px] uppercase text-slate-500">Nombre del plan</Label>
               <Input
                 value={newPlan.name}
                 onChange={(e) => setNewPlan({ ...newPlan, name: e.target.value })}
                 placeholder="PLAN LIDER..."
-                className="h-9 bg-slate-950/50 border-white/10"
+                className="h-9 bg-slate-100/50 border-slate-300"
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-[11px] uppercase text-slate-400">Clase</Label>
+              <Label className="text-[11px] uppercase text-slate-500">Clase</Label>
               <Select
                 value={newPlan.vehicleClassId}
                 onValueChange={(v) => setNewPlan({ ...newPlan, vehicleClassId: v })}
               >
-                <SelectTrigger className="h-9 bg-slate-950/50 border-white/10">
+                <SelectTrigger className="h-9 bg-slate-100/50 border-slate-300">
                   <SelectValue placeholder="Seleccionar" />
                 </SelectTrigger>
                 <SelectContent>
@@ -216,37 +216,37 @@ export function PriceListManager() {
               </Select>
             </div>
             <div className="space-y-1">
-              <Label className="text-[11px] uppercase text-slate-400">EUR</Label>
+              <Label className="text-[11px] uppercase text-slate-500">EUR</Label>
               <Input
                 value={newPlan.priceEur}
                 onChange={(e) => setNewPlan({ ...newPlan, priceEur: e.target.value })}
                 placeholder="15.00"
-                className="h-9 bg-slate-950/50 border-white/10"
+                className="h-9 bg-slate-100/50 border-slate-300"
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-[11px] uppercase text-slate-400">USD</Label>
+              <Label className="text-[11px] uppercase text-slate-500">USD</Label>
               <Input
                 value={newPlan.priceUsd}
                 onChange={(e) => setNewPlan({ ...newPlan, priceUsd: e.target.value })}
                 placeholder="17.31"
-                className="h-9 bg-slate-950/50 border-white/10"
+                className="h-9 bg-slate-100/50 border-slate-300"
               />
             </div>
             <div className="space-y-1 sm:col-span-2 lg:col-span-1">
-              <Label className="text-[11px] uppercase text-slate-400">Bs</Label>
+              <Label className="text-[11px] uppercase text-slate-500">Bs</Label>
               <Input
                 value={newPlan.priceBs}
                 onChange={(e) => setNewPlan({ ...newPlan, priceBs: e.target.value })}
                 placeholder="13,276.20"
-                className="h-9 bg-slate-950/50 border-white/10"
+                className="h-9 bg-slate-100/50 border-slate-300"
               />
             </div>
             <div className="flex items-end gap-2 sm:col-span-1 lg:col-span-6">
-              <Button size="sm" onClick={addPlan} className="bg-emerald-500 text-slate-950 hover:bg-emerald-400">
+              <Button size="sm" onClick={addPlan} className="bg-emerald-500 text-slate-900 hover:bg-emerald-400">
                 <Check className="mr-1 h-4 w-4" /> Crear
               </Button>
-              <Button size="sm" variant="ghost" onClick={() => setShowAddPlan(false)} className="text-slate-400 hover:text-white">
+              <Button size="sm" variant="ghost" onClick={() => setShowAddPlan(false)} className="text-slate-500 hover:text-slate-900">
                 Cancelar
               </Button>
             </div>
@@ -262,11 +262,11 @@ export function PriceListManager() {
             placeholder="Buscar por nombre, clase o ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 bg-slate-900/60 border-white/10"
+            className="pl-9 bg-slate-200/60 border-slate-300"
           />
         </div>
         <Select value={selectedClass} onValueChange={setSelectedClass}>
-          <SelectTrigger className="w-[200px] bg-slate-900/60 border-white/10">
+          <SelectTrigger className="w-[200px] bg-slate-200/60 border-slate-300">
             <SelectValue placeholder="Todas las clases" />
           </SelectTrigger>
           <SelectContent>
@@ -281,7 +281,7 @@ export function PriceListManager() {
       </div>
 
       {/* Plans table */}
-      <Card className="border-white/10 bg-slate-900/60">
+      <Card className="border-slate-300 bg-slate-200/60">
         <CardContent className="p-0">
           {loading ? (
             <div className="flex items-center justify-center py-16">
@@ -295,8 +295,8 @@ export function PriceListManager() {
           ) : (
             <div className="max-h-[36rem] overflow-auto scrollbar-thin">
               <table className="w-full text-sm">
-                <thead className="sticky top-0 z-10 bg-slate-900/95 backdrop-blur">
-                  <tr className="border-b border-white/10 text-left text-xs uppercase tracking-wider text-slate-400">
+                <thead className="sticky top-0 z-10 bg-slate-200/95 backdrop-blur">
+                  <tr className="border-b border-slate-300 text-left text-xs uppercase tracking-wider text-slate-500">
                     <th className="px-3 py-2.5">ID</th>
                     <th className="px-3 py-2.5">Clase</th>
                     <th className="px-3 py-2.5">Plan</th>
@@ -311,36 +311,36 @@ export function PriceListManager() {
                   {filtered.map((p) => (
                     <tr
                       key={p.id}
-                      className="border-b border-white/5 transition-colors hover:bg-white/5"
+                      className="border-b border-slate-200 transition-colors hover:bg-slate-200"
                     >
-                      <td className="px-3 py-2.5 font-mono text-xs text-slate-400">{p.externalId}</td>
+                      <td className="px-3 py-2.5 font-mono text-xs text-slate-500">{p.externalId}</td>
                       <td className="px-3 py-2.5">
-                        <Badge variant="secondary" className="bg-white/5 text-slate-300">
+                        <Badge variant="secondary" className="bg-slate-200 text-slate-600">
                           {p.vehicleClass?.name || '—'}
                         </Badge>
                       </td>
-                      <td className="px-3 py-2.5 text-slate-200">{p.name}</td>
+                      <td className="px-3 py-2.5 text-slate-800">{p.name}</td>
                       {editingPlan?.id === p.id ? (
                         <>
                           <td className="px-3 py-2.5">
                             <Input
                               value={editingPlan.priceEur}
                               onChange={(e) => setEditingPlan({ ...editingPlan, priceEur: e.target.value })}
-                              className="h-8 w-20 bg-slate-950/50 border-white/10 text-right"
+                              className="h-8 w-20 bg-slate-100/50 border-slate-300 text-right"
                             />
                           </td>
                           <td className="px-3 py-2.5">
                             <Input
                               value={editingPlan.priceUsd}
                               onChange={(e) => setEditingPlan({ ...editingPlan, priceUsd: e.target.value })}
-                              className="h-8 w-20 bg-slate-950/50 border-white/10 text-right"
+                              className="h-8 w-20 bg-slate-100/50 border-slate-300 text-right"
                             />
                           </td>
                           <td className="px-3 py-2.5">
                             <Input
                               value={editingPlan.priceBs}
                               onChange={(e) => setEditingPlan({ ...editingPlan, priceBs: e.target.value })}
-                              className="h-8 w-28 bg-slate-950/50 border-white/10 text-right"
+                              className="h-8 w-28 bg-slate-100/50 border-slate-300 text-right"
                             />
                           </td>
                           <td className="px-3 py-2.5 text-center">
@@ -349,7 +349,7 @@ export function PriceListManager() {
                               className={`rounded px-2 py-0.5 text-xs font-medium ${
                                 editingPlan.active
                                   ? 'bg-emerald-500/15 text-emerald-300'
-                                  : 'bg-slate-500/15 text-slate-400'
+                                  : 'bg-slate-500/15 text-slate-500'
                               }`}
                             >
                               {editingPlan.active ? 'Activo' : 'Inactivo'}
@@ -366,7 +366,7 @@ export function PriceListManager() {
                               </button>
                               <button
                                 onClick={() => setEditingPlan(null)}
-                                className="rounded p-1 text-slate-400 hover:bg-white/10"
+                                className="rounded p-1 text-slate-500 hover:bg-slate-300"
                                 title="Cancelar"
                               >
                                 <X className="h-4 w-4" />
@@ -376,19 +376,19 @@ export function PriceListManager() {
                         </>
                       ) : (
                         <>
-                          <td className="px-3 py-2.5 text-right text-slate-200">
+                          <td className="px-3 py-2.5 text-right text-slate-800">
                             <span className="flex items-center justify-end gap-1">
                               <Euro className="h-3 w-3 text-slate-500" />
                               {p.priceEur}
                             </span>
                           </td>
-                          <td className="px-3 py-2.5 text-right text-slate-200">
+                          <td className="px-3 py-2.5 text-right text-slate-800">
                             <span className="flex items-center justify-end gap-1">
                               <DollarSign className="h-3 w-3 text-slate-500" />
                               {p.priceUsd}
                             </span>
                           </td>
-                          <td className="px-3 py-2.5 text-right text-slate-200">
+                          <td className="px-3 py-2.5 text-right text-slate-800">
                             <span className="flex items-center justify-end gap-1">
                               <Coins className="h-3 w-3 text-slate-500" />
                               {p.priceBs}
@@ -400,7 +400,7 @@ export function PriceListManager() {
                               className={
                                 p.active
                                   ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
-                                  : 'border-slate-500/30 bg-slate-500/10 text-slate-400'
+                                  : 'border-slate-500/30 bg-slate-500/10 text-slate-500'
                               }
                             >
                               {p.active ? 'Activo' : 'Inactivo'}
@@ -410,14 +410,14 @@ export function PriceListManager() {
                             <div className="flex justify-end gap-1">
                               <button
                                 onClick={() => setEditingPlan(p)}
-                                className="rounded p-1 text-slate-400 hover:bg-white/10 hover:text-white"
+                                className="rounded p-1 text-slate-500 hover:bg-slate-300 hover:text-slate-900"
                                 title="Editar"
                               >
                                 <Edit3 className="h-4 w-4" />
                               </button>
                               <button
                                 onClick={() => deletePlan(p.id)}
-                                className="rounded p-1 text-slate-400 hover:bg-red-500/10 hover:text-red-300"
+                                className="rounded p-1 text-slate-500 hover:bg-red-500/10 hover:text-red-300"
                                 title="Eliminar"
                               >
                                 <Trash2 className="h-4 w-4" />

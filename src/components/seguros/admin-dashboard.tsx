@@ -118,15 +118,15 @@ export default function AdminDashboard({
 
   if (!authed) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 px-4 text-slate-100">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-100 px-4 text-slate-900">
         <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(16,185,129,0.12),transparent)]" />
-        <Card className="relative w-full max-w-sm border-white/10 bg-slate-900/80 backdrop-blur">
+        <Card className="relative w-full max-w-sm border-slate-300 bg-slate-200/80 backdrop-blur">
           <CardContent className="p-8">
             <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-500/30">
               <Lock className="h-7 w-7 text-emerald-400" />
             </div>
             <h1 className="text-center text-xl font-bold">Acceso Administrativo</h1>
-            <p className="mt-1 text-center text-sm text-slate-400">
+            <p className="mt-1 text-center text-sm text-slate-500">
               Ingresa tu contraseña para continuar
             </p>
             <div className="mt-6 space-y-3">
@@ -139,21 +139,21 @@ export default function AdminDashboard({
                   setPwError(false)
                 }}
                 onKeyDown={(e) => e.key === 'Enter' && tryLogin()}
-                className="bg-slate-950/50 border-white/10"
+                className="bg-slate-100/50 border-slate-300"
               />
               {pwError && (
                 <p className="text-xs text-red-400">Contraseña incorrecta</p>
               )}
               <Button
                 onClick={tryLogin}
-                className="w-full bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                className="w-full bg-emerald-500 text-slate-900 hover:bg-emerald-400"
               >
                 Entrar
               </Button>
               <Button
                 variant="ghost"
                 onClick={onExit}
-                className="w-full text-slate-400 hover:text-white"
+                className="w-full text-slate-500 hover:text-slate-900"
               >
                 Volver
               </Button>
@@ -433,16 +433,16 @@ function AdminShell({
   ]
 
   return (
-    <div className="min-h-screen flex bg-slate-950 text-slate-100">
+    <div className="min-h-screen flex bg-slate-100 text-slate-900">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 transform border-r border-white/10 bg-slate-900 transition-transform lg:relative lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 transform border-r border-slate-300 bg-slate-200 transition-transform lg:relative lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex h-16 items-center gap-2 border-b border-white/10 px-5">
+        <div className="flex h-16 items-center gap-2 border-b border-slate-300 px-5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500 shadow-lg shadow-emerald-500/20">
-            <ShieldCheck className="h-4 w-4 text-slate-950" />
+            <ShieldCheck className="h-4 w-4 text-slate-900" />
           </div>
           <div className="leading-tight">
             <p className="text-sm font-bold">Seguros Líder</p>
@@ -454,7 +454,7 @@ function AdminShell({
             className="ml-auto lg:hidden"
             onClick={() => setSidebarOpen(false)}
           >
-            <X className="h-5 w-5 text-slate-400" />
+            <X className="h-5 w-5 text-slate-500" />
           </button>
         </div>
         <nav className="space-y-1 p-3">
@@ -469,7 +469,7 @@ function AdminShell({
               className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
                 view === n.key
                   ? 'bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/20'
-                  : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                  : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900'
               }`}
             >
               <n.icon className="h-4 w-4" />
@@ -485,61 +485,61 @@ function AdminShell({
 
         {/* Mini stats in sidebar */}
         {stats && (
-          <div className="mx-3 mt-4 rounded-lg border border-white/10 bg-slate-950/50 p-3">
-            <p className="mb-2 text-[10px] uppercase tracking-wider text-slate-400">
+          <div className="mx-3 mt-4 rounded-lg border border-slate-300 bg-slate-100/50 p-3">
+            <p className="mb-2 text-[10px] uppercase tracking-wider text-slate-500">
               Resumen
             </p>
             <div className="space-y-1.5 text-xs">
               <div className="flex justify-between">
-                <span className="text-slate-400">Aprobadas hoy</span>
+                <span className="text-slate-500">Aprobadas hoy</span>
                 <span className="font-semibold text-emerald-300">{stats.aprobadasHoy}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Con documentos</span>
+                <span className="text-slate-500">Con documentos</span>
                 <span className="font-semibold text-sky-300">{stats.withDocs}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Total</span>
-                <span className="font-semibold text-slate-200">{stats.total}</span>
+                <span className="text-slate-500">Total</span>
+                <span className="font-semibold text-slate-800">{stats.total}</span>
               </div>
             </div>
           </div>
         )}
 
         {/* Keyboard shortcuts hint */}
-        <div className="mx-3 mt-3 rounded-lg border border-white/10 bg-slate-950/50 p-3">
-          <p className="mb-2 text-[10px] uppercase tracking-wider text-slate-400">
+        <div className="mx-3 mt-3 rounded-lg border border-slate-300 bg-slate-100/50 p-3">
+          <p className="mb-2 text-[10px] uppercase tracking-wider text-slate-500">
             Atajos de teclado
           </p>
-          <div className="space-y-1 text-[11px] text-slate-400">
+          <div className="space-y-1 text-[11px] text-slate-500">
             <div className="flex items-center justify-between">
               <span>Buscar</span>
-              <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-300">/</kbd>
+              <kbd className="rounded border border-slate-300 bg-slate-200 px-1.5 py-0.5 font-mono text-[10px] text-slate-600">/</kbd>
             </div>
             <div className="flex items-center justify-between">
               <span>Dashboard</span>
-              <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-300">g d</kbd>
+              <kbd className="rounded border border-slate-300 bg-slate-200 px-1.5 py-0.5 font-mono text-[10px] text-slate-600">g d</kbd>
             </div>
             <div className="flex items-center justify-between">
               <span>Pendientes</span>
-              <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-300">g p</kbd>
+              <kbd className="rounded border border-slate-300 bg-slate-200 px-1.5 py-0.5 font-mono text-[10px] text-slate-600">g p</kbd>
             </div>
             <div className="flex items-center justify-between">
               <span>Todas</span>
-              <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-300">g t</kbd>
+              <kbd className="rounded border border-slate-300 bg-slate-200 px-1.5 py-0.5 font-mono text-[10px] text-slate-600">g t</kbd>
             </div>
             <div className="flex items-center justify-between">
               <span>Configuración</span>
-              <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-300">g s</kbd>
+              <kbd className="rounded border border-slate-300 bg-slate-200 px-1.5 py-0.5 font-mono text-[10px] text-slate-600">g s</kbd>
             </div>
           </div>
         </div>
 
-        <div className="absolute inset-x-0 bottom-0 border-t border-white/10 p-3">
+        <div className="absolute inset-x-0 bottom-0 border-t border-slate-300 p-3">
           <Button
             variant="ghost"
             onClick={onLogout}
-            className="w-full justify-start text-slate-400 hover:text-white"
+            className="w-full justify-start text-slate-500 hover:text-slate-900"
           >
             <LogOut className="mr-2 h-4 w-4" />
             Cerrar sesión
@@ -556,12 +556,12 @@ function AdminShell({
 
       {/* Main */}
       <div className="flex flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-white/10 bg-slate-950/80 px-4 backdrop-blur sm:px-6">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-slate-300 bg-slate-100/80 px-4 backdrop-blur sm:px-6">
           <button
             className="lg:hidden"
             onClick={() => setSidebarOpen(true)}
           >
-            <Menu className="h-5 w-5 text-slate-300" />
+            <Menu className="h-5 w-5 text-slate-600" />
           </button>
           <h1 className="text-lg font-semibold capitalize">
             {navItems.find((n) => n.key === view)?.label || 'Dashboard'}
@@ -577,7 +577,7 @@ function AdminShell({
                 variant="outline"
                 size="sm"
                 onClick={exportCsv}
-                className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+                className="border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900"
               >
                 <FileSpreadsheet className="mr-1 h-4 w-4" />
                 <span className="hidden sm:inline">Exportar CSV</span>
@@ -588,7 +588,7 @@ function AdminShell({
               variant="ghost"
               size="sm"
               onClick={onExit}
-              className="text-slate-400 hover:text-white"
+              className="text-slate-500 hover:text-slate-900"
             >
               <ArrowLeft className="mr-1 h-4 w-4" />
               <span className="hidden sm:inline">Salir</span>
@@ -607,7 +607,7 @@ function AdminShell({
                 size="sm"
                 onClick={() => bulkAction('approve')}
                 disabled={bulkBusy}
-                className="bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                className="bg-emerald-500 text-slate-900 hover:bg-emerald-400"
               >
                 <CheckCircle2 className="mr-1 h-3.5 w-3.5" />
                 Aprobar
@@ -627,7 +627,7 @@ function AdminShell({
                 variant="outline"
                 onClick={() => bulkAction('anular')}
                 disabled={bulkBusy}
-                className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+                className="border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900"
               >
                 <Ban className="mr-1 h-3.5 w-3.5" />
                 Anular
@@ -646,7 +646,7 @@ function AdminShell({
                 size="sm"
                 variant="ghost"
                 onClick={() => setSelectedIds(new Set())}
-                className="text-slate-400 hover:text-white"
+                className="text-slate-500 hover:text-slate-900"
               >
                 Limpiar
               </Button>
@@ -863,23 +863,23 @@ function DashboardView({
           return (
             <Card
               key={c.label}
-              className={`border-white/10 bg-slate-900/60 ring-1 ${c.ring} transition-all hover:scale-[1.02] ${
-                clickable ? 'cursor-pointer hover:bg-slate-900/80 hover:shadow-lg hover:shadow-emerald-500/5' : ''
+              className={`border-slate-300 bg-slate-200/60 ring-1 ${c.ring} transition-all hover:scale-[1.02] ${
+                clickable ? 'cursor-pointer hover:bg-slate-200/80 hover:shadow-lg hover:shadow-emerald-500/5' : ''
               }`}
               onClick={() => clickable && onCardClick!(c.filter)}
             >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400">{c.label}</span>
+                  <span className="text-xs text-slate-500">{c.label}</span>
                   <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${c.bg}`}>
                     <c.icon className={`h-4 w-4 ${c.color}`} />
                   </div>
                 </div>
-                <p className="mt-2 text-3xl font-bold tracking-tight text-white">
+                <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
                   {c.value}
                 </p>
                 {c.sub && (
-                  <p className={`mt-0.5 text-[11px] ${c.subColor || 'text-slate-400'}`}>
+                  <p className={`mt-0.5 text-[11px] ${c.subColor || 'text-slate-500'}`}>
                     {c.sub}
                   </p>
                 )}
@@ -901,13 +901,13 @@ function DashboardView({
       <ExpiryAlerts />
 
       {/* Recent */}
-      <Card className="border-white/10 bg-slate-900/60">
-        <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
+      <Card className="border-slate-300 bg-slate-200/60">
+        <div className="flex items-center justify-between border-b border-slate-300 px-5 py-3">
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-emerald-400" />
             <h2 className="font-semibold">Solicitudes recientes</h2>
           </div>
-          <Badge variant="secondary" className="bg-white/5 text-slate-400">
+          <Badge variant="secondary" className="bg-slate-200 text-slate-500">
             {policies.length} total
           </Badge>
         </div>
@@ -916,10 +916,10 @@ function DashboardView({
             <div className="space-y-2">
               {[0, 1, 2].map((i) => (
                 <div key={i} className="flex items-center gap-3 p-3">
-                  <div className="h-10 w-10 animate-pulse rounded-full bg-white/5" />
+                  <div className="h-10 w-10 animate-pulse rounded-full bg-slate-200" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-3 w-1/3 animate-pulse rounded bg-white/5" />
-                    <div className="h-2.5 w-1/2 animate-pulse rounded bg-white/5" />
+                    <div className="h-3 w-1/3 animate-pulse rounded bg-slate-200" />
+                    <div className="h-2.5 w-1/2 animate-pulse rounded bg-slate-200" />
                   </div>
                 </div>
               ))}
@@ -1009,7 +1009,7 @@ function ListView({
     <div className="space-y-4">
       <div>
         <h2 className="text-xl font-semibold">{title}</h2>
-        <p className="mt-1 text-sm text-slate-400">{description}</p>
+        <p className="mt-1 text-sm text-slate-500">{description}</p>
       </div>
 
       {/* Search + status row */}
@@ -1021,12 +1021,12 @@ function ListView({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && onSearch()}
-            className="pl-9 bg-slate-900/60 border-white/10"
+            className="pl-9 bg-slate-200/60 border-slate-300"
           />
         </div>
         {setStatusFilter && (
           <Select value={statusFilter || 'ALL'} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[160px] bg-slate-900/60 border-white/10">
+            <SelectTrigger className="w-[160px] bg-slate-200/60 border-slate-300">
               <SelectValue placeholder="Estado" />
             </SelectTrigger>
             <SelectContent>
@@ -1038,57 +1038,57 @@ function ListView({
             </SelectContent>
           </Select>
         )}
-        <Button variant="outline" onClick={onSearch} className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white">
+        <Button variant="outline" onClick={onSearch} className="border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900">
           <Search className="mr-1 h-4 w-4" /> Buscar
         </Button>
-        <Button variant="outline" onClick={onRefresh} className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white">
+        <Button variant="outline" onClick={onRefresh} className="border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900">
           Actualizar
         </Button>
       </div>
 
       {/* Date range filter row */}
       {setDateFrom && setDateTo && applyDateFilter && (
-        <div className="flex flex-wrap items-end gap-2 rounded-lg border border-white/10 bg-slate-900/40 p-3">
+        <div className="flex flex-wrap items-end gap-2 rounded-lg border border-slate-300 bg-slate-200/40 p-3">
           <div className="space-y-1">
-            <label className="text-[10px] uppercase tracking-wider text-slate-400">Desde</label>
+            <label className="text-[10px] uppercase tracking-wider text-slate-500">Desde</label>
             <Input
               type="date"
               value={dateFrom || ''}
               onChange={(e) => setDateFrom(e.target.value)}
-              className="h-9 w-[150px] bg-slate-950/50 border-white/10"
+              className="h-9 w-[150px] bg-slate-100/50 border-slate-300"
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] uppercase tracking-wider text-slate-400">Hasta</label>
+            <label className="text-[10px] uppercase tracking-wider text-slate-500">Hasta</label>
             <Input
               type="date"
               value={dateTo || ''}
               onChange={(e) => setDateTo(e.target.value)}
-              className="h-9 w-[150px] bg-slate-950/50 border-white/10"
+              className="h-9 w-[150px] bg-slate-100/50 border-slate-300"
             />
           </div>
-          <Button size="sm" onClick={applyDateFilter} className="bg-emerald-500 text-slate-950 hover:bg-emerald-400">
+          <Button size="sm" onClick={applyDateFilter} className="bg-emerald-500 text-slate-900 hover:bg-emerald-400">
             <Calendar className="mr-1 h-3.5 w-3.5" /> Filtrar
           </Button>
           {hasDateFilter && (
-            <Button size="sm" variant="ghost" onClick={clearDateFilter} className="text-slate-400 hover:text-white">
+            <Button size="sm" variant="ghost" onClick={clearDateFilter} className="text-slate-500 hover:text-slate-900">
               <X className="mr-1 h-3.5 w-3.5" /> Limpiar
             </Button>
           )}
           {pagination && (
-            <span className="ml-auto text-xs text-slate-400">
+            <span className="ml-auto text-xs text-slate-500">
               {pagination.total} resultado(s) total
             </span>
           )}
         </div>
       )}
 
-      <Card className="border-white/10 bg-slate-900/60">
+      <Card className="border-slate-300 bg-slate-200/60">
         {showBulkSelect && policies.length > 0 && (
-          <div className="flex items-center gap-3 border-b border-white/10 px-4 py-2">
+          <div className="flex items-center gap-3 border-b border-slate-300 px-4 py-2">
             <button
               onClick={onToggleSelectAll}
-              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white"
+              className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900"
             >
               {allSelected ? (
                 <CheckSquare className="h-4 w-4 text-emerald-400" />
@@ -1107,11 +1107,11 @@ function ListView({
             <div className="space-y-2">
               {[0, 1, 2, 3].map((i) => (
                 <div key={i} className="flex items-center gap-3 p-3">
-                  <div className="h-5 w-5 animate-pulse rounded bg-white/5" />
-                  <div className="h-10 w-10 animate-pulse rounded-full bg-white/5" />
+                  <div className="h-5 w-5 animate-pulse rounded bg-slate-200" />
+                  <div className="h-10 w-10 animate-pulse rounded-full bg-slate-200" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-3 w-1/3 animate-pulse rounded bg-white/5" />
-                    <div className="h-2.5 w-1/2 animate-pulse rounded bg-white/5" />
+                    <div className="h-3 w-1/3 animate-pulse rounded bg-slate-200" />
+                    <div className="h-2.5 w-1/2 animate-pulse rounded bg-slate-200" />
                   </div>
                 </div>
               ))}
@@ -1139,10 +1139,10 @@ function ListView({
 
         {/* Pagination footer */}
         {pagination && pagination.totalPages > 1 && goToPage && (
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 px-4 py-3">
-            <p className="text-xs text-slate-400">
-              Página <span className="font-semibold text-slate-200">{pagination.page}</span> de{' '}
-              <span className="font-semibold text-slate-200">{pagination.totalPages}</span>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-300 px-4 py-3">
+            <p className="text-xs text-slate-500">
+              Página <span className="font-semibold text-slate-800">{pagination.page}</span> de{' '}
+              <span className="font-semibold text-slate-800">{pagination.totalPages}</span>
               <span className="ml-2 text-slate-500">({pagination.total} total)</span>
             </p>
             <div className="flex items-center gap-1">
@@ -1151,7 +1151,7 @@ function ListView({
                 variant="outline"
                 disabled={!pagination.hasPrev}
                 onClick={() => goToPage((page || 1) - 1)}
-                className="h-8 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white disabled:opacity-30"
+                className="h-8 border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900 disabled:opacity-30"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -1167,8 +1167,8 @@ function ListView({
                     onClick={() => goToPage(p)}
                     className={`h-8 w-8 p-0 ${
                       p === pagination.page
-                        ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400'
-                        : 'border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white'
+                        ? 'bg-emerald-500 text-slate-900 hover:bg-emerald-400'
+                        : 'border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900'
                     }`}
                   >
                     {p}
@@ -1180,7 +1180,7 @@ function ListView({
                 variant="outline"
                 disabled={!pagination.hasNext}
                 onClick={() => goToPage((page || 1) + 1)}
-                className="h-8 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white disabled:opacity-30"
+                className="h-8 border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900 disabled:opacity-30"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>
@@ -1211,14 +1211,14 @@ function PolicyRow({
       : p.status === 'RECHAZADA'
         ? 'border-red-500/30 bg-red-500/10 text-red-300'
         : p.status === 'ANULADA'
-          ? 'border-slate-500/30 bg-slate-500/10 text-slate-300'
+          ? 'border-slate-500/30 bg-slate-500/10 text-slate-600'
           : 'border-amber-500/30 bg-amber-500/10 text-amber-300'
 
   const initials = (String(p.nombre || '?').charAt(0) + String(p.apellido || '').charAt(0)).toUpperCase()
 
   return (
     <div
-      className={`group flex items-center gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-white/5 ${
+      className={`group flex items-center gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-slate-200 ${
         selected ? 'bg-emerald-500/5 ring-1 ring-emerald-500/20' : ''
       }`}
     >
@@ -1233,7 +1233,7 @@ function PolicyRow({
           {selected ? (
             <CheckSquare className="h-5 w-5 text-emerald-400" />
           ) : (
-            <Square className="h-5 w-5 text-slate-500 hover:text-slate-300" />
+            <Square className="h-5 w-5 text-slate-500 hover:text-slate-600" />
           )}
         </button>
       )}
@@ -1241,7 +1241,7 @@ function PolicyRow({
         onClick={() => onSelect(p.id)}
         className="flex min-w-0 flex-1 items-center gap-3 text-left"
       >
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-700 to-slate-800 text-sm font-semibold text-slate-200 ring-1 ring-white/10">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-700 to-slate-800 text-sm font-semibold text-slate-800 ring-1 ring-white/10">
           {initials}
         </div>
         <div className="min-w-0 flex-1">
@@ -1253,7 +1253,7 @@ function PolicyRow({
               {p.status}
             </Badge>
           </div>
-          <p className="truncate text-xs text-slate-400">
+          <p className="truncate text-xs text-slate-500">
             {p.tipoCedula ? p.tipoCedula + '-' : ''}
             {p.cedula} · {p.marca || '—'} {p.modelo || ''} {p.ano || ''} · Placa{' '}
             {p.placa || '—'}
@@ -1270,13 +1270,13 @@ function PolicyRow({
         {(p.cedulaDocName || p.tituloDocName) && (
           <div className="hidden items-center gap-1 lg:flex">
             {p.cedulaDocName && (
-              <Badge variant="secondary" className="bg-white/5 text-slate-300">
+              <Badge variant="secondary" className="bg-slate-200 text-slate-600">
                 <Paperclip className="mr-1 h-2.5 w-2.5" />
                 Cédula
               </Badge>
             )}
             {p.tituloDocName && (
-              <Badge variant="secondary" className="bg-white/5 text-slate-300">
+              <Badge variant="secondary" className="bg-slate-200 text-slate-600">
                 <Paperclip className="mr-1 h-2.5 w-2.5" />
                 Título
               </Badge>

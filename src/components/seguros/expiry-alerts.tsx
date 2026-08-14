@@ -55,7 +55,7 @@ export function ExpiryAlerts() {
 
   if (loading) {
     return (
-      <Card className="border-white/10 bg-slate-900/60">
+      <Card className="border-slate-300 bg-slate-200/60">
         <CardContent className="flex items-center justify-center py-8">
           <Loader2 className="h-5 w-5 animate-spin text-slate-500" />
         </CardContent>
@@ -72,8 +72,8 @@ export function ExpiryAlerts() {
   }
 
   return (
-    <Card className="border-amber-500/20 bg-slate-900/60">
-      <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
+    <Card className="border-amber-500/20 bg-slate-200/60">
+      <div className="flex items-center gap-2 border-b border-slate-300 px-5 py-3">
         <AlertTriangle className="h-4 w-4 text-amber-400" />
         <h3 className="text-sm font-semibold">Alertas de Vencimiento</h3>
         <div className="ml-auto flex items-center gap-1">
@@ -83,7 +83,7 @@ export function ExpiryAlerts() {
               className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
                 tab === 'expiring'
                   ? 'bg-amber-500/15 text-amber-300'
-                  : 'text-slate-400 hover:text-white'
+                  : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               Por vencer ({expiring.length})
@@ -95,7 +95,7 @@ export function ExpiryAlerts() {
               className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
                 tab === 'expired'
                   ? 'bg-red-500/15 text-red-300'
-                  : 'text-slate-400 hover:text-white'
+                  : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               Vencidas ({expired.length})
@@ -117,7 +117,7 @@ export function ExpiryAlerts() {
                 <button
                   key={p.id}
                   onClick={() => router.push(`?view=admin`)}
-                  className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-white/5"
+                  className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-slate-200"
                 >
                   <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
                     isExpired ? 'bg-red-500/15' : days <= 7 ? 'bg-red-500/15' : 'bg-amber-500/15'
@@ -135,7 +135,7 @@ export function ExpiryAlerts() {
                         {p.policyNumber || p.verifyCode}
                       </span>
                     </div>
-                    <p className="truncate text-xs text-slate-400">
+                    <p className="truncate text-xs text-slate-500">
                       {p.marca || '—'} {p.modelo || ''} · Placa {p.placa || '—'} · Vence {p.vigenciaHasta}
                     </p>
                   </div>
@@ -153,7 +153,7 @@ export function ExpiryAlerts() {
                       <Clock className="mr-1 h-2.5 w-2.5" />
                       {isExpired ? `Hace ${Math.abs(days)}d` : `${days}d`}
                     </Badge>
-                    <ChevronRight className="h-4 w-4 text-slate-500 transition-colors group-hover:text-slate-300" />
+                    <ChevronRight className="h-4 w-4 text-slate-500 transition-colors group-hover:text-slate-600" />
                   </div>
                 </button>
               )

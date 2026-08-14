@@ -53,10 +53,10 @@ function ChartTooltip({ active, payload, label }: {
 }) {
   if (!active || !payload || payload.length === 0) return null
   return (
-    <div className="rounded-lg border border-white/10 bg-slate-900/95 px-3 py-2 text-xs shadow-xl backdrop-blur">
-      {label && <p className="mb-1 font-medium text-slate-300">{label}</p>}
+    <div className="rounded-lg border border-slate-300 bg-slate-200/95 px-3 py-2 text-xs shadow-xl backdrop-blur">
+      {label && <p className="mb-1 font-medium text-slate-600">{label}</p>}
       {payload.map((entry, i) => (
-        <p key={i} className="flex items-center gap-1.5 text-slate-200">
+        <p key={i} className="flex items-center gap-1.5 text-slate-800">
           <span
             className="inline-block h-2 w-2 rounded-full"
             style={{ backgroundColor: entry.color }}
@@ -80,9 +80,9 @@ export function DashboardCharts({
     return (
       <div className="grid gap-4 lg:grid-cols-3">
         {[0, 1, 2].map((i) => (
-          <Card key={i} className="border-white/10 bg-slate-900/60">
+          <Card key={i} className="border-slate-300 bg-slate-200/60">
             <CardContent className="h-72 animate-pulse p-4">
-              <div className="h-full w-full rounded bg-white/5" />
+              <div className="h-full w-full rounded bg-slate-200" />
             </CardContent>
           </Card>
         ))}
@@ -95,8 +95,8 @@ export function DashboardCharts({
   return (
     <div className="space-y-4">
       {/* Timeseries - full width */}
-      <Card className="border-white/10 bg-slate-900/60">
-        <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
+      <Card className="border-slate-300 bg-slate-200/60">
+        <div className="flex items-center justify-between border-b border-slate-300 px-5 py-3">
           <div className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-emerald-400" />
             <h3 className="text-sm font-semibold">Solicitudes — últimos 14 días</h3>
@@ -182,8 +182,8 @@ export function DashboardCharts({
       {/* Row: status pie + top brands + top estados */}
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Status distribution */}
-        <Card className={`border-white/10 bg-slate-900/60 ${onDrillDown ? 'transition-colors hover:border-emerald-500/30' : ''}`}>
-          <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
+        <Card className={`border-slate-300 bg-slate-200/60 ${onDrillDown ? 'transition-colors hover:border-emerald-500/30' : ''}`}>
+          <div className="flex items-center gap-2 border-b border-slate-300 px-5 py-3">
             <PieIcon className="h-4 w-4 text-emerald-400" />
             <h3 className="text-sm font-semibold">Distribución por estado</h3>
             {onDrillDown && (
@@ -236,8 +236,8 @@ export function DashboardCharts({
         </Card>
 
         {/* Top brands */}
-        <Card className={`border-white/10 bg-slate-900/60 ${onDrillDown ? 'transition-colors hover:border-emerald-500/30' : ''}`}>
-          <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
+        <Card className={`border-slate-300 bg-slate-200/60 ${onDrillDown ? 'transition-colors hover:border-emerald-500/30' : ''}`}>
+          <div className="flex items-center gap-2 border-b border-slate-300 px-5 py-3">
             <Car className="h-4 w-4 text-emerald-400" />
             <h3 className="text-sm font-semibold">Marcas más aseguradas</h3>
             {onDrillDown && (
@@ -289,8 +289,8 @@ export function DashboardCharts({
         </Card>
 
         {/* Top estados */}
-        <Card className={`border-white/10 bg-slate-900/60 ${onDrillDown ? 'transition-colors hover:border-emerald-500/30' : ''}`}>
-          <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
+        <Card className={`border-slate-300 bg-slate-200/60 ${onDrillDown ? 'transition-colors hover:border-emerald-500/30' : ''}`}>
+          <div className="flex items-center gap-2 border-b border-slate-300 px-5 py-3">
             <MapPin className="h-4 w-4 text-emerald-400" />
             <h3 className="text-sm font-semibold">Distribución geográfica</h3>
             {onDrillDown && (

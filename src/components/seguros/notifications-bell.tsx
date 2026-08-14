@@ -21,14 +21,14 @@ type Notification = {
 
 const ICONS: Record<string, { icon: React.ComponentType<{ className?: string }>; color: string }> = {
   CREATED: { icon: FilePlus2, color: 'text-sky-300' },
-  UPDATED: { icon: FileEdit, color: 'text-slate-300' },
+  UPDATED: { icon: FileEdit, color: 'text-slate-600' },
   APPROVED: { icon: FileCheck2, color: 'text-emerald-300' },
   REJECTED: { icon: FileX, color: 'text-red-300' },
-  ANULADA: { icon: Ban, color: 'text-slate-300' },
+  ANULADA: { icon: Ban, color: 'text-slate-600' },
   DOCUMENT_UPLOADED: { icon: Paperclip, color: 'text-violet-300' },
   DOCUMENT_DELETED: { icon: FileMinus, color: 'text-amber-300' },
   PDF_GENERATED: { icon: FileText, color: 'text-teal-300' },
-  STATUS_CHANGED: { icon: Activity, color: 'text-slate-300' },
+  STATUS_CHANGED: { icon: Activity, color: 'text-slate-600' },
 }
 
 function timeAgo(dateStr: string): string {
@@ -106,25 +106,25 @@ export function NotificationsBell() {
     <div className="relative" ref={ref}>
       <button
         onClick={toggle}
-        className="relative flex h-9 w-9 items-center justify-center rounded-lg text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+        className="relative flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-300 hover:text-slate-900"
         title="Notificaciones"
       >
         <Bell className="h-5 w-5" />
         {unreadCount > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-slate-900">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-80 sm:w-96 overflow-hidden rounded-xl border border-white/10 bg-slate-900 shadow-2xl">
-          <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+        <div className="absolute right-0 top-full z-50 mt-2 w-80 sm:w-96 overflow-hidden rounded-xl border border-slate-300 bg-slate-200 shadow-2xl">
+          <div className="flex items-center justify-between border-b border-slate-300 px-4 py-3">
             <div className="flex items-center gap-2">
               <Bell className="h-4 w-4 text-emerald-400" />
               <h3 className="text-sm font-semibold">Notificaciones</h3>
             </div>
-            <Badge variant="secondary" className="bg-white/5 text-slate-400">
+            <Badge variant="secondary" className="bg-slate-200 text-slate-500">
               {notifications.length} recientes
             </Badge>
           </div>
@@ -141,22 +141,22 @@ export function NotificationsBell() {
               </div>
             ) : (
               notifications.map((n) => {
-                const cfg = ICONS[n.action] || { icon: Activity, color: 'text-slate-300' }
+                const cfg = ICONS[n.action] || { icon: Activity, color: 'text-slate-600' }
                 const Icon = cfg.icon
                 return (
                   <div
                     key={n.id}
-                    className="flex gap-3 border-b border-white/5 px-4 py-3 transition-colors last:border-0 hover:bg-white/5"
+                    className="flex gap-3 border-b border-slate-200 px-4 py-3 transition-colors last:border-0 hover:bg-slate-200"
                   >
                     <div className="mt-0.5 shrink-0">
                       <Icon className={`h-4 w-4 ${cfg.color}`} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs leading-snug text-slate-200">
+                      <p className="text-xs leading-snug text-slate-800">
                         {n.description}
                       </p>
                       <div className="mt-1 flex items-center gap-1.5 text-[10px] text-slate-500">
-                        <span className="font-medium text-slate-400">
+                        <span className="font-medium text-slate-500">
                           {n.policy.nombre} {n.policy.apellido || ''}
                         </span>
                         <span>·</span>
@@ -173,7 +173,7 @@ export function NotificationsBell() {
             )}
           </div>
 
-          <div className="border-t border-white/10 px-4 py-2 text-center">
+          <div className="border-t border-slate-300 px-4 py-2 text-center">
             <p className="text-[10px] text-slate-500">
               Actualizado cada 30 segundos
             </p>

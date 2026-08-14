@@ -361,7 +361,7 @@ export function AdminPolicyDetail({
 
   if (!policy) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-100">
+      <div className="flex min-h-screen items-center justify-center bg-slate-100 text-slate-900">
         <Loader2 className="h-8 w-8 animate-spin text-emerald-400" />
       </div>
     )
@@ -380,11 +380,11 @@ export function AdminPolicyDetail({
   const verifyUrl = `/?v=${policy.verifyCode}`
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-100 text-slate-900">
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/90 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-slate-300 bg-slate-100/90 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:px-6">
-          <Button variant="ghost" size="sm" onClick={onBack} className="text-slate-300 hover:text-white">
+          <Button variant="ghost" size="sm" onClick={onBack} className="text-slate-600 hover:text-slate-900">
             <ArrowLeft className="mr-1 h-4 w-4" /> Volver
           </Button>
           <div className="ml-2 flex items-center gap-2">
@@ -413,7 +413,7 @@ export function AdminPolicyDetail({
               </span>
             )}
             <a href={`/api/policies/${id}/pdf`} target="_blank" rel="noreferrer">
-              <Button size="sm" variant="outline" className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white">
+              <Button size="sm" variant="outline" className="border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900">
                 <Download className="mr-1 h-4 w-4" /> PDF
               </Button>
             </a>
@@ -423,7 +423,7 @@ export function AdminPolicyDetail({
                 variant="ghost"
                 onClick={discardChanges}
                 disabled={saving}
-                className="text-slate-400 hover:text-red-300 hover:bg-red-500/10"
+                className="text-slate-500 hover:text-red-300 hover:bg-red-500/10"
                 title="Descartar cambios"
               >
                 <RotateCcw className="h-4 w-4" />
@@ -433,7 +433,7 @@ export function AdminPolicyDetail({
               size="sm"
               onClick={save}
               disabled={saving || !hasChanges}
-              className="bg-emerald-500 text-slate-950 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-emerald-500 text-slate-900 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}
               Guardar
@@ -444,7 +444,7 @@ export function AdminPolicyDetail({
 
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
         {/* Action bar */}
-        <Card className="mb-6 border-white/10 bg-slate-900/60">
+        <Card className="mb-6 border-slate-300 bg-slate-200/60">
           <CardContent className="flex flex-wrap items-center gap-3 p-4">
             <div className="flex items-center gap-2">
               {status === 'PENDIENTE' ? (
@@ -452,7 +452,7 @@ export function AdminPolicyDetail({
                   <Button
                     onClick={approve}
                     disabled={approving}
-                    className="bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                    className="bg-emerald-500 text-slate-900 hover:bg-emerald-400"
                   >
                     {approving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <CheckCircle2 className="mr-1 h-4 w-4" />}
                     Aprobar y Generar Certificado
@@ -469,7 +469,7 @@ export function AdminPolicyDetail({
                 <Button
                   variant="outline"
                   onClick={() => setStatus('PENDIENTE')}
-                  className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+                  className="border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900"
                 >
                   <RefreshCw className="mr-1 h-4 w-4" /> Marcar pendiente
                 </Button>
@@ -480,20 +480,20 @@ export function AdminPolicyDetail({
                 variant="outline"
                 onClick={clonePolicy}
                 disabled={cloning}
-                className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+                className="border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900"
                 title="Crear una nueva solicitud con los mismos datos"
               >
                 {cloning ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Copy className="mr-1 h-4 w-4" />}
                 Clonar
               </Button>
             </div>
-            <div className="ml-auto flex items-center gap-2 text-xs text-slate-400">
+            <div className="ml-auto flex items-center gap-2 text-xs text-slate-500">
               <span>Verificación pública:</span>
-              <code className="rounded bg-white/5 px-2 py-1 text-emerald-300">{verifyUrl}</code>
+              <code className="rounded bg-slate-200 px-2 py-1 text-emerald-300">{verifyUrl}</code>
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-7 px-2 text-slate-400 hover:text-white"
+                className="h-7 px-2 text-slate-500 hover:text-slate-900"
                 onClick={() => {
                   navigator.clipboard.writeText(`${window.location.origin}${verifyUrl}`)
                   toast.success('URL copiada')
@@ -502,7 +502,7 @@ export function AdminPolicyDetail({
                 <Copy className="h-3.5 w-3.5" />
               </Button>
               <a href={verifyUrl} target="_blank" rel="noreferrer">
-                <Button size="sm" variant="ghost" className="h-7 px-2 text-slate-400 hover:text-white">
+                <Button size="sm" variant="ghost" className="h-7 px-2 text-slate-500 hover:text-slate-900">
                   <ExternalLink className="h-3.5 w-3.5" />
                 </Button>
               </a>
@@ -511,7 +511,7 @@ export function AdminPolicyDetail({
         </Card>
 
         {/* Summary card */}
-        <Card className="mb-6 overflow-hidden border-white/10 bg-slate-900/60">
+        <Card className="mb-6 overflow-hidden border-slate-300 bg-slate-200/60">
           <div className={`h-1 w-full ${
             status === 'APROBADA' ? 'bg-emerald-500' :
             status === 'RECHAZADA' ? 'bg-red-500' :
@@ -539,7 +539,7 @@ export function AdminPolicyDetail({
         </Card>
 
         <Tabs defaultValue="datos">
-          <TabsList className="bg-slate-900/60 border border-white/10">
+          <TabsList className="bg-slate-200/60 border border-slate-300">
             <TabsTrigger value="datos" className="data-[state=active]:bg-emerald-500/15 data-[state=active]:text-emerald-300">
               <User className="mr-1.5 h-4 w-4" /> Datos
             </TabsTrigger>
@@ -559,14 +559,14 @@ export function AdminPolicyDetail({
             <GroupCard title="Datos del Cliente" icon={User} fields={TEXT_FIELDS.filter((f) => f.group === 'cliente')} form={form} setForm={setForm} fieldOptions={fieldOptions || undefined} />
             <GroupCard title="Datos del Vehículo" icon={Car} fields={TEXT_FIELDS.filter((f) => f.group === 'vehiculo')} form={form} setForm={setForm} fieldOptions={fieldOptions || undefined} />
             <GroupCard title="Cobertura y Condiciones" icon={ShieldCheck} fields={TEXT_FIELDS.filter((f) => f.group === 'cobertura')} form={form} setForm={setForm} fieldOptions={fieldOptions || undefined} />
-            <Card className="border-white/10 bg-slate-900/60">
+            <Card className="border-slate-300 bg-slate-200/60">
               <CardContent className="p-4">
-                <Label className="mb-1.5 block text-xs text-slate-300">Notas internas</Label>
+                <Label className="mb-1.5 block text-xs text-slate-600">Notas internas</Label>
                 <Textarea
                   value={form.notes || ''}
                   onChange={(e) => setForm({ ...form, notes: e.target.value })}
                   placeholder="Notas del administrador..."
-                  className="min-h-[80px] bg-slate-950/50 border-white/10"
+                  className="min-h-[80px] bg-slate-100/50 border-slate-300"
                 />
               </CardContent>
             </Card>
@@ -575,7 +575,7 @@ export function AdminPolicyDetail({
                 <span className="flex items-center gap-1.5 text-xs text-amber-300">
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" />
                   Tienes cambios sin guardar
-                  <kbd className="ml-1 hidden rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-slate-400 sm:inline">Ctrl+S</kbd>
+                  <kbd className="ml-1 hidden rounded border border-slate-300 bg-slate-200 px-1.5 py-0.5 font-mono text-[10px] text-slate-500 sm:inline">Ctrl+S</kbd>
                 </span>
               ) : (
                 <span className="flex items-center gap-1.5 text-xs text-emerald-300">
@@ -585,12 +585,12 @@ export function AdminPolicyDetail({
               )}
               <div className="flex gap-2">
                 {hasChanges && (
-                  <Button variant="ghost" onClick={discardChanges} disabled={saving} className="text-slate-400 hover:text-red-300 hover:bg-red-500/10">
+                  <Button variant="ghost" onClick={discardChanges} disabled={saving} className="text-slate-500 hover:text-red-300 hover:bg-red-500/10">
                     <RotateCcw className="mr-1 h-4 w-4" />
                     Descartar
                   </Button>
                 )}
-                <Button onClick={save} disabled={saving || !hasChanges} className="bg-emerald-500 text-slate-950 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed">
+                <Button onClick={save} disabled={saving || !hasChanges} className="bg-emerald-500 text-slate-900 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed">
                   {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}
                   Guardar cambios
                 </Button>
@@ -600,13 +600,13 @@ export function AdminPolicyDetail({
 
           {/* DOCUMENTOS */}
           <TabsContent value="documentos" className="mt-4">
-            <Card className="border-white/10 bg-slate-900/60">
-              <div className="border-b border-white/10 px-5 py-3">
+            <Card className="border-slate-300 bg-slate-200/60">
+              <div className="border-b border-slate-300 px-5 py-3">
                 <h2 className="flex items-center gap-2 font-semibold">
                   <IdCard className="h-4 w-4 text-emerald-400" />
                   Documentos adjuntos
                 </h2>
-                <p className="mt-0.5 text-xs text-slate-400">
+                <p className="mt-0.5 text-xs text-slate-500">
                   Formatos permitidos: JPG, PNG, WEBP, PDF. Máx 10 MB.
                 </p>
               </div>
@@ -628,7 +628,7 @@ export function AdminPolicyDetail({
                   </div>
                 )}
 
-                <div className="mt-5 grid gap-3 border-t border-white/10 pt-5 sm:grid-cols-2">
+                <div className="mt-5 grid gap-3 border-t border-slate-300 pt-5 sm:grid-cols-2">
                   <UploadSlot
                     label="Cédula de Identidad"
                     uploading={uploading === 'CEDULA'}
@@ -646,7 +646,7 @@ export function AdminPolicyDetail({
 
           {/* CERTIFICADO */}
           <TabsContent value="certificado" className="mt-4">
-            <Card className="border-white/10 bg-slate-900/60">
+            <Card className="border-slate-300 bg-slate-200/60">
               <CardContent className="p-6">
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div>
@@ -661,12 +661,12 @@ export function AdminPolicyDetail({
                         className="h-44 w-44"
                       />
                     </div>
-                    <p className="mt-3 text-xs text-slate-400">
+                    <p className="mt-3 text-xs text-slate-500">
                       Al escanear este código se abre la página pública de
                       verificación de esta póliza.
                     </p>
                     <a href={`/api/policies/${id}/qr`} target="_blank" rel="noreferrer">
-                      <Button variant="outline" size="sm" className="mt-3 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white">
+                      <Button variant="outline" size="sm" className="mt-3 border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900">
                         <ExternalLink className="mr-1 h-3.5 w-3.5" /> Ver QR
                       </Button>
                     </a>
@@ -676,24 +676,24 @@ export function AdminPolicyDetail({
                       <FileText className="h-4 w-4 text-emerald-400" />
                       Certificado PDF
                     </h3>
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-slate-500">
                       El certificado se genera automáticamente con los datos
                       actuales. Al aprobar la póliza se asigna el número y el
                       estado <span className="text-emerald-300">APROBADA</span>.
                     </p>
                     <a href={`/api/policies/${id}/pdf`} target="_blank" rel="noreferrer">
-                      <Button className="mt-4 bg-emerald-500 text-slate-950 hover:bg-emerald-400">
+                      <Button className="mt-4 bg-emerald-500 text-slate-900 hover:bg-emerald-400">
                         <Download className="mr-1.5 h-4 w-4" />
                         Descargar / regenerar PDF
                       </Button>
                     </a>
-                    <div className="mt-4 rounded-lg border border-white/10 bg-slate-950/40 p-3 text-xs">
+                    <div className="mt-4 rounded-lg border border-slate-300 bg-slate-100/40 p-3 text-xs">
                       <p className="text-slate-500">Código de verificación</p>
                       <p className="mt-1 font-mono text-lg text-emerald-300">
                         {policy.verifyCode}
                       </p>
                       <p className="mt-2 text-slate-500">N° de póliza</p>
-                      <p className="mt-1 font-mono text-lg text-slate-200">
+                      <p className="mt-1 font-mono text-lg text-slate-800">
                         {(policy.policyNumber as string) || '—'}
                       </p>
                     </div>
@@ -762,16 +762,16 @@ function ActivityTimeline({ policyId }: { policyId: string }) {
       case 'CREATED': return 'bg-sky-500/15 text-sky-300 ring-sky-500/20'
       case 'DOCUMENT_UPLOADED': return 'bg-violet-500/15 text-violet-300 ring-violet-500/20'
       case 'DOCUMENT_DELETED': return 'bg-amber-500/15 text-amber-300 ring-amber-500/20'
-      default: return 'bg-slate-500/15 text-slate-300 ring-slate-500/20'
+      default: return 'bg-slate-500/15 text-slate-600 ring-slate-500/20'
     }
   }
 
   return (
-    <Card className="border-white/10 bg-slate-900/60">
-      <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
+    <Card className="border-slate-300 bg-slate-200/60">
+      <div className="flex items-center gap-2 border-b border-slate-300 px-5 py-3">
         <History className="h-4 w-4 text-emerald-400" />
         <h2 className="font-semibold">Historial de actividad</h2>
-        <Badge variant="secondary" className="ml-auto bg-white/5 text-slate-400">
+        <Badge variant="secondary" className="ml-auto bg-slate-200 text-slate-500">
           {activities.length} evento(s)
         </Badge>
         {activities.length > 0 && (
@@ -779,7 +779,7 @@ function ActivityTimeline({ policyId }: { policyId: string }) {
             <a
               href={`/api/policies/${policyId}/activities/export?format=csv`}
               download
-              className="flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+              className="flex items-center gap-1 rounded-md border border-slate-300 bg-slate-200 px-2 py-1 text-xs text-slate-600 transition-colors hover:bg-slate-300 hover:text-slate-900"
               title="Exportar como CSV"
             >
               <Download className="h-3 w-3" />
@@ -788,7 +788,7 @@ function ActivityTimeline({ policyId }: { policyId: string }) {
             <a
               href={`/api/policies/${policyId}/activities/export?format=json`}
               download
-              className="flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+              className="flex items-center gap-1 rounded-md border border-slate-300 bg-slate-200 px-2 py-1 text-xs text-slate-600 transition-colors hover:bg-slate-300 hover:text-slate-900"
               title="Exportar como JSON"
             >
               <FileJson className="h-3 w-3" />
@@ -816,13 +816,13 @@ function ActivityTimeline({ policyId }: { policyId: string }) {
               return (
                 <li key={a.id} className="relative flex gap-3 pb-4">
                   {!isLast && (
-                    <div className="absolute left-[15px] top-8 h-full w-px bg-white/10" />
+                    <div className="absolute left-[15px] top-8 h-full w-px bg-slate-300" />
                   )}
                   <div className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ring-1 ${color}`}>
                     <Icon className="h-4 w-4" />
                   </div>
                   <div className="min-w-0 flex-1 pt-0.5">
-                    <p className="text-sm font-medium text-slate-200">{a.description}</p>
+                    <p className="text-sm font-medium text-slate-800">{a.description}</p>
                     <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-slate-500">
                       <span className="font-mono">{a.action}</span>
                       <span>·</span>
@@ -856,8 +856,8 @@ function SummaryItem({
         <Icon className="h-4 w-4 text-emerald-300" />
       </div>
       <div className="min-w-0">
-        <p className="text-[10px] uppercase tracking-wider text-slate-400">{label}</p>
-        <p className="truncate text-sm font-medium text-slate-100">{value}</p>
+        <p className="text-[10px] uppercase tracking-wider text-slate-500">{label}</p>
+        <p className="truncate text-sm font-medium text-slate-900">{value}</p>
       </div>
     </div>
   )
@@ -879,8 +879,8 @@ function GroupCard({
   fieldOptions?: Record<string, string[]>
 }) {
   return (
-    <Card className="border-white/10 bg-slate-900/60">
-      <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
+    <Card className="border-slate-300 bg-slate-200/60">
+      <div className="flex items-center gap-2 border-b border-slate-300 px-5 py-3">
         <Icon className="h-4 w-4 text-emerald-400" />
         <h2 className="font-semibold">{title}</h2>
       </div>
@@ -897,7 +897,7 @@ function GroupCard({
                   value={form[f.key] || ''}
                   onValueChange={(v) => setForm({ ...form, [f.key]: v })}
                 >
-                  <SelectTrigger className="bg-slate-950/50 border-white/10">
+                  <SelectTrigger className="bg-slate-100/50 border-slate-300">
                     <SelectValue placeholder="Seleccionar" />
                   </SelectTrigger>
                   <SelectContent>
@@ -919,7 +919,7 @@ function GroupCard({
               <Input
                 value={form[f.key] || ''}
                 onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                className="bg-slate-950/50 border-white/10"
+                className="bg-slate-100/50 border-slate-300"
               />
             </div>
           )
@@ -944,8 +944,8 @@ function DocCard({
 
   return (
     <>
-      <div className="group overflow-hidden rounded-lg border border-white/10 bg-slate-950/40 transition-colors hover:border-emerald-500/30">
-        <div className="flex items-center justify-between border-b border-white/10 px-3 py-2">
+      <div className="group overflow-hidden rounded-lg border border-slate-300 bg-slate-100/40 transition-colors hover:border-emerald-500/30">
+        <div className="flex items-center justify-between border-b border-slate-300 px-3 py-2">
           <Badge
             variant="outline"
             className={
@@ -953,7 +953,7 @@ function DocCard({
                 ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
                 : doc.tipo === 'TITULO'
                   ? 'border-sky-500/30 bg-sky-500/10 text-sky-300'
-                  : 'border-white/20 bg-white/5 text-slate-300'
+                  : 'border-slate-400 bg-slate-200 text-slate-600'
             }
           >
             {doc.tipo}
@@ -961,7 +961,7 @@ function DocCard({
           <div className="flex items-center gap-1">
             <button
               onClick={() => setLightbox(true)}
-              className="rounded p-1 text-slate-400 hover:bg-white/10 hover:text-white"
+              className="rounded p-1 text-slate-500 hover:bg-slate-300 hover:text-slate-900"
               title="Vista previa"
             >
               <Eye className="h-4 w-4" />
@@ -970,7 +970,7 @@ function DocCard({
               href={url}
               target="_blank"
               rel="noreferrer"
-              className="rounded p-1 text-slate-400 hover:bg-white/10 hover:text-white"
+              className="rounded p-1 text-slate-500 hover:bg-slate-300 hover:text-slate-900"
               title="Abrir en pestaña"
             >
               <ExternalLink className="h-4 w-4" />
@@ -978,7 +978,7 @@ function DocCard({
             {onReplace && (
               <button
                 onClick={onReplace}
-                className="rounded p-1 text-slate-400 hover:bg-emerald-500/10 hover:text-emerald-300"
+                className="rounded p-1 text-slate-500 hover:bg-emerald-500/10 hover:text-emerald-300"
                 title="Reemplazar"
               >
                 <RefreshCw className="h-4 w-4" />
@@ -986,7 +986,7 @@ function DocCard({
             )}
             <button
               onClick={onRemove}
-              className="rounded p-1 text-slate-400 hover:bg-red-500/10 hover:text-red-300"
+              className="rounded p-1 text-slate-500 hover:bg-red-500/10 hover:text-red-300"
               title="Eliminar"
             >
               <Trash2 className="h-4 w-4" />
@@ -1000,15 +1000,15 @@ function DocCard({
           {isImg ? (
             <img src={url} alt={doc.fileName} className="h-32 w-full object-cover transition-transform group-hover:scale-105" />
           ) : (
-            <div className="flex h-32 flex-col items-center justify-center gap-2 bg-slate-900">
+            <div className="flex h-32 flex-col items-center justify-center gap-2 bg-slate-200">
               <FileText className="h-10 w-10 text-slate-500" />
-              <span className="text-xs text-slate-400">Ver PDF</span>
+              <span className="text-xs text-slate-500">Ver PDF</span>
             </div>
           )}
         </button>
         <div className="px-3 py-2">
           <p className="truncate text-xs font-medium">{doc.fileName}</p>
-          <p className="text-[10px] text-slate-400">
+          <p className="text-[10px] text-slate-500">
             {doc.size ? `${(doc.size / 1024).toFixed(0)} KB · ` : ''}
             {doc.mimeType}
           </p>
@@ -1056,10 +1056,10 @@ function Lightbox({
       onClick={onClose}
     >
       <div
-        className="relative flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-white/10 bg-slate-900 shadow-2xl"
+        className="relative flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-slate-300 bg-slate-200 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+        <div className="flex items-center justify-between border-b border-slate-300 px-4 py-3">
           <div className="flex items-center gap-2 min-w-0">
             <FileText className="h-4 w-4 shrink-0 text-emerald-400" />
             <span className="truncate text-sm font-medium">{fileName}</span>
@@ -1069,21 +1069,21 @@ function Lightbox({
               href={url}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-slate-300 hover:bg-white/10 hover:text-white"
+              className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-slate-600 hover:bg-slate-300 hover:text-slate-900"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Abrir</span>
             </a>
             <button
               onClick={onClose}
-              className="rounded-md p-1.5 text-slate-400 hover:bg-white/10 hover:text-white"
+              className="rounded-md p-1.5 text-slate-500 hover:bg-slate-300 hover:text-slate-900"
               title="Cerrar (Esc)"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
         </div>
-        <div className="flex items-center justify-center overflow-auto bg-slate-950 p-4">
+        <div className="flex items-center justify-center overflow-auto bg-slate-100 p-4">
           {isImg ? (
             <img
               src={url}
@@ -1116,7 +1116,7 @@ function UploadSlot({
     <button
       onClick={onUpload}
       disabled={uploading}
-      className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-white/15 bg-slate-950/30 p-5 text-sm text-slate-300 transition-colors hover:border-emerald-500/40 hover:bg-emerald-500/5 disabled:opacity-50"
+      className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-white/15 bg-slate-100/30 p-5 text-sm text-slate-600 transition-colors hover:border-emerald-500/40 hover:bg-emerald-500/5 disabled:opacity-50"
     >
       {uploading ? (
         <Loader2 className="h-4 w-4 animate-spin" />

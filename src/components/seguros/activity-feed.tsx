@@ -42,14 +42,14 @@ type Pagination = {
 
 const ICONS: Record<string, { icon: React.ComponentType<{ className?: string }>; color: string; bg: string }> = {
   CREATED: { icon: FilePlus2, color: 'text-sky-300', bg: 'bg-sky-500/15 ring-sky-500/20' },
-  UPDATED: { icon: FileEdit, color: 'text-slate-300', bg: 'bg-slate-500/15 ring-slate-500/20' },
+  UPDATED: { icon: FileEdit, color: 'text-slate-600', bg: 'bg-slate-500/15 ring-slate-500/20' },
   APPROVED: { icon: FileCheck2, color: 'text-emerald-300', bg: 'bg-emerald-500/15 ring-emerald-500/20' },
   REJECTED: { icon: FileX, color: 'text-red-300', bg: 'bg-red-500/15 ring-red-500/20' },
-  ANULADA: { icon: Ban, color: 'text-slate-300', bg: 'bg-slate-500/15 ring-slate-500/20' },
+  ANULADA: { icon: Ban, color: 'text-slate-600', bg: 'bg-slate-500/15 ring-slate-500/20' },
   DOCUMENT_UPLOADED: { icon: Paperclip, color: 'text-violet-300', bg: 'bg-violet-500/15 ring-violet-500/20' },
   DOCUMENT_DELETED: { icon: FileMinus, color: 'text-amber-300', bg: 'bg-amber-500/15 ring-amber-500/20' },
   PDF_GENERATED: { icon: FileText, color: 'text-teal-300', bg: 'bg-teal-500/15 ring-teal-500/20' },
-  STATUS_CHANGED: { icon: Activity, color: 'text-slate-300', bg: 'bg-slate-500/15 ring-slate-500/20' },
+  STATUS_CHANGED: { icon: Activity, color: 'text-slate-600', bg: 'bg-slate-500/15 ring-slate-500/20' },
 }
 
 const ACTION_OPTIONS = [
@@ -153,7 +153,7 @@ export function ActivityFeed({ onSelectPolicy }: { onSelectPolicy: (id: string) 
             <Activity className="h-5 w-5 text-emerald-400" />
             Actividad Global
           </h2>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-slate-500">
             Historial completo de acciones en todas las pólizas del sistema.
           </p>
         </div>
@@ -162,7 +162,7 @@ export function ActivityFeed({ onSelectPolicy }: { onSelectPolicy: (id: string) 
             variant="outline"
             size="sm"
             onClick={exportCsv}
-            className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+            className="border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900"
           >
             <Download className="mr-1 h-4 w-4" />
             <span className="hidden sm:inline">Exportar CSV</span>
@@ -171,11 +171,11 @@ export function ActivityFeed({ onSelectPolicy }: { onSelectPolicy: (id: string) 
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-end gap-2 rounded-lg border border-white/10 bg-slate-900/40 p-3">
+      <div className="flex flex-wrap items-end gap-2 rounded-lg border border-slate-300 bg-slate-200/40 p-3">
         <div className="space-y-1">
-          <label className="text-[10px] uppercase tracking-wider text-slate-400">Acción</label>
+          <label className="text-[10px] uppercase tracking-wider text-slate-500">Acción</label>
           <Select value={actionFilter} onValueChange={setActionFilter}>
-            <SelectTrigger className="w-[180px] bg-slate-950/50 border-white/10 h-9">
+            <SelectTrigger className="w-[180px] bg-slate-100/50 border-slate-300 h-9">
               <SelectValue placeholder="Todas" />
             </SelectTrigger>
             <SelectContent>
@@ -188,49 +188,49 @@ export function ActivityFeed({ onSelectPolicy }: { onSelectPolicy: (id: string) 
           </Select>
         </div>
         <div className="space-y-1">
-          <label className="text-[10px] uppercase tracking-wider text-slate-400">Desde</label>
+          <label className="text-[10px] uppercase tracking-wider text-slate-500">Desde</label>
           <Input
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="h-9 w-[150px] bg-slate-950/50 border-white/10"
+            className="h-9 w-[150px] bg-slate-100/50 border-slate-300"
           />
         </div>
         <div className="space-y-1">
-          <label className="text-[10px] uppercase tracking-wider text-slate-400">Hasta</label>
+          <label className="text-[10px] uppercase tracking-wider text-slate-500">Hasta</label>
           <Input
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="h-9 w-[150px] bg-slate-950/50 border-white/10"
+            className="h-9 w-[150px] bg-slate-100/50 border-slate-300"
           />
         </div>
-        <Button size="sm" onClick={applyFilters} className="bg-emerald-500 text-slate-950 hover:bg-emerald-400">
+        <Button size="sm" onClick={applyFilters} className="bg-emerald-500 text-slate-900 hover:bg-emerald-400">
           <Filter className="mr-1 h-3.5 w-3.5" /> Filtrar
         </Button>
         {hasFilters && (
-          <Button size="sm" variant="ghost" onClick={clearFilters} className="text-slate-400 hover:text-white">
+          <Button size="sm" variant="ghost" onClick={clearFilters} className="text-slate-500 hover:text-slate-900">
             <X className="mr-1 h-3.5 w-3.5" /> Limpiar
           </Button>
         )}
         {pagination && (
-          <span className="ml-auto text-xs text-slate-400">
+          <span className="ml-auto text-xs text-slate-500">
             {pagination.total} evento(s) total
           </span>
         )}
       </div>
 
       {/* Activity list */}
-      <Card className="border-white/10 bg-slate-900/60">
+      <Card className="border-slate-300 bg-slate-200/60">
         <CardContent className="p-2">
           {loading ? (
             <div className="space-y-2">
               {[0, 1, 2, 3, 4].map((i) => (
                 <div key={i} className="flex items-center gap-3 p-3">
-                  <div className="h-9 w-9 animate-pulse rounded-full bg-white/5" />
+                  <div className="h-9 w-9 animate-pulse rounded-full bg-slate-200" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-3 w-2/3 animate-pulse rounded bg-white/5" />
-                    <div className="h-2.5 w-1/3 animate-pulse rounded bg-white/5" />
+                    <div className="h-3 w-2/3 animate-pulse rounded bg-slate-200" />
+                    <div className="h-2.5 w-1/3 animate-pulse rounded bg-slate-200" />
                   </div>
                 </div>
               ))}
@@ -243,21 +243,21 @@ export function ActivityFeed({ onSelectPolicy }: { onSelectPolicy: (id: string) 
           ) : (
             <div className="max-h-[36rem] overflow-y-auto scrollbar-thin">
               {activities.map((a) => {
-                const cfg = ICONS[a.action] || { icon: Activity, color: 'text-slate-300', bg: 'bg-slate-500/15 ring-slate-500/20' }
+                const cfg = ICONS[a.action] || { icon: Activity, color: 'text-slate-600', bg: 'bg-slate-500/15 ring-slate-500/20' }
                 const Icon = cfg.icon
                 return (
                   <button
                     key={a.id}
                     onClick={() => onSelectPolicy(a.policy.id)}
-                    className="group flex w-full items-start gap-3 rounded-lg px-3 py-3 text-left transition-colors hover:bg-white/5"
+                    className="group flex w-full items-start gap-3 rounded-lg px-3 py-3 text-left transition-colors hover:bg-slate-200"
                   >
                     <div className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full ring-1 ${cfg.bg}`}>
                       <Icon className={`h-4 w-4 ${cfg.color}`} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm text-slate-200">{a.description}</p>
-                      <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-400">
-                        <span className="font-medium text-slate-300">
+                      <p className="text-sm text-slate-800">{a.description}</p>
+                      <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500">
+                        <span className="font-medium text-slate-600">
                           {a.policy.nombre} {a.policy.apellido || ''}
                         </span>
                         <span>·</span>
@@ -281,7 +281,7 @@ export function ActivityFeed({ onSelectPolicy }: { onSelectPolicy: (id: string) 
                         <span>{timeAgo(a.createdAt)}</span>
                       </div>
                     </div>
-                    <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-slate-600 transition-colors group-hover:text-slate-300" />
+                    <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-slate-600 transition-colors group-hover:text-slate-600" />
                   </button>
                 )
               })}
@@ -291,10 +291,10 @@ export function ActivityFeed({ onSelectPolicy }: { onSelectPolicy: (id: string) 
 
         {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 px-4 py-3">
-            <p className="text-xs text-slate-400">
-              Página <span className="font-semibold text-slate-200">{pagination.page}</span> de{' '}
-              <span className="font-semibold text-slate-200">{pagination.totalPages}</span>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-300 px-4 py-3">
+            <p className="text-xs text-slate-500">
+              Página <span className="font-semibold text-slate-800">{pagination.page}</span> de{' '}
+              <span className="font-semibold text-slate-800">{pagination.totalPages}</span>
             </p>
             <div className="flex items-center gap-1">
               <Button
@@ -302,7 +302,7 @@ export function ActivityFeed({ onSelectPolicy }: { onSelectPolicy: (id: string) 
                 variant="outline"
                 disabled={!pagination.hasPrev}
                 onClick={() => goToPage(page - 1)}
-                className="h-8 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white disabled:opacity-30"
+                className="h-8 border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900 disabled:opacity-30"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -318,8 +318,8 @@ export function ActivityFeed({ onSelectPolicy }: { onSelectPolicy: (id: string) 
                     onClick={() => goToPage(p)}
                     className={`h-8 w-8 p-0 ${
                       p === pagination.page
-                        ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400'
-                        : 'border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white'
+                        ? 'bg-emerald-500 text-slate-900 hover:bg-emerald-400'
+                        : 'border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900'
                     }`}
                   >
                     {p}
@@ -331,7 +331,7 @@ export function ActivityFeed({ onSelectPolicy }: { onSelectPolicy: (id: string) 
                 variant="outline"
                 disabled={!pagination.hasNext}
                 onClick={() => goToPage(page + 1)}
-                className="h-8 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white disabled:opacity-30"
+                className="h-8 border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900 disabled:opacity-30"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>

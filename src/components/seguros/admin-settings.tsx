@@ -3,12 +3,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
   Loader2, Save, Plus, Trash2, Building2, Shield, Car, FileCheck,
-  Settings as SettingsIcon, RotateCcw, CheckCircle2,
+  Settings as SettingsIcon, RotateCcw, CheckCircle2, Image as ImageIcon, X,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from '@/components/ui/dialog'
 import { toast } from 'sonner'
 
 type Settings = {
@@ -120,19 +125,19 @@ export function AdminSettings() {
             <SettingsIcon className="h-5 w-5 text-emerald-400" />
             Configuración del Sistema
           </h2>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-slate-500">
             Gestiona las listas de opciones que aparecen en los formularios de solicitud.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="bg-white/5 text-slate-300">
+          <Badge variant="secondary" className="bg-slate-200 text-slate-600">
             {totalItems} opciones
           </Badge>
           <Button
             variant="outline"
             size="sm"
             onClick={resetDefaults}
-            className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+            className="border-slate-400 bg-slate-200 text-slate-900 hover:bg-slate-300 hover:text-slate-900"
           >
             <RotateCcw className="mr-1 h-4 w-4" />
             Restablecer
@@ -141,7 +146,7 @@ export function AdminSettings() {
             size="sm"
             onClick={save}
             disabled={saving}
-            className="bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+            className="bg-emerald-500 text-slate-900 hover:bg-emerald-400"
           >
             {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}
             Guardar
@@ -152,16 +157,16 @@ export function AdminSettings() {
       {/* Config cards */}
       <div className="grid gap-4 lg:grid-cols-2">
         {CONFIG.map(({ key, label, icon: Icon, description }) => (
-          <Card key={key} className="border-white/10 bg-slate-900/60">
-            <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
+          <Card key={key} className="border-slate-300 bg-slate-200/60">
+            <div className="flex items-center gap-2 border-b border-slate-300 px-5 py-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10">
                 <Icon className="h-4 w-4 text-emerald-300" />
               </div>
               <div className="flex-1">
                 <h3 className="text-sm font-semibold">{label}</h3>
-                <p className="text-[11px] text-slate-400">{description}</p>
+                <p className="text-[11px] text-slate-500">{description}</p>
               </div>
-              <Badge variant="secondary" className="bg-white/5 text-slate-400">
+              <Badge variant="secondary" className="bg-slate-200 text-slate-500">
                 {settings[key].length}
               </Badge>
             </div>
@@ -174,12 +179,12 @@ export function AdminSettings() {
                   settings[key].map((item, i) => (
                     <span
                       key={`${item}-${i}`}
-                      className="group inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 py-1 pl-2.5 pr-1 text-xs text-slate-200"
+                      className="group inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-slate-200 py-1 pl-2.5 pr-1 text-xs text-slate-800"
                     >
                       {item}
                       <button
                         onClick={() => removeItem(key, i)}
-                        className="rounded p-0.5 text-slate-400 hover:bg-red-500/10 hover:text-red-300"
+                        className="rounded p-0.5 text-slate-500 hover:bg-red-500/10 hover:text-red-300"
                         title="Eliminar"
                       >
                         <Trash2 className="h-3 w-3" />
@@ -200,7 +205,7 @@ export function AdminSettings() {
                     }
                   }}
                   placeholder={`Agregar ${label.toLowerCase().replace(/s$/, '')}...`}
-                  className="h-9 bg-slate-950/50 border-white/10 text-sm"
+                  className="h-9 bg-slate-100/50 border-slate-300 text-sm"
                 />
                 <Button
                   size="sm"
@@ -224,20 +229,142 @@ export function AdminSettings() {
             <p className="text-sm font-medium text-emerald-200">
               Los cambios se aplican a todos los formularios nuevos
             </p>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               Las pólizas existentes conservan los valores que tenían al momento de su creación.
             </p>
           </div>
           <Button
             onClick={save}
             disabled={saving}
-            className="bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+            className="bg-emerald-500 text-slate-900 hover:bg-emerald-400"
           >
             {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}
             Guardar cambios
           </Button>
         </CardContent>
       </Card>
+
+      {/* Banner Configuration */}
+      <BannerConfig />
+
     </div>
+  )
+}
+
+function BannerConfig() {
+  const [banner, setBanner] = useState<{ imageUrl: string; title: string; subtitle: string; enabled: boolean } | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+
+  const load = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/banner')
+      if (res.ok) {
+        const data = await res.json()
+        setBanner(data.banner || { imageUrl: '', title: '', subtitle: '', enabled: false })
+      }
+    } catch { /* ignore */ }
+    finally { setLoading(false) }
+  }, [])
+
+  useEffect(() => { load() }, [load])
+
+  async function save() {
+    setSaving(true)
+    try {
+      const res = await fetch('/api/banner', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(banner),
+      })
+      if (!res.ok) throw new Error('Error')
+      toast.success('Banner guardado')
+      setModalOpen(false)
+    } catch { toast.error('Error al guardar') }
+    finally { setSaving(false) }
+  }
+
+  if (loading) return <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-slate-500" /></div>
+
+  return (
+    <Card className="border-slate-300 bg-slate-200/60">
+      <div className="flex items-center gap-2 border-b border-slate-300 px-5 py-3">
+        <ImageIcon className="h-4 w-4 text-emerald-600" />
+        <h3 className="text-sm font-semibold text-slate-900">Banner de Verificación</h3>
+        <Badge variant="secondary" className="ml-auto bg-slate-300 text-slate-600">
+          {banner?.enabled ? 'Activo' : 'Inactivo'}
+        </Badge>
+        <Button size="sm" onClick={() => setModalOpen(true)} className="bg-emerald-500 text-slate-900 hover:bg-emerald-400">
+          <ImageIcon className="mr-1 h-3.5 w-3.5" /> Configurar
+        </Button>
+      </div>
+      <CardContent className="p-4">
+        {banner?.imageUrl ? (
+          <div className="space-y-2">
+            <img src={banner.imageUrl} alt="Banner" className="max-h-32 rounded-lg border border-slate-300" />
+            {banner.title && <p className="text-sm font-medium text-slate-800">{banner.title}</p>}
+            {banner.subtitle && <p className="text-xs text-slate-500">{banner.subtitle}</p>}
+          </div>
+        ) : (
+          <p className="text-sm text-slate-500">No hay banner configurado. Aparecerá en la parte superior de la página de verificación de pólizas.</p>
+        )}
+      </CardContent>
+
+      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+        <DialogContent className="bg-slate-100 border-slate-300">
+          <DialogHeader>
+            <DialogTitle className="text-slate-900">Configurar Banner</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label className="text-slate-700">URL de la imagen</Label>
+              <Input
+                value={banner?.imageUrl || ''}
+                onChange={(e) => setBanner({ ...(banner || { imageUrl: '', title: '', subtitle: '', enabled: true }), imageUrl: e.target.value })}
+                placeholder="https://ejemplo.com/logo.png"
+                className="bg-white border-slate-300"
+              />
+              {banner?.imageUrl && (
+                <img src={banner.imageUrl} alt="Preview" className="max-h-32 rounded-lg border border-slate-300" />
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label className="text-slate-700">Título</Label>
+              <Input
+                value={banner?.title || ''}
+                onChange={(e) => setBanner({ ...(banner || { imageUrl: '', title: '', subtitle: '', enabled: true }), title: e.target.value })}
+                placeholder="Seguros Líder"
+                className="bg-white border-slate-300"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-slate-700">Subtítulo</Label>
+              <Input
+                value={banner?.subtitle || ''}
+                onChange={(e) => setBanner({ ...(banner || { imageUrl: '', title: '', subtitle: '', enabled: true }), subtitle: e.target.value })}
+                placeholder="Protección que te acompaña"
+                className="bg-white border-slate-300"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={banner?.enabled || false}
+                onCheckedChange={(v) => setBanner({ ...(banner || { imageUrl: '', title: '', subtitle: '', enabled: false }), enabled: v })}
+              />
+              <Label className="text-slate-700">Activar banner</Label>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setModalOpen(false)} className="text-slate-500">Cancelar</Button>
+            <Button onClick={save} disabled={saving} className="bg-emerald-500 text-slate-900 hover:bg-emerald-400">
+              {saving ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}
+              Guardar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </Card>
   )
 }
