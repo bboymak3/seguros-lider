@@ -19,36 +19,51 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Try HTTPS first, fallback to HTTP via a proxy
-    const url = `https://www.cne.gob.ve/web/registro_electoral/ce.php?nacionalidad=V&cedula=${cedula}`
-    let res: Response
-    try {
-      res = await fetch(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-          'Accept': 'text/html,application/xhtml+xml',
-          'Accept-Language': 'es-VE,es;q=0.9',
-        },
-        redirect: 'follow',
-      })
-    } catch {
-      // If HTTPS fails, try HTTP (some Workers runtimes allow it)
-      res = await fetch(`http://www.cne.gob.ve/web/registro_electoral/ce.php?nacionalidad=V&cedula=${cedula}`, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        },
-        redirect: 'follow',
-      })
+    // CNE blocks direct requests from Cloudflare IPs (403).
+    // We use a CORS proxy as fallback. Try multiple proxies in order.
+    const cneUrl = `http://www.cne.gob.ve/web/registro_electoral/ce.php?nacionalidad=V&cedula=${cedula}`
+    const encodedUrl = encodeURIComponent(cneUrl)
+
+    const proxies = [
+      `https://api.allorigins.win/raw?url=${encodedUrl}`,
+      `https://corsproxy.io/?url=${encodedUrl}`,
+      `https://thingproxy.freeboard.io/fetch/${cneUrl}`,
+      cneUrl, // direct as last resort
+    ]
+
+    let html = ''
+    let lastError = ''
+
+    for (const proxyUrl of proxies) {
+      try {
+        const res = await fetch(proxyUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'es-VE,es;q=0.9,en;q=0.8',
+            'Referer': 'http://www.cne.gob.ve/web/registro_electoral/',
+          },
+          redirect: 'follow',
+        })
+
+        if (res.ok) {
+          html = await res.text()
+          if (html && html.length > 100 && !html.includes('error code:')) {
+            break
+          }
+        }
+        lastError = `Proxy ${proxyUrl.split('/')[2]}: HTTP ${res.status}`
+      } catch (e) {
+        lastError = `Proxy error: ${(e as Error).message}`
+      }
     }
 
-    if (!res.ok) {
+    if (!html || html.length < 100) {
       return NextResponse.json(
-        { error: `CNE respondió con código ${res.status}. Intenta nuevamente.` },
+        { error: `No se pudo conectar con el CNE. ${lastError}. Verifica la cédula e intenta nuevamente.` },
         { status: 502 }
       )
     }
-
-    const html = await res.text()
 
     // Check for not found
     if (html.includes('dula de identidad no se encuentra inscrito')) {
