@@ -4,8 +4,8 @@ export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/cne-lookup?cedula=12345678
- * Consulta el registro electoral del CNE para auto-completar datos.
- * Retorna: nombre, estado, municipio, parroquia.
+ * Consulta el CNE para auto-completar datos del usuario.
+ * Como el CNE bloquea Cloudflare IPs, usamos un proxy externo.
  */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -18,85 +18,70 @@ export async function GET(req: NextRequest) {
     )
   }
 
-  try {
-    // CNE blocks direct requests from Cloudflare IPs (403).
-    // We use a CORS proxy as fallback. Try multiple proxies in order.
-    const cneUrl = `http://www.cne.gob.ve/web/registro_electoral/ce.php?nacionalidad=V&cedula=${cedula}`
-    const encodedUrl = encodeURIComponent(cneUrl)
+  // Try multiple proxies since CNE blocks Cloudflare IPs
+  const proxies = [
+    `https://cne-proxy.onrender.com/api/cne?cedula=${cedula}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(`http://www.cne.gob.ve/web/registro_electoral/ce.php?nacionalidad=V&cedula=${cedula}`)}`,
+    `https://corsproxy.io/?url=${encodeURIComponent(`http://www.cne.gob.ve/web/registro_electoral/ce.php?nacionalidad=V&cedula=${cedula}`)}`,
+  ]
 
-    const proxies = [
-      `https://api.allorigins.win/raw?url=${encodedUrl}`,
-      `https://corsproxy.io/?url=${encodedUrl}`,
-      `https://thingproxy.freeboard.io/fetch/${cneUrl}`,
-      cneUrl, // direct as last resort
-    ]
+  let lastError = 'No se pudo conectar con el CNE'
 
-    let html = ''
-    let lastError = ''
+  for (const proxyUrl of proxies) {
+    try {
+      const res = await fetch(proxyUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'application/json, text/html',
+        },
+        signal: AbortSignal.timeout(15000),
+      })
 
-    for (const proxyUrl of proxies) {
-      try {
-        const res = await fetch(proxyUrl, {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'es-VE,es;q=0.9,en;q=0.8',
-            'Referer': 'http://www.cne.gob.ve/web/registro_electoral/',
-          },
-          redirect: 'follow',
-        })
+      if (!res.ok) {
+        lastError = `CNE: HTTP ${res.status}`
+        continue
+      }
 
-        if (res.ok) {
-          html = await res.text()
-          if (html && html.length > 100 && !html.includes('error code:')) {
-            break
+      const contentType = res.headers.get('content-type') || ''
+
+      // If proxy returns JSON (our Render proxy), use it directly
+      if (contentType.includes('application/json')) {
+        const data = await res.json()
+        if (data.error) {
+          lastError = data.error
+          continue
+        }
+        if (data.person) {
+          return NextResponse.json({ person: data.person })
+        }
+      }
+
+      // If proxy returns HTML (allorigins/corsproxy), parse it
+      if (contentType.includes('text/html') || contentType.includes('text/')) {
+        const html = await res.text()
+        if (html && html.length > 100 && !html.includes('Forbidden') && !html.includes('error code:')) {
+          const person = parseCNEHtml(html, cedula)
+          if (person.nombre) {
+            return NextResponse.json({ person })
+          }
+          if (html.includes('dula de identidad no se encuentra inscrito')) {
+            return NextResponse.json(
+              { error: 'La cédula no se encuentra inscrita en el Registro Electoral' },
+              { status: 404 }
+            )
           }
         }
-        lastError = `Proxy ${proxyUrl.split('/')[2]}: HTTP ${res.status}`
-      } catch (e) {
-        lastError = `Proxy error: ${(e as Error).message}`
+        lastError = 'Respuesta del CNE sin datos válidos'
       }
+    } catch (e) {
+      lastError = `Error: ${(e as Error).message}`
     }
-
-    if (!html || html.length < 100) {
-      return NextResponse.json(
-        { error: `No se pudo conectar con el CNE. ${lastError}. Verifica la cédula e intenta nuevamente.` },
-        { status: 502 }
-      )
-    }
-
-    // Check for not found
-    if (html.includes('dula de identidad no se encuentra inscrito')) {
-      return NextResponse.json(
-        { error: 'La cédula no se encuentra inscrita en el Registro Electoral' },
-        { status: 404 }
-      )
-    }
-
-    if (html.includes('dula de identidad presenta una objec')) {
-      return NextResponse.json(
-        { error: 'La cédula presenta una objeción' },
-        { status: 404 }
-      )
-    }
-
-    // Parse HTML to extract data
-    const person = parseCNEHtml(html, cedula)
-
-    if (!person.nombre) {
-      return NextResponse.json(
-        { error: 'No se encontraron datos para esta cédula' },
-        { status: 404 }
-      )
-    }
-
-    return NextResponse.json({ person })
-  } catch (e) {
-    return NextResponse.json(
-      { error: 'Error al consultar el CNE: ' + (e as Error).message },
-      { status: 500 }
-    )
   }
+
+  return NextResponse.json(
+    { error: `No se pudo consultar el CNE. ${lastError}. Verifica la cédula e intenta nuevamente.` },
+    { status: 502 }
+  )
 }
 
 function parseCNEHtml(html: string, cedula: string) {
@@ -114,9 +99,7 @@ function parseCNEHtml(html: string, cedula: string) {
     parroquia: '',
   }
 
-  // Helper: extract text after a label in HTML table cells
   function extractAfter(label: string): string {
-    // Pattern: <td>Label:</td><td>Value</td>
     const regex = new RegExp(
       label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
         '\\s*:?\\s*</td>\\s*<td[^>]*>(.*?)</td>',
@@ -125,11 +108,10 @@ function parseCNEHtml(html: string, cedula: string) {
     const match = html.match(regex)
     if (match) {
       let val = match[1]
-        .replace(/<[^>]*>/g, '') // strip HTML tags
+        .replace(/<[^>]*>/g, '')
         .replace(/&nbsp;/g, ' ')
         .replace(/&amp;/g, '&')
         .trim()
-      // Clean prefixes
       val = val
         .replace(/^EDO\.\s*/i, '')
         .replace(/^MP\.\s*/i, '')
