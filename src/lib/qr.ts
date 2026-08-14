@@ -12,11 +12,8 @@ export async function generatePolicyQr(
 ): Promise<{ buffer: Buffer; url: string; storageKey: string }> {
   const base =
     publicBaseUrl ||
-    process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    'http://localhost:3000'
+    'https://app-seguro-activo.pages.dev'
 
-  // Keep query-only so it stays on the single / route.
   const targetUrl = `${base.replace(/\/$/, '')}/?v=${verifyCode}`
 
   const buffer = await QRCode.toBuffer(targetUrl, {

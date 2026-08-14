@@ -3599,6 +3599,11 @@
       "imports": [],
       "format": "cjs"
     },
+    ".open-next/server-functions/default/.next/server/app/api/cedula-lookup/route_client-reference-manifest.js": {
+      "bytes": 320,
+      "imports": [],
+      "format": "cjs"
+    },
     ".open-next/server-functions/default/.next/server/app/api/policies/bulk/route_client-reference-manifest.js": {
       "bytes": 320,
       "imports": [],
@@ -3650,7 +3655,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/node_modules/next/dist/server/load-manifest.external.js": {
-      "bytes": 47781,
+      "bytes": 48429,
       "imports": [
         {
           "path": "path",
@@ -3746,6 +3751,11 @@
           "path": ".open-next/server-functions/default/.next/server/app/api/notifications/route_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/home/z/my-project/.open-next/server-functions/default/.next/server/app/api/notifications/route_client-reference-manifest.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/app/api/cedula-lookup/route_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/home/z/my-project/.open-next/server-functions/default/.next/server/app/api/cedula-lookup/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/api/policies/bulk/route_client-reference-manifest.js",
@@ -4610,6 +4620,47 @@
       ],
       "format": "cjs"
     },
+    ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__072e4c3b._.js": {
+      "bytes": 9818,
+      "imports": [
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/shared/lib/no-fallback-error.external.js",
+          "kind": "require-call",
+          "original": "next/dist/shared/lib/no-fallback-error.external.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/compiled/@opentelemetry/api/index.js",
+          "kind": "require-call",
+          "original": "next/dist/compiled/@opentelemetry/api"
+        },
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js",
+          "kind": "require-call",
+          "original": "next/dist/compiled/next-server/app-page-turbo.runtime.prod.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/work-async-storage.external.js",
+          "kind": "require-call",
+          "original": "next/dist/server/app-render/work-async-storage.external.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/work-unit-async-storage.external.js",
+          "kind": "require-call",
+          "original": "next/dist/server/app-render/work-unit-async-storage.external.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/after-task-async-storage.external.js",
+          "kind": "require-call",
+          "original": "next/dist/server/app-render/after-task-async-storage.external.js"
+        }
+      ],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_api_cedula-lookup_route_actions_ed8aa601.js": {
+      "bytes": 131,
+      "imports": [],
+      "format": "cjs"
+    },
     ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__32a9aed6._.js": {
       "bytes": 9806,
       "imports": [
@@ -4964,7 +5015,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__8b090993._.js": {
-      "bytes": 58075,
+      "bytes": 58020,
       "imports": [
         {
           "path": "stream",
@@ -5886,7 +5937,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/ssr/[turbopack]_runtime.js": {
-      "bytes": 48595,
+      "bytes": 49051,
       "imports": [
         {
           "path": ".open-next/cloudflare-templates/shims/throw.js",
@@ -6037,6 +6088,16 @@
           "path": ".open-next/server-functions/default/.next/server/chunks/src_lib_db_ts_86d9618b._.js",
           "kind": "require-call",
           "original": "/home/z/my-project/.open-next/server-functions/default/.next/server/chunks/src_lib_db_ts_86d9618b._.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__072e4c3b._.js",
+          "kind": "require-call",
+          "original": "/home/z/my-project/.open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__072e4c3b._.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_api_cedula-lookup_route_actions_ed8aa601.js",
+          "kind": "require-call",
+          "original": "/home/z/my-project/.open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_api_cedula-lookup_route_actions_ed8aa601.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__32a9aed6._.js",
@@ -6337,7 +6398,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/[turbopack]_runtime.js": {
-      "bytes": 48585,
+      "bytes": 49041,
       "imports": [
         {
           "path": ".open-next/cloudflare-templates/shims/throw.js",
@@ -6488,6 +6549,16 @@
           "path": ".open-next/server-functions/default/.next/server/chunks/src_lib_db_ts_86d9618b._.js",
           "kind": "require-call",
           "original": "/home/z/my-project/.open-next/server-functions/default/.next/server/chunks/src_lib_db_ts_86d9618b._.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__072e4c3b._.js",
+          "kind": "require-call",
+          "original": "/home/z/my-project/.open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__072e4c3b._.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_api_cedula-lookup_route_actions_ed8aa601.js",
+          "kind": "require-call",
+          "original": "/home/z/my-project/.open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_api_cedula-lookup_route_actions_ed8aa601.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__32a9aed6._.js",
@@ -6941,6 +7012,17 @@
       ],
       "format": "cjs"
     },
+    ".open-next/server-functions/default/.next/server/app/api/cedula-lookup/route.js": {
+      "bytes": 347,
+      "imports": [
+        {
+          "path": ".open-next/server-functions/default/.next/server/chunks/[turbopack]_runtime.js",
+          "kind": "require-call",
+          "original": "../../../chunks/[turbopack]_runtime.js"
+        }
+      ],
+      "format": "cjs"
+    },
     ".open-next/server-functions/default/.next/server/app/api/notifications/route.js": {
       "bytes": 347,
       "imports": [
@@ -7096,7 +7178,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/node_modules/next/dist/server/require.js": {
-      "bytes": 10221,
+      "bytes": 10436,
       "imports": [
         {
           "path": "path",
@@ -7212,6 +7294,11 @@
           "path": ".open-next/server-functions/default/.next/server/app/api/vehicle-classes/route.js",
           "kind": "require-call",
           "original": "/home/z/my-project/.open-next/server-functions/default/.next/server/app/api/vehicle-classes/route.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/app/api/cedula-lookup/route.js",
+          "kind": "require-call",
+          "original": "/home/z/my-project/.open-next/server-functions/default/.next/server/app/api/cedula-lookup/route.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/api/notifications/route.js",
@@ -8435,7 +8522,7 @@
       "format": "esm"
     },
     ".open-next/server-functions/default/index.mjs": {
-      "bytes": 85580,
+      "bytes": 85768,
       "imports": [
         {
           "path": "node:module",
@@ -9791,6 +9878,9 @@
         ".open-next/server-functions/default/.next/server/app/api/notifications/route_client-reference-manifest.js": {
           "bytesInOutput": 477
         },
+        ".open-next/server-functions/default/.next/server/app/api/cedula-lookup/route_client-reference-manifest.js": {
+          "bytesInOutput": 477
+        },
         ".open-next/server-functions/default/.next/server/app/api/policies/bulk/route_client-reference-manifest.js": {
           "bytesInOutput": 477
         },
@@ -9822,7 +9912,7 @@
           "bytesInOutput": 461
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/load-manifest.external.js": {
-          "bytesInOutput": 36372
+          "bytesInOutput": 36836
         },
         ".open-next/cloudflare-templates/shims/throw.js": {
           "bytesInOutput": 215
@@ -9959,6 +10049,12 @@
         ".open-next/server-functions/default/.next/server/chunks/src_lib_db_ts_86d9618b._.js": {
           "bytesInOutput": 636
         },
+        ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__072e4c3b._.js": {
+          "bytesInOutput": 9974
+        },
+        ".open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_api_cedula-lookup_route_actions_ed8aa601.js": {
+          "bytesInOutput": 285
+        },
         ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__32a9aed6._.js": {
           "bytesInOutput": 9962
         },
@@ -10008,7 +10104,7 @@
           "bytesInOutput": 305
         },
         ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__8b090993._.js": {
-          "bytesInOutput": 61565
+          "bytesInOutput": 61510
         },
         ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__b8d78f83._.js": {
           "bytesInOutput": 12905
@@ -10134,10 +10230,10 @@
           "bytesInOutput": 640
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/[turbopack]_runtime.js": {
-          "bytesInOutput": 25561
+          "bytesInOutput": 25835
         },
         ".open-next/server-functions/default/.next/server/chunks/[turbopack]_runtime.js": {
-          "bytesInOutput": 25548
+          "bytesInOutput": 25822
         },
         ".open-next/server-functions/default/.next/server/app/api/policies/[id]/activities/export/route.js": {
           "bytesInOutput": 515
@@ -10180,6 +10276,9 @@
         },
         ".open-next/server-functions/default/.next/server/app/api/vehicle-classes/route.js": {
           "bytesInOutput": 478
+        },
+        ".open-next/server-functions/default/.next/server/app/api/cedula-lookup/route.js": {
+          "bytesInOutput": 472
         },
         ".open-next/server-functions/default/.next/server/app/api/notifications/route.js": {
           "bytesInOutput": 472
@@ -10224,7 +10323,7 @@
           "bytesInOutput": 1085
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/require.js": {
-          "bytesInOutput": 5583
+          "bytesInOutput": 5683
         },
         ".open-next/server-functions/default/node_modules/next/dist/lib/wait.js": {
           "bytesInOutput": 341
@@ -10371,10 +10470,10 @@
           "bytesInOutput": 5072
         },
         ".open-next/server-functions/default/index.mjs": {
-          "bytesInOutput": 59373
+          "bytesInOutput": 59541
         }
       },
-      "bytes": 5566962
+      "bytes": 5579395
     }
   }
 }
