@@ -1,3 +1,11 @@
 {
+  "/api/notifications/route": "app/api/notifications/route.js",
+  "/api/policies/[id]/qr/route": "app/api/policies/[id]/qr/route.js",
+  "/api/policies/[id]/route": "app/api/policies/[id]/route.js",
+  "/api/policies/expiring/route": "app/api/policies/expiring/route.js",
+  "/api/policies/route": "app/api/policies/route.js",
+  "/api/policies/verify/route": "app/api/policies/verify/route.js",
+  "/api/settings/route": "app/api/settings/route.js",
+  "/api/stats/route": "app/api/stats/route.js",
   "/page": "app/page.js"
 }

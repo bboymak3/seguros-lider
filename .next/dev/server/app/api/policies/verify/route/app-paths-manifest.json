@@ -1,0 +1,3 @@
+{
+  "/api/policies/verify/route": "app/api/policies/verify/route.js"
+}
