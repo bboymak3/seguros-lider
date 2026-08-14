@@ -1,0 +1,29 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "seguros-lider"
+compatibility_date = "2025-05-01"
+compatibility_flags = ["nodejs_compat"]
+main = ".open-next/worker.js"
+
+# Assets (static files from Next.js)
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "seguros_db"
+database_id = "5f2737c7-ab51-4191-a50e-19e5bb16eeff"
+
+# R2 Bucket binding
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "my-emdash-media"
+
+# Observability
+[observability]
+enabled = true
+
+# Vars
+[vars]
+NEXT_PUBLIC_APP_URL = "https://seguros-lider.pages.dev"

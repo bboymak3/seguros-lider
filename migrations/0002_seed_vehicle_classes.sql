@@ -1,0 +1,20 @@
+-- Seed vehicle classes (id uses vc_{code} format to match plan references)
+INSERT INTO VehicleClass (id, code, name, sortOrder, createdAt, updatedAt) VALUES
+('vc_39', 39, 'AUTO ESCUELA', 0, datetime('now'), datetime('now')),
+('vc_33', 33, 'AUTOBUS PLACA EXTRAJERA', 1, datetime('now'), datetime('now')),
+('vc_25', 25, 'AUTOBUSES', 2, datetime('now'), datetime('now')),
+('vc_03', 3, 'CARGA', 3, datetime('now'), datetime('now')),
+('vc_32', 32, 'CARGA CON PLACA EXTRANJERA', 4, datetime('now'), datetime('now')),
+('vc_21', 21, 'CHUTOS', 5, datetime('now'), datetime('now')),
+('vc_04', 4, 'MINIBUS', 6, datetime('now'), datetime('now')),
+('vc_34', 34, 'MINIBUS PLACA EXTRAJERA', 7, datetime('now'), datetime('now')),
+('vc_12', 12, 'MOTO', 8, datetime('now'), datetime('now')),
+('vc_24', 24, 'MOTO CARRO', 9, datetime('now'), datetime('now')),
+('vc_22', 22, 'OTRAS MAQUINAS', 10, datetime('now'), datetime('now')),
+('vc_18', 18, 'PARTICULAR', 11, datetime('now'), datetime('now')),
+('vc_31', 31, 'PARTICULAR PLACA EXTRANJERA', 12, datetime('now'), datetime('now')),
+('vc_06', 6, 'REMOLQUE', 13, datetime('now'), datetime('now')),
+('vc_13', 13, 'RUSTICO', 14, datetime('now'), datetime('now')),
+('vc_23', 23, 'RUTAS FORANEAS', 15, datetime('now'), datetime('now')),
+('vc_29', 29, 'TAXI', 16, datetime('now'), datetime('now')),
+('vc_30', 30, 'TAXI PLACA EXTRAJERA', 17, datetime('now'), datetime('now'));
